@@ -1,0 +1,7 @@
+.grid-pane{
+    -fx-background-image: url("deploy/package/windows/client.png");
+    -fx-background-size: contain;
+    -fx-background-position: center;
+    -fx-background-radius: 10;
+}
+
