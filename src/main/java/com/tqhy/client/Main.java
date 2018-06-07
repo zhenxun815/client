@@ -11,8 +11,7 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("view/sample.fxml"));
-        primaryStage.setTitle("Hello World");
+        Parent root = FXMLLoader.load(getClass().getResource("/sample.fxml"));
         primaryStage.setAlwaysOnTop(true);
         Scene scene = new Scene(root, 50, 50);
         primaryStage.initStyle(StageStyle.TRANSPARENT);
