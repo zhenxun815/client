@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.ContextMenu?>
+<fx:root xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+         type="javafx.scene.control.ContextMenu">
+    <fx:define>
+        <fx:include fx:id="menuItemDetail" source="menu_item_detail.fxml" onMousePressed="#detail"></fx:include>
+        <fx:include fx:id="menuItemConfig" source="menu_item_config.fxml" onMousePressed="#config"></fx:include>
+        <fx:include fx:id="menuItemExit" source="menu_item_exit.fxml" onMousePressed="#exit"></fx:include>
+        <fx:include fx:id="menuItemMin" source="menu_item_min.fxml" onMousePressed="#min"></fx:include>
+        <fx:include fx:id="menuItemInfo" source="menu_item_info.fxml" onMousePressed="#info"></fx:include>
+    </fx:define>
+</fx:root>

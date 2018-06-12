@@ -1,6 +1,5 @@
 package com.tqhy.client.controller;
 
-import com.tqhy.client.view.TqhyMenu;
 import javafx.fxml.FXML;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -10,12 +9,11 @@ import javafx.stage.Stage;
 public class FloatController {
     private double xOffset = 0;
     private double yOffset = 0;
-    private TqhyMenu menu;
-    @FXML
-    AnchorPane anchorPane;
+    private MenuController menu;
+    @FXML AnchorPane anchorPane;
 
     public FloatController() {
-        menu = new TqhyMenu();
+        menu = new MenuController();
     }
 
     public void press(MouseEvent event) {
@@ -26,11 +24,11 @@ public class FloatController {
 
             double x = event.getScreenX();
             double y = event.getScreenY();
-            menu.show(anchorPane, x, y);
+            menu.showMenu(anchorPane, x, y);
         } else if (MouseButton.PRIMARY.equals(button)) {
-            menu.hide();
+            menu.hideMenu();
             if (MouseEvent.MOUSE_PRESSED == event.getEventType()) {
-                System.out.println("left press...");
+               // System.out.println("left press...");
                 xOffset = event.getSceneX();
                 yOffset = event.getSceneY();
             }
@@ -42,10 +40,10 @@ public class FloatController {
         event.consume();
         MouseButton button = event.getButton();
         if (MouseButton.SECONDARY == button) {
-            System.out.println(button.name() + "....");
+            //System.out.println(button.name() + "....");
         } else if (MouseButton.PRIMARY.equals(button)) {
             if (MouseEvent.MOUSE_DRAGGED == event.getEventType()) {
-                System.out.println("left drag..");
+                //System.out.println("left drag..");
                 Stage stage = (Stage) anchorPane.getScene().getWindow();
                 stage.setX(event.getScreenX() - xOffset);
                 if (event.getScreenY() - yOffset < 0) {

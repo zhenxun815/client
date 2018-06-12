@@ -5,9 +5,7 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.HBox?>
 <HBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
-      stylesheets="/menu/menu.css" styleClass="item"
-      fx:controller="com.tqhy.client.controller.MenuController"
-      onMousePressed="#info">
+      stylesheets="/menu/menu.css" styleClass="item">
     <children>
         <ImageView disable="true" pickOnBounds="true"
                    preserveRatio="true" fitHeight="13" fitWidth="13">

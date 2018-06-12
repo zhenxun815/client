@@ -6,9 +6,8 @@
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 
-<DialogPane headerText="AI检测异常提示" prefHeight="300" prefWidth="500"
-            xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="com.tqhy.client.controller.DialogController">
+<fx:root type="javafx.scene.control.DialogPane" headerText="AI检测异常提示" prefHeight="250" prefWidth="350"
+            xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1">
     <graphic>
         <ImageView fitHeight="32.0" fitWidth="32.0" layoutX="150.0" layoutY="50.0" pickOnBounds="true"
                    preserveRatio="true">
@@ -24,4 +23,4 @@
     <content>
         <ListView fx:id="dialog_lv" prefHeight="200.0" prefWidth="200.0"/>
     </content>
-</DialogPane>
+</fx:root>
