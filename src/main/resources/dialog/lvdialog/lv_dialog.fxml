@@ -12,13 +12,12 @@
         <ImageView fitHeight="32.0" fitWidth="32.0" layoutX="150.0" layoutY="50.0" pickOnBounds="true"
                    preserveRatio="true">
             <image>
-                <Image url="@icons/warning.png"/>
+                <Image url="@../icons/warning.png"/>
             </image>
         </ImageView>
     </graphic>
     <buttonTypes>
         <ButtonType buttonData="OK_DONE" text="关闭"/>
-
     </buttonTypes>
     <content>
         <ListView fx:id="dialog_lv" prefHeight="200.0" prefWidth="200.0"/>
