@@ -131,15 +131,15 @@ public class MenuController extends ContextMenu {
     }
 
     public void showMenu(Node anchor, double screenX, double screenY) {
-        // System.out.println("menu controller show...");
+        // System.out.println("menu controller showAtRightBottom...");
         // System.out.println("menu items size: " + getItems().size());
         // System.out.println("menu anchor is: " + anchor + " x: " + screenX + " y: " + screenY);
-        this.anchor = anchor;
+        // this.anchor = anchor;
         show(anchor, screenX, screenY);
     }
 
     public void hideMenu() {
-        // System.out.println("menu controller hide...");
+        System.out.println("menu controller hide...");
         hide();
     }
 }
