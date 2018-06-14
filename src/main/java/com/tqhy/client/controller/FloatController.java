@@ -10,7 +10,8 @@ public class FloatController {
     private double xOffset = 0;
     private double yOffset = 0;
     private MenuController menu;
-    @FXML AnchorPane anchorPane;
+    @FXML
+    AnchorPane anchorPane;
 
     public FloatController() {
         menu = new MenuController();
@@ -28,7 +29,7 @@ public class FloatController {
         } else if (MouseButton.PRIMARY.equals(button)) {
             menu.hideMenu();
             if (MouseEvent.MOUSE_PRESSED == event.getEventType()) {
-               // System.out.println("left press...");
+                // System.out.println("left press...");
                 xOffset = event.getSceneX();
                 yOffset = event.getSceneY();
             }
