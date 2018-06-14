@@ -1,5 +1,6 @@
 package com.tqhy.client.controller;
 
+import com.tqhy.client.utils.ViewsUtils;
 import javafx.fxml.FXML;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -18,6 +19,7 @@ public class FloatController {
     }
 
     public void press(MouseEvent event) {
+        //anchorPane.setStyle("-fx-background-color: green;");
         event.consume();
         MouseButton button = event.getButton();
         if (MouseButton.SECONDARY == button) {
@@ -39,6 +41,7 @@ public class FloatController {
 
     public void drag(MouseEvent event) {
         event.consume();
+        //anchorPane.setStyle("-fx-background-color: lightseagreen;");
         MouseButton button = event.getButton();
         if (MouseButton.SECONDARY == button) {
             //System.out.println(button.name() + "....");
@@ -46,12 +49,14 @@ public class FloatController {
             if (MouseEvent.MOUSE_DRAGGED == event.getEventType()) {
                 //System.out.println("left drag..");
                 Stage stage = (Stage) anchorPane.getScene().getWindow();
-                stage.setX(event.getScreenX() - xOffset);
-                if (event.getScreenY() - yOffset < 0) {
-                    stage.setY(0);
-                } else {
-                    stage.setY(event.getScreenY() - yOffset);
-                }
+                double width = anchorPane.getWidth();
+                double height = anchorPane.getHeight();
+                double x = event.getScreenX() - xOffset;
+                double y = event.getScreenY() - yOffset;
+                double maxX = ViewsUtils.getMaxX(width);
+                double maxY = ViewsUtils.getMaxY(height);
+                stage.setX(x < maxX * 2 / 3 ? maxX * 2 / 3 : (x > maxX ? maxX : x));
+                stage.setY(y < maxY * 2 / 3 ? maxY * 2 / 3 : (y > maxY ? maxY : y));
             }
         }
     }
