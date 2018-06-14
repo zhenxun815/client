@@ -12,6 +12,7 @@ import javafx.scene.layout.HBox;
 
 /**
  * ListViewDialog ListView中每条item的Controller类
+ *
  * @author Yiheng
  * @create 2018/6/11
  * @since 1.0.0
@@ -27,7 +28,7 @@ public class ListViewItemController extends ListCell<String> {
     Button bt_exclude;
 
     public ListViewItemController() {
-        FxmlUtils.load("/dialog/lvdialog/lv_item.fxml", this);
+        FxmlUtils.load("/dialog/lv_dialog/lv_item.fxml", this);
         bt_confirm.setOnAction(this::confirm);
         bt_exclude.setOnAction(this::exclude);
     }
