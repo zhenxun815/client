@@ -18,7 +18,8 @@ public class Network {
     private static OkHttpClient okHttpClient = new OkHttpClient();
     private static Converter.Factory gsonConverterFactory = GsonConverterFactory.create();
     private static CallAdapter.Factory rxJavaCallAdapterFactory = RxJava2CallAdapterFactory.create();
-    private static final String BASE_URL = "http://192.168.1.243:8887/api/";
+    private static final String BASE_URL = "http://192.168.1.244:8887/api/";
+    //private static final String BASE_URL = "http://localhost:7000/";
 
     public static AiResultApi getAiResultApi() {
         if (null == aiResultApi) {
