@@ -10,10 +10,10 @@
         <ImageView disable="true" pickOnBounds="true"
                    preserveRatio="true" fitHeight="13" fitWidth="13">
             <image>
-                <Image url="@/menu/icons/detail.png"/>
+                <Image url="@/menu/icons/history.png"/>
             </image>
         </ImageView>
-        <Label text="  详情 "/>
+        <Label text="  历史 "/>
     </children>
 </HBox>
 

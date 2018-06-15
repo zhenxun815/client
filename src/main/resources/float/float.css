@@ -1,7 +1,8 @@
 .anchor-pane{
     -fx-pref-width: 50px;
     -fx-pref-height: 50px;
-    -fx-background-color: mediumpurple;
+    -fx-opacity: 0.6;
+    -fx-background-color: dimgray;
     -fx-background-radius: 25px;
     -fx-background-size: contain;
     -fx-background-position: center;
