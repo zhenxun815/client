@@ -1,8 +1,9 @@
 package com.tqhy.client;
 
+import com.google.gson.Gson;
 import com.tqhy.client.controller.PaneDialogController;
+import com.tqhy.client.jna.JnaTest;
 import com.tqhy.client.model.bean.AiResult;
-import com.tqhy.client.model.bean.TestMsg;
 import com.tqhy.client.network.Network;
 import com.tqhy.client.utils.ViewsUtils;
 import io.reactivex.Observable;
@@ -26,15 +27,44 @@ import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 public class Main extends Application {
-    TestMsg msg = new TestMsg();
+    String key = "";
 
     @Override
     public void start(Stage primaryStage) throws Exception {
 
         initPrimaryStage(primaryStage);
-        msg.desc = "嘿嘿";
+
         initSystemTray(primaryStage);
-        doNetWork(primaryStage);
+        doRxJava(primaryStage);
+        //requestAiHelper(primaryStage);
+    }
+
+    /**
+     * 循环调用dll文件获取key并过滤,如果是新的key则向后台请求弹出警告弹框
+     *
+     * @param primaryStage
+     */
+    private void doRxJava(Stage primaryStage) {
+        Observable.interval(3000, TimeUnit.MILLISECONDS)
+                .map(aLong -> {
+                            int i = JnaTest.caller.jyTestFunc(2, 3);
+                            System.out.println(i);
+                            //todo Network.currentId=key;
+                            return "0026086fd6654dbfb3d2a3e78cf67140";
+                        }
+                )
+                .filter(key -> {
+                    boolean b = key.equals(this.key);
+                    //System.out.println("key: " + key + "this.key: " + this.key + "b: " + b);
+                    this.key = key;
+                    return !b;
+                })
+                .observeOn(Schedulers.io())
+                .subscribeOn(Schedulers.trampoline())
+                .subscribe(key -> {
+                    //System.out.println("subscribe: " + key);
+                    getAiHelperWarning(primaryStage, key);
+                });
     }
 
     /**
@@ -63,26 +93,33 @@ public class Main extends Application {
     }
 
     /**
-     * 通过轮询请求后台,获取当前查看影像信息
+     * 请求后台,获取警告弹框内容
      */
-    private void doNetWork(Stage primaryStage) {
-        Network.getAiResultApi()
-                .getTest()
-                //.getAiResult("doscan")
-                .repeatWhen(objectObservable ->
-                        objectObservable.flatMap(o ->
-                                Observable.just(1).delay(5000, TimeUnit.MILLISECONDS)))
-                .filter(testMsg -> !msg.equals(testMsg))
+    private void getAiHelperWarning(Stage primaryStage, String key) {
+        Network.getAiHelperApi()
+                .requestAiHelper("0026086fd6654dbfb3d2a3e78cf67140")
+                /* .repeatWhen(objectObservable ->
+                         objectObservable.flatMap(o ->
+                                 Observable.just(1).delay(5000, TimeUnit.MILLISECONDS)))
+                 .filter(testMsg -> !key.equals(testMsg))*/
+                .map(body -> {
+                    String json = body.string();
+                    System.out.println("receive str: " + json);
+                    return json;
+                })
                 .observeOn(Schedulers.io())
                 .subscribeOn(Schedulers.trampoline())
-                .subscribe(testMsg ->
-                        Platform.runLater(() -> {
-                            System.out.println(testMsg);
-                            primaryStage.getScene().getRoot().setStyle("-fx-background-color: red;");
-                            PaneDialogController paneDialogController = new PaneDialogController(new AiResult());
-                            paneDialogController.show(primaryStage);
-
-                        })
+                .subscribe(json -> {
+                            //System.out.println("subscribe str: " + json);
+                            Platform.runLater(() -> {
+                                System.out.println("subscribe str: " + json);
+                                AiResult aiResult = new Gson().fromJson(json, AiResult.class);
+                                primaryStage.getScene().getRoot().setStyle("-fx-background-color: red;");
+                                System.out.println("subscribe aiResult : " + aiResult);
+                                PaneDialogController paneDialogController = new PaneDialogController(aiResult);
+                                paneDialogController.show(primaryStage);
+                            });
+                        }
                 );
     }
 
@@ -148,6 +185,5 @@ public class Main extends Application {
     public static void main(String[] args) {
         launch(args);
     }
-
 
 }
