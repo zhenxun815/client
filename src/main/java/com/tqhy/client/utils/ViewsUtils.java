@@ -19,6 +19,7 @@ public class ViewsUtils {
      */
     public static double getScreenWidth() {
         Rectangle2D visualBounds = Screen.getPrimary().getVisualBounds();
+        //return visualBounds.getWidth();
         return visualBounds.getMaxX();
     }
 
@@ -39,6 +40,7 @@ public class ViewsUtils {
      */
     public static double getScreenHeight() {
         Rectangle2D visualBounds = Screen.getPrimary().getVisualBounds();
+        //return visualBounds.getHeight();
         return visualBounds.getMaxY();
     }
 
