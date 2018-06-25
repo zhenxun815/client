@@ -1,10 +1,16 @@
 import com.tqhy.client.network.Network;
-import io.reactivex.Observable;
+import com.tqhy.client.network.api.AiHelperApi;
 import io.reactivex.schedulers.Schedulers;
-import javafx.application.Platform;
+import okhttp3.OkHttpClient;
+import okhttp3.ResponseBody;
 import org.junit.Test;
+import retrofit2.*;
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
+import retrofit2.converter.gson.GsonConverterFactory;
 
-import java.util.concurrent.TimeUnit;
+import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 /**
  * @author Yiheng
@@ -14,26 +20,62 @@ import java.util.concurrent.TimeUnit;
 public class TestHttpRequset {
     @Test
     public void testCircleRequest() {
-        Network.getAiResultApi()
-                .getTest()
-                .repeatWhen(objectObservable ->
-                        objectObservable.flatMap(o ->
-                                Observable.just(1).delay(2000, TimeUnit.MILLISECONDS)))
+        //http:192.168.1.139:8080/ai/helper/warning/6d212354a62b48b1aab6c069e2006731
+        Network.getAiHelperApi()
+                .requestAiHelper("6d212354a62b48b1aab6c069e2006731")
+                .map(body -> {
+                    System.out.println(body.string());
+                    return body.string();
+                })
                 .observeOn(Schedulers.trampoline())
                 .subscribeOn(Schedulers.trampoline())
-                .subscribe(testMsg ->
-                        Platform.runLater(() ->
-                                System.out.println(testMsg))
-                );
+                .subscribe(str -> System.out.println(str));
     }
 
     @Test
     public void testHttpRequest() {
-        Network.getAiResultApi()
-                .getTest()
-                .map(testMsg -> testMsg)
-                .observeOn(Schedulers.trampoline())
-                .subscribeOn(Schedulers.computation())
-                .subscribe(testMsg -> System.out.println(testMsg));
+        OkHttpClient okHttpClient = new OkHttpClient();
+        Converter.Factory gsonConverterFactory = GsonConverterFactory.create();
+        CallAdapter.Factory rxJavaCallAdapterFactory = RxJava2CallAdapterFactory.create();
+        String BASE_URL = "http://localhost:8080/ai/helper/";
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .client(okHttpClient)
+                .baseUrl(BASE_URL)
+                .addConverterFactory(gsonConverterFactory)
+                .addCallAdapterFactory(rxJavaCallAdapterFactory)
+                .build();
+        AiHelperApi aiHelperApi = retrofit.create(AiHelperApi.class);
+        Call<ResponseBody> test = aiHelperApi.getTest("6d212354a62b48b1aab6c069e2006731");
+        test.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                try {
+                    System.out.println(response.body().string());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                t.printStackTrace();
+            }
+        });
+
+    }
+
+    @Test
+    public void testGetLocalIp() {
+        try {
+            byte[] address = InetAddress.getLocalHost().getAddress();
+            System.out.println("address.length" + address.length);
+            for (byte num : address) {
+                System.out.println("num: " + (num & 0xff));
+            }
+
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
     }
 }
