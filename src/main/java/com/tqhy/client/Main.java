@@ -130,10 +130,11 @@ public class Main extends Application {
      */
     private void initSystemTray(Stage stage) {
         SystemTray systemTray = SystemTray.getSystemTray();
-        PopupMenu popupMenu = createPopMenu(stage);
+        //PopupMenu popupMenu = createPopMenu(stage);
         try {
             BufferedImage image = ImageIO.read(getClass().getResourceAsStream("/deploy/package/windows/client.png"));
-            final TrayIcon trayIcon = new TrayIcon(image, "打开悬浮窗", popupMenu);
+            //final TrayIcon trayIcon = new TrayIcon(image, "打开悬浮窗",popupMenu);
+            final TrayIcon trayIcon = new TrayIcon(image, "双击打开悬浮窗");
             trayIcon.addMouseListener(new MouseAdapter() {
                 @Override
                 public void mouseClicked(java.awt.event.MouseEvent e) {
@@ -155,6 +156,11 @@ public class Main extends Application {
         }
     }
 
+    /**
+     * 创建系统托盘图标右键菜单
+     * @param window
+     * @return
+     */
     private PopupMenu createPopMenu(Stage window) {
         PopupMenu popup = new PopupMenu();
         MenuItem itemDetail = new MenuItem("详情");
