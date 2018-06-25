@@ -1,6 +1,5 @@
 package com.tqhy.client.controller;
 
-import com.tqhy.client.model.bean.TestMsg;
 import com.tqhy.client.utils.FxmlUtils;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -20,9 +19,12 @@ public class ListViewDialogController extends BaseDialogController {
     private ListView dialog_lv;
     private List<String> datas;
     private ObservableList observableList;
-    private TestMsg msg;
+    /**
+     * 列表要展示的数据
+     */
+    private List<String> msg;
 
-    public ListViewDialogController(TestMsg msg) {
+    public ListViewDialogController(List<String> msg) {
         this.msg = msg;
         FxmlUtils.load("/dialog/lv_dialog/lv_dialog.fxml", this);
         initDialog();
@@ -35,7 +37,7 @@ public class ListViewDialogController extends BaseDialogController {
      */
     private void initListViewItems() {
         observableList = FXCollections.observableArrayList();
-        datas = msg.data.source;
+        datas = msg;
         observableList.addAll(datas);
         dialog_lv.setItems(observableList);
         dialog_lv.setCellFactory(lv -> new ListViewItemController());
