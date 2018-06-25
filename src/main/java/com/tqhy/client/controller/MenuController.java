@@ -1,5 +1,6 @@
 package com.tqhy.client.controller;
 
+import com.tqhy.client.network.Network;
 import com.tqhy.client.utils.FxmlUtils;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -39,14 +40,16 @@ public class MenuController extends ContextMenu {
     public void history(MouseEvent event) {
         System.out.println("detail click...");
         WebViewDialogController web = new WebViewDialogController();
-        web.showWeb("https://www.baidu.com");
+        //web.showWeb(Network.BASE_URL+"index?id="+Network.currentId+"&pageName=history");
+        web.showTqWeb(Network.currentId, Network.HISTORY_PAGE);
     }
 
     @FXML
     public void upload(MouseEvent event) {
         System.out.println("upload click...");
         WebViewDialogController web = new WebViewDialogController();
-        web.showWeb("http://www.enlightmentcloud.com/");
+        //web.showWeb(Network.BASE_URL+"index?id="+Network.currentId+"&pageName=report");
+        web.showTqWeb(Network.currentId, Network.REPORT_PAGE);
     }
 
     @FXML
@@ -65,7 +68,8 @@ public class MenuController extends ContextMenu {
     public void info(MouseEvent event) {
         System.out.println("info click...");
         WebViewDialogController web = new WebViewDialogController();
-        web.showWeb("http://www.enlightmentcloud.com/");
+        web.showLocalWeb("/html/test.html");
+        //web.showWeb("http://192.168.1.212:8080/ai/helper/test/" + "testId");
     }
 
     public void initItems() {
