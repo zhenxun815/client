@@ -1,10 +1,12 @@
 package com.tqhy.client;
 
 import com.google.gson.Gson;
-import com.tqhy.client.controller.PaneDialogController;
+import com.tqhy.client.controller.AiWarningDialogController;
+import com.tqhy.client.controller.AuthWarningDialogController;
 import com.tqhy.client.jna.JnaTest;
 import com.tqhy.client.model.bean.AiResult;
 import com.tqhy.client.network.Network;
+import com.tqhy.client.network.response.ErrorResponseBody;
 import com.tqhy.client.utils.ViewsUtils;
 import io.reactivex.Observable;
 import io.reactivex.schedulers.Schedulers;
@@ -51,6 +53,7 @@ public class Main extends Application {
                             System.out.println(i);
                             //todo Network.currentId=key;
                             return "0026086fd6654dbfb3d2a3e78cf67140";
+                            //return "2";
                         }
                 )
                 .filter(key -> {
@@ -62,9 +65,38 @@ public class Main extends Application {
                 .observeOn(Schedulers.io())
                 .subscribeOn(Schedulers.trampoline())
                 .subscribe(key -> {
+                    switch (key) {
+                        //未授权
+                        case "1":
+                            getAuthWarning(primaryStage);
+                            break;
+                        //非RIS界面
+                        case "2":
+                           hidefloat(primaryStage);
+                            break;
+                        default:
+                            getAiHelperWarning(primaryStage, key);
+                            break;
+                    }
                     //System.out.println("subscribe: " + key);
-                    getAiHelperWarning(primaryStage, key);
                 });
+    }
+
+    /**
+     * 隐藏悬浮窗
+     * @param primaryStage
+     */
+    private void hidefloat(Stage primaryStage) {
+        Platform.runLater(()-> primaryStage.hide());
+    }
+
+    private void getAuthWarning(Stage primaryStage) {
+        Platform.runLater(() -> {
+            AuthWarningDialogController authWarningDialogController = new AuthWarningDialogController();
+            String show = authWarningDialogController.show(primaryStage);
+            key = show;
+        });
+
     }
 
     /**
@@ -97,30 +129,29 @@ public class Main extends Application {
      */
     private void getAiHelperWarning(Stage primaryStage, String key) {
         Network.getAiHelperApi()
-                .requestAiHelper("0026086fd6654dbfb3d2a3e78cf67140")
+                .requestAiHelper(key)
                 /* .repeatWhen(objectObservable ->
                          objectObservable.flatMap(o ->
                                  Observable.just(1).delay(5000, TimeUnit.MILLISECONDS)))
                  .filter(testMsg -> !key.equals(testMsg))*/
-                .map(body -> {
-                    String json = body.string();
-                    System.out.println("receive str: " + json);
-                    return json;
-                })
+                .onErrorReturn((error) -> new ErrorResponseBody(error))
                 .observeOn(Schedulers.io())
                 .subscribeOn(Schedulers.trampoline())
-                .subscribe(json -> {
-                            //System.out.println("subscribe str: " + json);
-                            Platform.runLater(() -> {
-                                System.out.println("subscribe str: " + json);
-                                AiResult aiResult = new Gson().fromJson(json, AiResult.class);
-                                primaryStage.getScene().getRoot().setStyle("-fx-background-color: red;");
-                                System.out.println("subscribe aiResult : " + aiResult);
-                                PaneDialogController paneDialogController = new PaneDialogController(aiResult);
-                                paneDialogController.show(primaryStage);
-                            });
-                        }
-                );
+                .subscribe(data -> {
+                    if (data instanceof ErrorResponseBody) {
+                        System.out.println("subscribe error " + data.string());
+                    } else {
+                        String json = data.string();
+                        Platform.runLater(() -> {
+                            System.out.println("subscribe str: " + json);
+                            AiResult aiResult = new Gson().fromJson(json, AiResult.class);
+                            primaryStage.getScene().getRoot().setStyle("-fx-background-color: red;");
+                            System.out.println("subscribe aiResult : " + aiResult);
+                            AiWarningDialogController aiWarningDialogController = new AiWarningDialogController(aiResult);
+                            aiWarningDialogController.show(primaryStage);
+                        });
+                    }
+                });
     }
 
     /**
@@ -158,6 +189,7 @@ public class Main extends Application {
 
     /**
      * 创建系统托盘图标右键菜单
+     *
      * @param window
      * @return
      */
