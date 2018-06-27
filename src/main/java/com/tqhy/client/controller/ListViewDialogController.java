@@ -26,7 +26,7 @@ public class ListViewDialogController extends BaseDialogController {
 
     public ListViewDialogController(List<String> msg) {
         this.msg = msg;
-        FxmlUtils.load("/dialog/lv_dialog/lv_dialog.fxml", this);
+        FxmlUtils.load("/dialog/list_view/list_view.fxml", this);
         initDialog();
         initListViewItems();
         //System.out.println("construct dialog controller");

@@ -18,19 +18,19 @@ import java.util.Optional;
  * @create 2018/6/14
  * @since 1.0.0
  */
-public class PaneDialogController extends BaseDialogController {
+public class AiWarningDialogController extends BaseDialogController {
 
     private AiResult result;
     @FXML
-    Label lb_result;
+    Label lb_ai_warning;
 
 
-    public PaneDialogController(AiResult result) {
+    public AiWarningDialogController(AiResult result) {
         this.result = result;
-        FxmlUtils.load("/dialog/pane_dialog/pane_dialog.fxml", this);
+        FxmlUtils.load("/dialog/ai_warning/ai_warning.fxml", this);
         initDialog();
         //initButtonType();
-        lb_result.setText(this.result.toString());
+        lb_ai_warning.setText(this.result.toString());
     }
 
     /**
@@ -93,7 +93,7 @@ public class PaneDialogController extends BaseDialogController {
                 .postHistory(apiBean)
                 .map(body -> {
                     String json = body.string();
-                    System.out.println("PaneDialogController postDocConfirm recieve json:" + json);
+                    System.out.println("AiWarningDialogController postDocConfirm recieve json:" + json);
                     return json;
                 })
                 .observeOn(Schedulers.io())
@@ -122,7 +122,7 @@ public class PaneDialogController extends BaseDialogController {
                 .postAiWarning(apiBean)
                 .map(body -> {
                     String json = body.string();
-                    System.out.println("PaneDialogController postAiWarningBack recieve json:" + json);
+                    System.out.println("AiWarningDialogController postAiWarningBack recieve json:" + json);
                     return json;
                 })
                 .observeOn(Schedulers.io())

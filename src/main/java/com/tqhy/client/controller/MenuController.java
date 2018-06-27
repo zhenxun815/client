@@ -67,6 +67,17 @@ public class MenuController extends ContextMenu {
     @FXML
     public void info(MouseEvent event) {
         System.out.println("info click...");
+        //testWeb();
+        testland();
+
+    }
+
+    private void testland() {
+        LandDialogController landDialogController = new LandDialogController();
+        landDialogController.show();
+    }
+
+    private void testWeb() {
         WebViewDialogController web = new WebViewDialogController();
         web.showLocalWeb("/html/test.html");
         //web.showWeb("http://192.168.1.212:8080/ai/helper/test/" + "testId");

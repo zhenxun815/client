@@ -25,9 +25,9 @@ public class WebViewDialogController extends AnchorPane {
 
     private Stage stage;
 
-    //"/dialog/web_dialog/web_dialog.fxml"
+    //"/dialog/web_dialog/web.fxml"
     public WebViewDialogController() {
-        FxmlUtils.load("/dialog/web_dialog/web_dialog.fxml", this);
+        FxmlUtils.load("/dialog/web/web.fxml", this);
         double screenWidth = ViewsUtils.getScreenWidth();
         double screenHeight = ViewsUtils.getScreenHeight();
         Scene scene = new Scene(this);

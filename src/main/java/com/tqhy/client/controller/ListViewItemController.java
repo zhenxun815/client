@@ -28,7 +28,7 @@ public class ListViewItemController extends ListCell<String> {
     Button bt_exclude;
 
     public ListViewItemController() {
-        FxmlUtils.load("/dialog/lv_dialog/lv_item.fxml", this);
+        FxmlUtils.load("/dialog/list_view/list_view_item.fxml", this);
         bt_confirm.setOnAction(this::confirm);
         bt_exclude.setOnAction(this::exclude);
     }
