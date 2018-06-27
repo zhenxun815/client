@@ -12,6 +12,9 @@ import javafx.stage.Screen;
  */
 public class ViewsUtils {
 
+    public static final String SHOW_VIEW_TAG = "show_view_tag";
+    public static final String CLOSE_VIEW_TAG = "close_view_tag";
+
     /**
      * 获取屏幕最大可用宽度
      *
