@@ -10,6 +10,8 @@ import javafx.fxml.FXML;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.stage.Stage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Optional;
 
@@ -21,6 +23,7 @@ import java.util.Optional;
 public class AiWarningDialogController extends BaseDialogController {
 
     private AiResult result;
+    private Logger logger = LoggerFactory.getLogger(AiWarningDialogController.class);
     @FXML
     Label lb_ai_warning;
 
@@ -63,7 +66,7 @@ public class AiWarningDialogController extends BaseDialogController {
                 postAiWarningBack(ai_warning, error_flag, warning_flag);
                 break;
             case NO:
-                System.out.println("exclude clicked....");
+                logger.info("exclude clicked....");
                 error_flag = 0;
                 warning_flag = 0;
                 operation = 0;
@@ -93,13 +96,13 @@ public class AiWarningDialogController extends BaseDialogController {
                 .postHistory(apiBean)
                 .map(body -> {
                     String json = body.string();
-                    System.out.println("AiWarningDialogController postDocConfirm recieve json:" + json);
+                    logger.info("AiWarningDialogController postDocConfirm recieve json:" + json);
                     return json;
                 })
                 .observeOn(Schedulers.io())
                 .subscribeOn(Schedulers.trampoline())
                 .subscribe(json -> {
-                    System.out.println(json);
+                    logger.info(json);
                 });
     }
 
@@ -122,13 +125,13 @@ public class AiWarningDialogController extends BaseDialogController {
                 .postAiWarning(apiBean)
                 .map(body -> {
                     String json = body.string();
-                    System.out.println("AiWarningDialogController postAiWarningBack recieve json:" + json);
+                    logger.info("AiWarningDialogController postAiWarningBack recieve json:" + json);
                     return json;
                 })
                 .observeOn(Schedulers.io())
                 .subscribeOn(Schedulers.trampoline())
                 .subscribe(json -> {
-                    System.out.println(json);
+                    logger.info(json);
                 });
     }
 }

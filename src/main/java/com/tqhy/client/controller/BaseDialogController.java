@@ -10,6 +10,8 @@ import javafx.scene.control.DialogPane;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Optional;
 
@@ -19,8 +21,10 @@ import java.util.Optional;
  * @since 1.0.0
  */
 public class BaseDialogController extends DialogPane {
+
     protected Dialog<ButtonType> dialog;
     protected Stage owner;
+    protected Logger logger = LoggerFactory.getLogger(this.getClass());
 
     /**
      * 初始化Dialog,子类构造方法中加载完fxml文件后调用.
@@ -42,7 +46,7 @@ public class BaseDialogController extends DialogPane {
     public Optional<ButtonType> showAtRightBottom() {
         dialog.setX(ViewsUtils.getMaxX(this.getWidth()));
         dialog.setY(ViewsUtils.getMaxY(this.getHeight()));
-        // System.out.println("x: " + dialog.getX() + " y: " + dialog.getY());
+        // logger.info("x: " + dialog.getX() + " y: " + dialog.getY());
         // dialog.showAndWait();
         Optional<ButtonType> cmd = dialog.showAndWait();
         return cmd;
@@ -55,7 +59,7 @@ public class BaseDialogController extends DialogPane {
         Rectangle2D visualBounds = Screen.getPrimary().getVisualBounds();
         dialog.setX(visualBounds.getMaxX() / 2 - this.getWidth() / 2);
         dialog.setY(visualBounds.getMaxY() / 2 - this.getHeight() / 2);
-        // System.out.println("x: " + dialog.getX() + " y: " + dialog.getY());
+        // logger.info("x: " + dialog.getX() + " y: " + dialog.getY());
         // dialog.showAndWait();
         Optional<ButtonType> cmd = dialog.showAndWait();
         return cmd;

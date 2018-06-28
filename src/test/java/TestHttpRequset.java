@@ -24,12 +24,12 @@ public class TestHttpRequset {
         Network.getAiHelperApi()
                 .requestAiHelper("6d212354a62b48b1aab6c069e2006731")
                 .map(body -> {
-                    System.out.println(body.string());
+                    logger.info(body.string());
                     return body.string();
                 })
                 .observeOn(Schedulers.trampoline())
                 .subscribeOn(Schedulers.trampoline())
-                .subscribe(str -> System.out.println(str));
+                .subscribe(str -> logger.info(str));
     }
 
     @Test
@@ -51,7 +51,7 @@ public class TestHttpRequset {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 try {
-                    System.out.println(response.body().string());
+                    logger.info(response.body().string());
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -69,9 +69,9 @@ public class TestHttpRequset {
     public void testGetLocalIp() {
         try {
             byte[] address = InetAddress.getLocalHost().getAddress();
-            System.out.println("address.length" + address.length);
+            logger.info("address.length" + address.length);
             for (byte num : address) {
-                System.out.println("num: " + (num & 0xff));
+                logger.info("num: " + (num & 0xff));
             }
 
         } catch (UnknownHostException e) {

@@ -10,6 +10,8 @@ import javafx.scene.control.CustomMenuItem;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Yiheng
@@ -17,6 +19,7 @@ import javafx.stage.Stage;
  * @since 1.0.0
  */
 public class MenuController extends ContextMenu {
+
     @FXML
     HBox menuItemHistory;
     @FXML
@@ -30,6 +33,7 @@ public class MenuController extends ContextMenu {
 
     Node anchor;
     private Stage stage;
+    private Logger logger = LoggerFactory.getLogger(MenuController.class);
 
     public MenuController() {
         FxmlUtils.load("/menu/menu_root.fxml", this);
@@ -38,7 +42,7 @@ public class MenuController extends ContextMenu {
 
     @FXML
     public void history(MouseEvent event) {
-        System.out.println("detail click...");
+        logger.info("detail click...");
         WebViewDialogController web = new WebViewDialogController();
         //web.showWeb(Network.BASE_URL+"index?id="+Network.currentId+"&pageName=history");
         web.showTqWeb(Network.currentId, Network.HISTORY_PAGE);
@@ -46,7 +50,7 @@ public class MenuController extends ContextMenu {
 
     @FXML
     public void upload(MouseEvent event) {
-        System.out.println("upload click...");
+        logger.info("upload click...");
         WebViewDialogController web = new WebViewDialogController();
         //web.showWeb(Network.BASE_URL+"index?id="+Network.currentId+"&pageName=report");
         web.showTqWeb(Network.currentId, Network.REPORT_PAGE);
@@ -54,7 +58,7 @@ public class MenuController extends ContextMenu {
 
     @FXML
     public void exit(MouseEvent event) {
-        System.out.println("exit click...");
+        logger.info("exit click...");
         stage.close();
         System.exit(0);
     }
@@ -66,7 +70,7 @@ public class MenuController extends ContextMenu {
 
     @FXML
     public void info(MouseEvent event) {
-        System.out.println("info click...");
+        logger.info("info click...");
         //testWeb();
         testland();
 
@@ -84,7 +88,7 @@ public class MenuController extends ContextMenu {
     }
 
     public void initItems() {
-        // System.out.println("menu controller init items...");
+        // logger.info("menu controller init items...");
         getItems().add(0, new CustomMenuItem(menuItemHistory));
         getItems().add(1, new CustomMenuItem(menuItemUpload));
         getItems().add(2, new CustomMenuItem(menuItemMin));
@@ -93,16 +97,16 @@ public class MenuController extends ContextMenu {
     }
 
     public void showMenu(Node anchor, double screenX, double screenY) {
-        // System.out.println("menu controller showAtRightBottom...");
-        // System.out.println("menu items size: " + getItems().size());
-        // System.out.println("menu anchor is: " + anchor + " x: " + screenX + " y: " + screenY);
+        // logger.info("menu controller showAtRightBottom...");
+        // logger.info("menu items size: " + getItems().size());
+        // logger.info("menu anchor is: " + anchor + " x: " + screenX + " y: " + screenY);
         this.anchor = anchor;
         this.stage = (Stage) anchor.getScene().getWindow();
         show(anchor, screenX, screenY);
     }
 
     public void hideMenu() {
-        System.out.println("menu controller hide...");
+        logger.info("menu controller hide...");
         hide();
     }
 }

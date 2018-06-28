@@ -16,12 +16,12 @@ public class TestPolling {
         Observable.interval(3000, TimeUnit.MICROSECONDS)
                 .doOnNext(l -> {
                     int i = JnaTest.caller.jyTestFunc(2, 3);
-                    System.out.println(i);
+                    logger.info(i);
                 })
                 .observeOn(Schedulers.io())
                 .subscribeOn(Schedulers.trampoline())
                 .subscribe(l -> {
-                    System.out.println("subscribe: " + l);
+                    logger.info("subscribe: " + l);
                 });
     }
 }

@@ -17,7 +17,7 @@ public class TestViewUtils {
             double minX = visualBounds.getMinX();
             double maxX = visualBounds.getMaxX();
             double width = visualBounds.getWidth();
-            System.out.println("minX: " + minX + "maxX: " + maxX + "width: " + width);
+            logger.info("minX: " + minX + "maxX: " + maxX + "width: " + width);
         });
 
     }

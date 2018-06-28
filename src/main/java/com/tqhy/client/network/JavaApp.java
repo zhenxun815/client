@@ -1,6 +1,8 @@
 package com.tqhy.client.network;
 
 import javafx.stage.Stage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Yiheng
@@ -8,8 +10,10 @@ import javafx.stage.Stage;
  * @since 1.0.0
  */
 public class JavaApp {
-    private final Stage stage;
+
     public String id = "id";
+    private final Stage stage;
+    private Logger logger = LoggerFactory.getLogger(JavaApp.class);
 
     public JavaApp(Stage stage) {
         this.stage = stage;
@@ -19,7 +23,7 @@ public class JavaApp {
      * 关闭当前web页面窗口
      */
     public void closeWindow() {
-        System.out.println("close window...");
+        logger.info("close window...");
         stage.close();
     }
 
@@ -29,7 +33,7 @@ public class JavaApp {
      * @param log
      */
     public void showLog(String log) {
-        System.out.println("http log: " + log);
+        logger.info("http log: " + log);
     }
 
 }

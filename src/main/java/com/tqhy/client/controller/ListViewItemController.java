@@ -9,6 +9,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.HBox;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * ListViewDialog ListView中每条item的Controller类
@@ -18,6 +20,8 @@ import javafx.scene.layout.HBox;
  * @since 1.0.0
  */
 public class ListViewItemController extends ListCell<String> {
+
+    private Logger logger = LoggerFactory.getLogger(ListViewItemController.class);
     @FXML
     HBox item_container;
     @FXML
@@ -36,7 +40,7 @@ public class ListViewItemController extends ListCell<String> {
     @Override
     protected void updateItem(String item, boolean empty) {
         super.updateItem(item, empty);
-        //System.out.println(this + " updata item: " + item + " empty: " + empty);
+        //logger.info(this + " updata item: " + item + " empty: " + empty);
         if (empty || item == null) {
             setGraphic(null);
             setText(null);
@@ -56,7 +60,7 @@ public class ListViewItemController extends ListCell<String> {
      * @param event
      */
     public void confirm(ActionEvent event) {
-        System.out.println("确认..." + lb_item.getText());
+        logger.info("确认..." + lb_item.getText());
         remove();
     }
 
@@ -66,7 +70,7 @@ public class ListViewItemController extends ListCell<String> {
      * @param event
      */
     public void exclude(ActionEvent event) {
-        System.out.println("排除..." + lb_item.getText());
+        logger.info("排除..." + lb_item.getText());
         remove();
     }
 

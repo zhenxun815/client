@@ -31,10 +31,10 @@ public class LandDialogController extends BaseDialogController {
             case OK_DONE:
                 String name = user_name.getText();
                 String pwd = user_pwd.getText();
-                System.out.println("land ok..name: " + name + " pwd: " + pwd);
+                logger.info("land ok..name: " + name + " pwd: " + pwd);
                 break;
             case CANCEL_CLOSE:
-                System.out.println("close cancle..");
+                logger.info("close cancle..");
                 break;
         }
     }

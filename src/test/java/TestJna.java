@@ -10,12 +10,12 @@ public class TestJna {
     @Test
     public void testJna(){
         int i = JnaTest.caller.jyTestFunc(2, 3);
-        System.out.println(i);
+        logger.info(i);
     }
 
     @Test
     public void testGetPath(){
         String classPath = TestJna.class.getClassLoader().getResource("").getPath();
-        System.out.println("path is: "+classPath);
+        logger.info("path is: "+classPath);
     }
 }

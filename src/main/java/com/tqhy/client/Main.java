@@ -20,6 +20,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -29,7 +31,9 @@ import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 public class Main extends Application {
-    String key = "";
+
+    private String key = "";
+    private Logger logger = LoggerFactory.getLogger(Main.class);
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -50,7 +54,7 @@ public class Main extends Application {
         Observable.interval(3000, TimeUnit.MILLISECONDS)
                 .map(aLong -> {
                             int i = JnaTest.caller.jyTestFunc(2, 3);
-                            System.out.println(i);
+                            logger.info(".dll caller get: "+i);
                             //todo Network.currentId=key;
                             return "0026086fd6654dbfb3d2a3e78cf67140";
                             //return "2";
@@ -58,7 +62,7 @@ public class Main extends Application {
                 )
                 .filter(key -> {
                     boolean b = key.equals(this.key);
-                    //System.out.println("key: " + key + "this.key: " + this.key + "b: " + b);
+                    //logger.info("key: " + key + "this.key: " + this.key + "b: " + b);
                     this.key = key;
                     return !b;
                 })
@@ -78,7 +82,7 @@ public class Main extends Application {
                             getAiHelperWarning(primaryStage, key);
                             break;
                     }
-                    //System.out.println("subscribe: " + key);
+                    //logger.info("subscribe: " + key);
                 });
     }
 
@@ -139,14 +143,14 @@ public class Main extends Application {
                 .subscribeOn(Schedulers.trampoline())
                 .subscribe(data -> {
                     if (data instanceof ErrorResponseBody) {
-                        System.out.println("subscribe error " + data.string());
+                        logger.info("subscribe error " + data.string());
                     } else {
                         String json = data.string();
                         Platform.runLater(() -> {
-                            System.out.println("subscribe str: " + json);
+                            logger.info("subscribe str: " + json);
                             AiResult aiResult = new Gson().fromJson(json, AiResult.class);
                             primaryStage.getScene().getRoot().setStyle("-fx-background-color: red;");
-                            System.out.println("subscribe aiResult : " + aiResult);
+                            logger.info("subscribe aiResult : " + aiResult);
                             AiWarningDialogController aiWarningDialogController = new AiWarningDialogController(aiResult);
                             aiWarningDialogController.show(primaryStage);
                         });
@@ -172,7 +176,7 @@ public class Main extends Application {
                     super.mouseClicked(e);
                     if (java.awt.event.MouseEvent.BUTTON1 == e.getButton()) {
                         if (2 == e.getClickCount()) {
-                            System.out.println("双击666...");
+                            logger.info("双击666...");
                             Platform.runLater(stage::show);
                         }
                     }
@@ -200,17 +204,17 @@ public class Main extends Application {
         MenuItem itemConfig = new MenuItem("设置");
         MenuItem itemExit = new MenuItem("退出");
         itemDetail.addActionListener(e -> {
-            System.out.println("click itemShowDetail...");
+            logger.info("click itemShowDetail...");
         });
         itemFloat.addActionListener(e -> {
-            System.out.println("click itemShowFloat...");
+            logger.info("click itemShowFloat...");
             Platform.runLater(window::show);
         });
         itemConfig.addActionListener(e -> {
-            System.out.println("click itemConfig...");
+            logger.info("click itemConfig...");
         });
         itemExit.addActionListener(e -> {
-            System.out.println("click itemExit...");
+            logger.info("click itemExit...");
             System.exit(0);
         });
         popup.add(itemDetail);

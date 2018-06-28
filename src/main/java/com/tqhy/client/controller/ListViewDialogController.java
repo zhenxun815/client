@@ -29,7 +29,7 @@ public class ListViewDialogController extends BaseDialogController {
         FxmlUtils.load("/dialog/list_view/list_view.fxml", this);
         initDialog();
         initListViewItems();
-        //System.out.println("construct dialog controller");
+        //logger.info("construct dialog controller");
     }
 
     /**
