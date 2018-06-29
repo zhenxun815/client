@@ -4,6 +4,8 @@ import io.reactivex.schedulers.Schedulers;
 import okhttp3.OkHttpClient;
 import okhttp3.ResponseBody;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import retrofit2.*;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -18,6 +20,8 @@ import java.net.UnknownHostException;
  * @since 1.0.0
  */
 public class TestHttpRequset {
+
+    private Logger logger = LoggerFactory.getLogger(TestHttpRequset.class);
     @Test
     public void testCircleRequest() {
         //http:192.168.1.139:8080/ai/helper/warning/6d212354a62b48b1aab6c069e2006731

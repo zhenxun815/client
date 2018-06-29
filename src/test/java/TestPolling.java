@@ -1,7 +1,9 @@
-import com.tqhy.client.jna.JnaTest;
+import com.tqhy.client.jna.JniCaller;
 import io.reactivex.Observable;
 import io.reactivex.schedulers.Schedulers;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.TimeUnit;
 
@@ -11,12 +13,14 @@ import java.util.concurrent.TimeUnit;
  * @since 1.0.0
  */
 public class TestPolling {
+
+    private Logger logger = LoggerFactory.getLogger(TestPolling.class);
     @Test
     public void testPolling() {
         Observable.interval(3000, TimeUnit.MICROSECONDS)
                 .doOnNext(l -> {
-                    int i = JnaTest.caller.jyTestFunc(2, 3);
-                    logger.info(i);
+                    Object i = JniCaller.fetchData();
+                    logger.info(i+"");
                 })
                 .observeOn(Schedulers.io())
                 .subscribeOn(Schedulers.trampoline())

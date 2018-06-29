@@ -3,6 +3,8 @@ import javafx.application.Platform;
 import javafx.geometry.Rectangle2D;
 import javafx.stage.Screen;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Yiheng
@@ -10,6 +12,7 @@ import org.junit.Test;
  * @since 1.0.0
  */
 public class TestViewUtils {
+    private Logger logger = LoggerFactory.getLogger(TestViewUtils.class);
     @Test
     public void testWidthAndHeight() {
         Platform.runLater(() -> {

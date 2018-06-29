@@ -3,7 +3,7 @@ package com.tqhy.client;
 import com.google.gson.Gson;
 import com.tqhy.client.controller.AiWarningDialogController;
 import com.tqhy.client.controller.AuthWarningDialogController;
-import com.tqhy.client.jna.JnaTest;
+import com.tqhy.client.jna.JniCaller;
 import com.tqhy.client.model.bean.AiResult;
 import com.tqhy.client.network.Network;
 import com.tqhy.client.network.response.ErrorResponseBody;
@@ -37,6 +37,9 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+       /* String classPath = Main.class.getClassLoader().getResource("").getPath();
+        System.out.println("path is: " + classPath);*/
+
 
         initPrimaryStage(primaryStage);
 
@@ -53,8 +56,9 @@ public class Main extends Application {
     private void doRxJava(Stage primaryStage) {
         Observable.interval(3000, TimeUnit.MILLISECONDS)
                 .map(aLong -> {
-                            int i = JnaTest.caller.jyTestFunc(2, 3);
-                            logger.info(".dll caller get: "+i);
+                            String str = null;
+                            str = JniCaller.fetchData();
+                            logger.info(".dll call get: " + str);
                             //todo Network.currentId=key;
                             return "0026086fd6654dbfb3d2a3e78cf67140";
                             //return "2";
@@ -76,7 +80,7 @@ public class Main extends Application {
                             break;
                         //非RIS界面
                         case "2":
-                           hidefloat(primaryStage);
+                            hidefloat(primaryStage);
                             break;
                         default:
                             getAiHelperWarning(primaryStage, key);
@@ -88,10 +92,11 @@ public class Main extends Application {
 
     /**
      * 隐藏悬浮窗
+     *
      * @param primaryStage
      */
     private void hidefloat(Stage primaryStage) {
-        Platform.runLater(()-> primaryStage.hide());
+        Platform.runLater(() -> primaryStage.hide());
     }
 
     private void getAuthWarning(Stage primaryStage) {
@@ -132,6 +137,7 @@ public class Main extends Application {
      * 请求后台,获取警告弹框内容
      */
     private void getAiHelperWarning(Stage primaryStage, String key) {
+        logger.info("getAiHelperWarning...");
         Network.getAiHelperApi()
                 .requestAiHelper(key)
                 /* .repeatWhen(objectObservable ->
@@ -227,5 +233,4 @@ public class Main extends Application {
     public static void main(String[] args) {
         launch(args);
     }
-
 }
