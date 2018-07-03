@@ -18,10 +18,6 @@ public class TestJna {
         logger.info("testFetchData..." + o);
     }
 
-    @Test
-    public void testSysDll() {
-        JniCaller.callSysDll("testSysDll test");
-    }
 
     @Test
     public void testGetPath() {

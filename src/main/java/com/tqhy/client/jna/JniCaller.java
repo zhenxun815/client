@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory;
  */
 public class JniCaller {
 
-    static {
+    /*static {
         Logger exfile1 = LoggerFactory.getLogger("exfile");
         String libPath = System.getProperty("java.library.path");
         String[] split = libPath.split(";");
@@ -25,33 +25,21 @@ public class JniCaller {
         //System.out.println("exePath is: " + exePath);
         jniRootPath = exePath;
 
-
         //System.loadLibrary("DjyTQAITools");
-        /*String jarPath = Main.class.getProtectionDomain().getCodeSource().getLocation().getFile();
-        int end = jarPath.lastIndexOf("/");
-        String rootPath = jarPath.substring(1, end);
-        end = rootPath.lastIndexOf("/");
-        rootPath = rootPath.substring(0, end);
-        jniRootPath = rootPath;
-        try {
-            NativeLibrary.addSearchPath("jyTQAITools", rootPath);
-            Native.register(TqaiDll.class, "jyTQAITools");
-            //System.load(rootPath + "/jyTQAITools.dll");
-        } catch (Throwable e) {
-            Logger exfile = LoggerFactory.getLogger("exfile");
-            exfile.error("init jni fail...", e);
-        }*/
-
-    }
+    }*/
 
     private static Logger logger = LoggerFactory.getLogger(JniCaller.class);
     public static String jniRootPath;
 
+    /**
+     * 调用dll中jyFetchData方法
+     * @return "JYLICENSE":表示系统尚未被授权;"JYNODATA":表示未获得有效数据;其它:获得的有效 HIS 数据
+     */
     public static String fetchData() {
         try {
             logger.info("into fetchData....");
-            NativeLibrary.addSearchPath("jyTQAITools", jniRootPath);
-            Native.register(TqaiDll.class, "jyTQAITools");
+           // NativeLibrary.addSearchPath("jyTQAITools", jniRootPath);
+           // Native.register(TqaiDll.class, "jyTQAITools");
             logger.info("jniRootPath: " + jniRootPath);
             Pointer i = TqaiDll.call.jyFetchData();
             String result = i.getString(0L);
@@ -64,8 +52,20 @@ public class JniCaller {
         return "fetch data fail..";
     }
 
-    public static void callSysDll(String str, String... args) {
-        SysDll.call.printf(str, args);
+    /**
+     * 调用dll中jyGetUserInfo方法
+     */
+    public static void getUserInfo() {
+        try {
+            logger.info("into fetchData....");
+            // NativeLibrary.addSearchPath("jyTQAITools", jniRootPath);
+            // Native.register(TqaiDll.class, "jyTQAITools");
+            logger.info("jniRootPath: " + jniRootPath);
+            TqaiDll.call.jyGetUserInfo();
+        } catch (Throwable e) {
+            logger.error("load dll fail..", e);
+            logger.info("exePth is.." + jniRootPath);
+        }
     }
 
     interface TqaiDll extends StdCallLibrary {
@@ -74,11 +74,5 @@ public class JniCaller {
         Pointer jyFetchData();
 
         void jyGetUserInfo();
-    }
-
-    interface SysDll extends StdCallLibrary {
-        SysDll call = Native.loadLibrary("msvcrt", SysDll.class);
-
-        void printf(String format, Object... args);
     }
 }
