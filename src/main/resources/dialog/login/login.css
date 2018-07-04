@@ -1,0 +1,27 @@
+.label {
+    -fx-text-alignment: right;
+    -fx-alignment: center-right;
+    -fx-padding: 10px;
+}
+
+.h_box {
+    -fx-pref-width: 350px;
+    -fx-alignment: center;
+    -fx-text-alignment: center;
+}
+
+#lb_user_name {
+    -fx-text-alignment: right;
+    -fx-alignment: center-right;
+}
+
+.text-field {
+    -fx-start-margin: 20px;
+    -fx-end-margin: 10;
+    -fx-pref-width: 200px;
+}
+
+.password-field {
+    -fx-start-margin: 20px;
+    -fx-pref-width: 200px;
+}
