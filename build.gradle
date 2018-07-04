@@ -1,8 +1,8 @@
 apply plugin: 'java'
 apply plugin: 'javafx-gradle-plugin'
 
-group 'com.tqhy'
-version '1.0-SNAPSHOT'
+
+version '1.0.0'
 sourceCompatibility = 1.8
 
 buildscript {
@@ -41,12 +41,20 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.8.5'
     implementation 'io.reactivex.rxjava2:rxjava:2.1.14'
 
+    /**
+     * retrofit+okhttp
+     * 网络框架
+     */
     implementation 'com.squareup.okhttp3:okhttp:3.10.0'
     implementation 'com.squareup.retrofit2:retrofit:2.4.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.4.0'
     implementation 'com.squareup.retrofit2:adapter-rxjava2:2.4.0'
     implementation 'net.java.dev.jna:jna:4.5.1'
 
+    /**
+     * slf4j+log4j
+     * 日志框架
+     */
     implementation 'org.apache.logging.log4j:log4j:2.11.0'
     implementation 'org.slf4j:slf4j-api:1.7.25'
     implementation 'org.slf4j:slf4j-log4j12:1.7.25'
