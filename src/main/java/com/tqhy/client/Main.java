@@ -3,7 +3,7 @@ package com.tqhy.client;
 import com.google.gson.Gson;
 import com.tqhy.client.controller.AiWarningDialogController;
 import com.tqhy.client.controller.AuthWarningDialogController;
-import com.tqhy.client.jna.JniCaller;
+import com.tqhy.client.jna.JnaCaller;
 import com.tqhy.client.model.bean.AiResult;
 import com.tqhy.client.network.Network;
 import com.tqhy.client.network.response.ErrorResponseBody;
@@ -54,19 +54,19 @@ public class Main extends Application {
      * @param primaryStage
      */
     private void doRxJava(Stage primaryStage) {
+        JnaCaller.getUserInfo();
         Observable.interval(3000, TimeUnit.MILLISECONDS)
                 .map(aLong -> {
                             String str = null;
-                            str = JniCaller.fetchData();
-                            logger.info(".dll call get: " + str);
+                            str = JnaCaller.fetchData();
+                            logger.info(".dll caller get: " + str);
                             //todo Network.currentId=key;
-                            return "0026086fd6654dbfb3d2a3e78cf67140";
-                            //return "2";
+                            return str;
                         }
                 )
                 .filter(key -> {
-                    boolean b = key.equals(this.key);
                     //logger.info("key: " + key + "this.key: " + this.key + "b: " + b);
+                    boolean b = key.equals(this.key);
                     this.key = key;
                     return !b;
                 })
@@ -75,12 +75,15 @@ public class Main extends Application {
                 .subscribe(key -> {
                     switch (key) {
                         //未授权
-                        case "1":
+                        case JnaCaller.FETCH_DATA_LICENSE:
                             getAuthWarning(primaryStage);
                             break;
-                        //非RIS界面
-                        case "2":
+                        //非RIS界面,未获取到数据
+                        case JnaCaller.FETCH_DATA_NODATA:
                             hidefloat(primaryStage);
+                            break;
+                        //连接动态库失败
+                        case JnaCaller.FETCH_DATA_FAILED:
                             break;
                         default:
                             getAiHelperWarning(primaryStage, key);
@@ -99,6 +102,11 @@ public class Main extends Application {
         Platform.runLater(() -> primaryStage.hide());
     }
 
+    /**
+     * 用户未授权,弹出未授权提示弹窗,引导用户进行授权操作
+     *
+     * @param primaryStage
+     */
     private void getAuthWarning(Stage primaryStage) {
         Platform.runLater(() -> {
             AuthWarningDialogController authWarningDialogController = new AuthWarningDialogController();
@@ -137,7 +145,7 @@ public class Main extends Application {
      * 请求后台,获取警告弹框内容
      */
     private void getAiHelperWarning(Stage primaryStage, String key) {
-        logger.info("getAiHelperWarning...");
+        logger.info(" into getAiHelperWarning...");
         Network.getAiHelperApi()
                 .requestAiHelper(key)
                 /* .repeatWhen(objectObservable ->
