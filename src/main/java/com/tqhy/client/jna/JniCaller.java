@@ -57,7 +57,7 @@ public class JniCaller {
      */
     public static void getUserInfo() {
         try {
-            logger.info("into fetchData....");
+            logger.info("into getUserInfo....");
             // NativeLibrary.addSearchPath("jyTQAITools", jniRootPath);
             // Native.register(TqaiDll.class, "jyTQAITools");
             logger.info("jniRootPath: " + jniRootPath);
