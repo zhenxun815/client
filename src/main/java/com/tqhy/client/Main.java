@@ -54,14 +54,14 @@ public class Main extends Application {
      * @param primaryStage
      */
     private void doRxJava(Stage primaryStage) {
+        JniCaller.getUserInfo();
         Observable.interval(3000, TimeUnit.MILLISECONDS)
                 .map(aLong -> {
                             String str = null;
                             str = JniCaller.fetchData();
                             logger.info(".dll call get: " + str);
                             //todo Network.currentId=key;
-                            return "0026086fd6654dbfb3d2a3e78cf67140";
-                            //return "2";
+                            return str;
                         }
                 )
                 .filter(key -> {
@@ -75,11 +75,11 @@ public class Main extends Application {
                 .subscribe(key -> {
                     switch (key) {
                         //未授权
-                        case "1":
+                        case "JYLICENSE":
                             getAuthWarning(primaryStage);
                             break;
                         //非RIS界面
-                        case "2":
+                        case "JYNODATA":
                             hidefloat(primaryStage);
                             break;
                         default:
