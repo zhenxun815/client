@@ -1,7 +1,7 @@
 package com.tqhy.client.controller;
 
-import com.tqhy.client.model.bean.AiResult;
-import com.tqhy.client.model.bean.ClientMsg;
+import com.tqhy.client.model.AiResult;
+import com.tqhy.client.model.ClientMsg;
 import com.tqhy.client.network.Network;
 import com.tqhy.client.network.api.ApiBean;
 import com.tqhy.client.utils.FxmlUtils;
@@ -122,7 +122,7 @@ public class AiWarningDialogController extends BaseDialogController {
         apiBean.setBean(warningBack);
 
         Network.getAiHelperApi()
-                .postAiWarning(apiBean)
+                .postAiWarningBack(apiBean)
                 .map(body -> {
                     String json = body.string();
                     logger.info("AiWarningDialogController postAiWarningBack recieve json:" + json);
