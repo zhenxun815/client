@@ -1,4 +1,4 @@
-package com.tqhy.client.network.response;
+package com.tqhy.client.network.responsebody;
 
 import okhttp3.MediaType;
 import okhttp3.ResponseBody;
@@ -18,7 +18,7 @@ public class ErrorResponseBody extends ResponseBody {
     private Charset charset;
 
     public ErrorResponseBody(Throwable error) {
-        this(error,Charset.forName("UTF-8"));
+        this(error, Charset.forName("UTF-8"));
     }
 
     public ErrorResponseBody(Throwable error, Charset charset) {

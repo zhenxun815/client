@@ -1,4 +1,4 @@
-package com.tqhy.client.model.bean;
+package com.tqhy.client.model;
 
 /**
  * @author Yiheng
@@ -6,18 +6,29 @@ package com.tqhy.client.model.bean;
  * @since 1.0.0
  */
 public class AiResult {
+
+    public static final int GET_RESULT_SUCCESS =1;
+    public static final int GET_RESULT_FAILURE=0;
     private String aiDrId;
 
     private String patientId;
+
     /**
      * 0未知 1肺结核 2非肺结核
      */
     private int tbFlag;
+
     /**
-     * 阴性1阳性2
+     * 阴性1,阳性2
      */
     private int aiResultFlag;
+
     private String aiImgResult;
+
+    /**
+     * 请求结果状态码,1数据获取成功,0,数据获取失败
+     */
+    private int status;
 
     public String getPatientId() {
         return patientId;
@@ -59,6 +70,14 @@ public class AiResult {
         this.aiImgResult = aiImgResult;
     }
 
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
     @Override
     public String toString() {
         return "AiResult{" +
@@ -67,7 +86,7 @@ public class AiResult {
                 ", tbFlag=" + tbFlag +
                 ", aiResultFlag=" + aiResultFlag +
                 ", aiImgResult='" + aiImgResult + '\'' +
+                ", status=" + status +
                 '}';
     }
-
 }

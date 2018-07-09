@@ -1,4 +1,4 @@
-import com.tqhy.client.jna.JniCaller;
+import com.tqhy.client.jna.JnaCaller;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,7 +14,7 @@ public class TestJna {
 
     @Test
     public void testFetchData() {
-        CharSequence o = JniCaller.fetchData();
+        CharSequence o = JnaCaller.fetchData();
         logger.info("testFetchData..." + o);
     }
 

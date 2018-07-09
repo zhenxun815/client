@@ -3,10 +3,10 @@ package com.tqhy.client;
 import com.google.gson.Gson;
 import com.tqhy.client.controller.AiWarningDialogController;
 import com.tqhy.client.controller.AuthWarningDialogController;
-import com.tqhy.client.jna.JniCaller;
-import com.tqhy.client.model.bean.AiResult;
+import com.tqhy.client.jna.JnaCaller;
+import com.tqhy.client.model.AiResult;
 import com.tqhy.client.network.Network;
-import com.tqhy.client.network.response.ErrorResponseBody;
+import com.tqhy.client.network.responsebody.ErrorResponseBody;
 import com.tqhy.client.utils.ViewsUtils;
 import io.reactivex.Observable;
 import io.reactivex.schedulers.Schedulers;
@@ -34,6 +34,7 @@ public class Main extends Application {
 
     private String key = "";
     private Logger logger = LoggerFactory.getLogger(Main.class);
+    private String aiDrId = "";
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -45,7 +46,7 @@ public class Main extends Application {
 
         initSystemTray(primaryStage);
         doRxJava(primaryStage);
-        //requestAiHelper(primaryStage);
+        //getAiDrId(primaryStage);
     }
 
     /**
@@ -54,19 +55,19 @@ public class Main extends Application {
      * @param primaryStage
      */
     private void doRxJava(Stage primaryStage) {
-        JniCaller.getUserInfo();
+        JnaCaller.getUserInfo();
         Observable.interval(3000, TimeUnit.MILLISECONDS)
                 .map(aLong -> {
                             String str = null;
-                            str = JniCaller.fetchData();
-                            logger.info(".dll call get: " + str);
+                            str = JnaCaller.fetchData();
+                            logger.info(".dll caller get: " + str);
                             //todo Network.currentId=key;
                             return str;
                         }
                 )
                 .filter(key -> {
-                    boolean b = key.equals(this.key);
                     //logger.info("key: " + key + "this.key: " + this.key + "b: " + b);
+                    boolean b = key.equals(this.key);
                     this.key = key;
                     return !b;
                 })
@@ -75,15 +76,19 @@ public class Main extends Application {
                 .subscribe(key -> {
                     switch (key) {
                         //未授权
-                        case "JYLICENSE":
+                        case JnaCaller.FETCH_DATA_LICENSE:
                             getAuthWarning(primaryStage);
                             break;
-                        //非RIS界面
-                        case "JYNODATA":
+                        //非RIS界面,未获取到数据
+                        case JnaCaller.FETCH_DATA_NODATA:
                             hidefloat(primaryStage);
                             break;
+                        //连接动态库失败
+                        case JnaCaller.FETCH_DATA_FAILED:
+                            break;
+                        //根据key值请求后台AiHelper
                         default:
-                            getAiHelperWarning(primaryStage, key);
+                            requestAiHelper(primaryStage, key);
                             break;
                     }
                     //logger.info("subscribe: " + key);
@@ -99,6 +104,11 @@ public class Main extends Application {
         Platform.runLater(() -> primaryStage.hide());
     }
 
+    /**
+     * 用户未授权,弹出未授权提示弹窗,引导用户进行授权操作
+     *
+     * @param primaryStage
+     */
     private void getAuthWarning(Stage primaryStage) {
         Platform.runLater(() -> {
             AuthWarningDialogController authWarningDialogController = new AuthWarningDialogController();
@@ -134,32 +144,74 @@ public class Main extends Application {
     }
 
     /**
-     * 请求后台,获取警告弹框内容
+     * 根据key值请求后台获取ai提示内容,请求成功则弹出窗口,失败,则打印错误日志;
      */
-    private void getAiHelperWarning(Stage primaryStage, String key) {
-        logger.info("getAiHelperWarning...");
+    private void requestAiHelper(Stage primaryStage, String key) {
+        logger.info(" into requestAiHelper...");
         Network.getAiHelperApi()
-                .requestAiHelper(key)
+                .getAiWarning(key)
+                .subscribeOn(Schedulers.trampoline())
                 /* .repeatWhen(objectObservable ->
                          objectObservable.flatMap(o ->
                                  Observable.just(1).delay(5000, TimeUnit.MILLISECONDS)))
                  .filter(testMsg -> !key.equals(testMsg))*/
-                .onErrorReturn((error) -> new ErrorResponseBody(error))
+                .observeOn(Schedulers.io())
+                .onErrorReturn((error) -> {
+                    logger.error("getAiDrId(key)请求异常", error);
+                    return new ErrorResponseBody(error);
+                })
+                .filter(body -> body instanceof ErrorResponseBody)
+                .subscribe(warningBody -> {
+                    String json = warningBody.string();
+                    AiResult aiResult = new Gson().fromJson(json, AiResult.class);
+                    if (AiResult.GET_RESULT_SUCCESS == aiResult.getStatus()) {
+                        showWarningDialog(primaryStage, aiResult);
+                        Network.currentId = aiResult.getAiDrId();
+                    } else {
+                        logger.info("ai提示未获取到对应数据");
+                    }
+                });
+    }
+
+    /**
+     * 弹出ai提示窗口
+     *
+     * @param primaryStage
+     * @param aiResult     ai提示内容
+     */
+    private void showWarningDialog(Stage primaryStage, AiResult aiResult) {
+        Platform.runLater(() -> {
+            logger.info("subscribe aiResult: " + aiResult);
+
+            primaryStage.getScene().getRoot().setStyle("-fx-background-color: red;");
+            AiWarningDialogController aiWarningDialogController = new AiWarningDialogController(aiResult);
+            aiWarningDialogController.show(primaryStage);
+        });
+    }
+
+    /**
+     * 通过key值请求后台获取当前aiDrId值,请求成功则赋值给{@link Network#currentId}
+     *
+     * @param primaryStage
+     * @param key
+     */
+    private void getAiDrId(Stage primaryStage, String key) {
+        Network.getAiHelperApi()
+                .getAiDrId(key)
                 .observeOn(Schedulers.io())
                 .subscribeOn(Schedulers.trampoline())
-                .subscribe(data -> {
-                    if (data instanceof ErrorResponseBody) {
-                        logger.info("subscribe error " + data.string());
+                .onErrorReturn((error) -> {
+                    logger.error("getAiDrId(primaryStage,aidrId)请求异常", error);
+                    return new ErrorResponseBody(error);
+                })
+                .filter(body -> body instanceof ErrorResponseBody)
+                .subscribe(warningBody -> {
+                    String json = warningBody.string();
+                    AiResult aiResult = new Gson().fromJson(json, AiResult.class);
+                    if (AiResult.GET_RESULT_SUCCESS == aiResult.getStatus()) {
+                        Network.currentId = aiResult.getAiDrId();
                     } else {
-                        String json = data.string();
-                        Platform.runLater(() -> {
-                            logger.info("subscribe str: " + json);
-                            AiResult aiResult = new Gson().fromJson(json, AiResult.class);
-                            primaryStage.getScene().getRoot().setStyle("-fx-background-color: red;");
-                            logger.info("subscribe aiResult : " + aiResult);
-                            AiWarningDialogController aiWarningDialogController = new AiWarningDialogController(aiResult);
-                            aiWarningDialogController.show(primaryStage);
-                        });
+                        logger.info("未能成功获取当前对应aiDrId");
                     }
                 });
     }

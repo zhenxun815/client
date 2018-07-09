@@ -26,7 +26,7 @@ public class TestHttpRequset {
     public void testCircleRequest() {
         //http:192.168.1.139:8080/ai/helper/warning/6d212354a62b48b1aab6c069e2006731
         Network.getAiHelperApi()
-                .requestAiHelper("6d212354a62b48b1aab6c069e2006731")
+                .getAiWarning("6d212354a62b48b1aab6c069e2006731")
                 .map(body -> {
                     logger.info(body.string());
                     return body.string();
