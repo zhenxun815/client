@@ -1,4 +1,4 @@
-package com.tqhy.client.model.bean;
+package com.tqhy.client.model;
 
 import com.google.gson.annotations.SerializedName;
 
@@ -24,8 +24,13 @@ public class ClientMsg implements Serializable {
     @SerializedName(value = "operationIp")
     private String operationIp;
 
+    @SerializedName(value = "aiWarning")
     private Integer aiWarning;
+
+    @SerializedName(value = "errorFlag")
     private Integer errorFlag;
+
+    @SerializedName(value = "warningFlag")
     private Integer warningFlag;
 
     public ClientMsg(String aiDrId, Integer operation, String operationIp) {
