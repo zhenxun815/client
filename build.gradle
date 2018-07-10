@@ -22,6 +22,8 @@ jfx {
     jfxMainAppJarName = "client.jar"
     deployDir = "/deploy"
     useEnvironmentRelativeExecutables = true
+    copyAdditionalAppResourcesToJar =true
+    additionalAppResources = "/"
     css2bin = true
     preLoader = null
 
