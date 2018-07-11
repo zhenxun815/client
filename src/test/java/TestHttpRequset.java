@@ -26,7 +26,7 @@ public class TestHttpRequset {
     public void testCircleRequest() {
         //http:192.168.1.139:8080/ai/helper/warning/6d212354a62b48b1aab6c069e2006731
         Network.getAiHelperApi()
-                .getAiWarning("6d212354a62b48b1aab6c069e2006731")
+                .getAiWarning("c4cd996cec662fb2fa7e67770ac2ed78")
                 .map(body -> {
                     logger.info(body.string());
                     return body.string();
@@ -50,7 +50,7 @@ public class TestHttpRequset {
                 .addCallAdapterFactory(rxJavaCallAdapterFactory)
                 .build();
         AiHelperApi aiHelperApi = retrofit.create(AiHelperApi.class);
-        Call<ResponseBody> test = aiHelperApi.getTest("6d212354a62b48b1aab6c069e2006731");
+        Call<ResponseBody> test = aiHelperApi.getTest("c4cd996cec662fb2fa7e67770ac2ed78");
         test.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {

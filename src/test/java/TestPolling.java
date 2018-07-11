@@ -24,7 +24,7 @@ public class TestPolling {
     public void testPolling() {
         Observable.interval(3000, TimeUnit.MICROSECONDS)
                 .doOnNext(l -> {
-                    Object i = JnaCaller.fetchData();
+                    Object i = JnaCaller.fetchData("");
                     logger.info(i + "");
                 })
                 .observeOn(Schedulers.io())
