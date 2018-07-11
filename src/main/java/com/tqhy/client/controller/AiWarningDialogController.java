@@ -33,7 +33,7 @@ public class AiWarningDialogController extends BaseDialogController {
         FxmlUtils.load("/dialog/ai_warning/ai_warning.fxml", this);
         initDialog();
         //initButtonType();
-        lb_ai_warning.setText(this.result.toString());
+        lb_ai_warning.setText(null == this.result.getAiImgResult() ? "null" : this.result.getAiImgResult());
     }
 
     /**
@@ -89,7 +89,6 @@ public class AiWarningDialogController extends BaseDialogController {
         ApiBean<ClientMsg> apiBean = new ApiBean<>();
         ClientMsg docConfirm = new ClientMsg();
         docConfirm.setAiDrId(Network.currentId);
-        docConfirm.setOperationIp(Network.getLocalIp());
         docConfirm.setOperation(operation);
         apiBean.setBean(docConfirm);
         Network.getAiHelperApi()
@@ -119,6 +118,7 @@ public class AiWarningDialogController extends BaseDialogController {
         warningBack.setOperationIp(Network.getLocalIp());
         warningBack.setAiDrId(Network.currentId);
         warningBack.setWarningBack(aiWarning, errorFlag, warningFlag);
+        logger.info("post warning back: "+warningBack);
         apiBean.setBean(warningBack);
 
         Network.getAiHelperApi()
