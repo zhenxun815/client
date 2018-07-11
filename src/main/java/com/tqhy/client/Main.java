@@ -7,6 +7,7 @@ import com.tqhy.client.jna.JnaCaller;
 import com.tqhy.client.model.AiResult;
 import com.tqhy.client.network.Network;
 import com.tqhy.client.network.responsebody.ErrorResponseBody;
+import com.tqhy.client.utils.FileUtils;
 import com.tqhy.client.utils.ViewsUtils;
 import io.reactivex.Observable;
 import io.reactivex.schedulers.Schedulers;
@@ -35,6 +36,7 @@ public class Main extends Application {
     private String key = "";
     private Logger logger = LoggerFactory.getLogger(Main.class);
     private String aiDrId = "";
+    private String rootPath = FileUtils.getRootPath();
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -58,10 +60,10 @@ public class Main extends Application {
         JnaCaller.getUserInfo();
         Observable.interval(3000, TimeUnit.MILLISECONDS)
                 .map(aLong -> {
-                            String str = null;
-                            str = JnaCaller.fetchData();
+                            String screenImgPath = ViewsUtils.captureScreen("capture.png", rootPath);
+                            String str = JnaCaller.fetchData(screenImgPath);
+                            logger.info("capture screen img path: " + screenImgPath);
                             logger.info(".dll caller get: " + str);
-                            //todo Network.currentId=key;
                             return str;
                         }
                 )
@@ -88,6 +90,7 @@ public class Main extends Application {
                             break;
                         //根据key值请求后台AiHelper
                         default:
+                            //todo Network.currentId=key;
                             requestAiHelper(primaryStage, key);
                             break;
                     }
