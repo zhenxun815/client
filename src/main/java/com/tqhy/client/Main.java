@@ -68,12 +68,12 @@ public class Main extends Application {
                         }
                 )
                 .filter(key -> {
-                    //logger.info("key: " + key + "this.key: " + this.key + "b: " + b);
                     boolean b = key.equals(this.key);
+                    //logger.info("key: " + key + " this.key: " + this.key + " b: " + b);
                     this.key = key;
                     return !b;
                 })
-                .observeOn(Schedulers.io())
+                .observeOn(Schedulers.trampoline())
                 .subscribeOn(Schedulers.trampoline())
                 .subscribe(key -> {
                     switch (key) {
@@ -150,22 +150,22 @@ public class Main extends Application {
      * 根据key值请求后台获取ai提示内容,请求成功则弹出窗口,失败,则打印错误日志;
      */
     private void requestAiHelper(Stage primaryStage, String key) {
-        logger.info(" into requestAiHelper...");
+        logger.info(" into requestAiHelper...key is: "+key);
         Network.getAiHelperApi()
                 .getAiWarning(key)
-                .subscribeOn(Schedulers.trampoline())
                 /* .repeatWhen(objectObservable ->
                          objectObservable.flatMap(o ->
-                                 Observable.just(1).delay(5000, TimeUnit.MILLISECONDS)))
-                 .filter(testMsg -> !key.equals(testMsg))*/
+                                 Observable.just(1).delay(5000, TimeUnit.MILLISECONDS)))*/
                 .observeOn(Schedulers.io())
-                .onErrorReturn((error) -> {
+                .subscribeOn(Schedulers.trampoline())
+               /* .onErrorReturn((error) -> {
                     logger.error("getAiDrId(key)请求异常", error);
                     return new ErrorResponseBody(error);
                 })
-                .filter(body -> body instanceof ErrorResponseBody)
+                .filter(body -> body instanceof ErrorResponseBody)*/
                 .subscribe(warningBody -> {
                     String json = warningBody.string();
+                    logger.info("json is: "+json);
                     AiResult aiResult = new Gson().fromJson(json, AiResult.class);
                     if (AiResult.GET_RESULT_SUCCESS == aiResult.getStatus()) {
                         showWarningDialog(primaryStage, aiResult);
