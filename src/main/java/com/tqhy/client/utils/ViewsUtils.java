@@ -3,6 +3,11 @@ package com.tqhy.client.utils;
 import javafx.geometry.Rectangle2D;
 import javafx.stage.Screen;
 
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+
 /**
  * 界面相关工具类
  *
@@ -55,5 +60,30 @@ public class ViewsUtils {
      */
     public static double getMaxY(double height) {
         return getScreenHeight() - height;
+    }
+
+
+    public static String captureScreen(String fileName, String folder) throws Exception {
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        Rectangle screenRectangle = new Rectangle(screenSize);
+        Robot robot = new Robot();
+        BufferedImage image = robot.createScreenCapture(screenRectangle);
+        // 截图保存的路径
+        File screenFile = new File(folder,fileName);
+        // 如果路径不存在,则创建
+        if (!screenFile.getParentFile().exists()) {
+            screenFile.getParentFile().mkdirs();
+        }
+        //判断文件是否存在，不存在就创建文件
+        if(!screenFile.exists()&& !screenFile .isDirectory()) {
+            screenFile.mkdir();
+        }
+
+        ImageIO.write(image, "png", screenFile);
+        //自动打开
+        /*if (Desktop.isDesktopSupported()
+                 && Desktop.getDesktop().isSupported(Desktop.Action.OPEN))
+                    Desktop.getDesktop().open(f);*/
+        return screenFile.getAbsolutePath();
     }
 }
