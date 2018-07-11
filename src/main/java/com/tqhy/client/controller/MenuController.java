@@ -53,6 +53,7 @@ public class MenuController extends ContextMenu {
         logger.info("upload click...");
         WebViewDialogController web = new WebViewDialogController();
         //web.showWeb(Network.BASE_URL+"index?id="+Network.currentId+"&pageName=report");
+        logger.info("current id is: "+Network.currentId);
         web.showTqWeb(Network.currentId, Network.REPORT_PAGE);
     }
 
