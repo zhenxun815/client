@@ -13,20 +13,6 @@ import org.slf4j.LoggerFactory;
  */
 public class JnaCaller {
 
-    /*static {
-        Logger exfile1 = LoggerFactory.getLogger("exfile");
-        String libPath = System.getProperty("java.library.path");
-        String[] split = libPath.split(";");
-        String exePath = split[0];
-        exfile1.info("libPath is: " + libPath);
-        //System.out.println("libPath is: " + libPath);
-        exfile1.info("exePath is: " + exePath);
-        //System.out.println("exePath is: " + exePath);
-        jniRootPath = exePath;
-
-        //System.loadLibrary("DjyTQAITools");
-    }*/
-
     private static Logger logger = LoggerFactory.getLogger(JnaCaller.class);
     private static String NATIVE_LIB_NAME = "jyTQAITools";
 
@@ -50,12 +36,12 @@ public class JnaCaller {
      *
      * @return "JYLICENSE":表示系统尚未被授权;"JYNODATA":表示未获得有效数据;其它:获得的有效 HIS 数据
      */
-    public static String fetchData() {
+    public static String fetchData(String imgPath) {
         try {
             logger.info("into fetchData....");
             // NativeLibrary.addSearchPath("jyTQAITools", jniRootPath);
             // Native.register(TqaiDll.class, "jyTQAITools");
-            Pointer p = TqaiDll.caller.jyFetchData();
+            Pointer p = TqaiDll.caller.jyFetchData(imgPath);
             String result = p.getString(0L);
             logger.info("fetch data success: " + result);
             return result;
@@ -85,7 +71,7 @@ public class JnaCaller {
     interface TqaiDll extends StdCallLibrary {
         TqaiDll caller = Native.loadLibrary(NATIVE_LIB_NAME, TqaiDll.class);
 
-        Pointer jyFetchData();
+        Pointer jyFetchData(String imgPath);
 
         void jyGetUserInfo();
     }
