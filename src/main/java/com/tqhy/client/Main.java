@@ -151,9 +151,9 @@ public class Main extends Application {
      * 根据key值请求后台获取ai提示内容,请求成功则弹出窗口,失败,则打印错误日志;
      */
     private void requestAiHelper(Stage primaryStage, String key) {
-        logger.info(" into requestAiHelper...key is: "+key);
+        logger.info(" into requestAiHelper...key is: " + key);
         String md5 = MD5Utils.getMD5(key);
-        logger.info(" into requestAiHelper...key MD5 is: "+md5);
+        logger.info(" into requestAiHelper...key MD5 is: " + md5);
         Network.getAiHelperApi()
                 .getAiWarning(md5)
                 /* .repeatWhen(objectObservable ->
@@ -161,14 +161,14 @@ public class Main extends Application {
                                  Observable.just(1).delay(5000, TimeUnit.MILLISECONDS)))*/
                 .observeOn(Schedulers.io())
                 .subscribeOn(Schedulers.trampoline())
-               /* .onErrorReturn((error) -> {
-                    logger.error("getAiDrId(key)请求异常", error);
-                    return new ErrorResponseBody(error);
-                })
-                .filter(body -> body instanceof ErrorResponseBody)*/
+                /* .onErrorReturn((error) -> {
+                     logger.error("getAiDrId(key)请求异常", error);
+                     return new ErrorResponseBody(error);
+                 })
+                 .filter(body -> body instanceof ErrorResponseBody)*/
                 .subscribe(warningBody -> {
                     String json = warningBody.string();
-                    logger.info("json is: "+json);
+                    logger.info("json is: " + json);
                     AiResult aiResult = new Gson().fromJson(json, AiResult.class);
                     if (AiResult.GET_RESULT_SUCCESS == aiResult.getStatus()) {
                         showWarningDialog(primaryStage, aiResult);
