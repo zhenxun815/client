@@ -8,6 +8,7 @@ import com.tqhy.client.model.AiResult;
 import com.tqhy.client.network.Network;
 import com.tqhy.client.network.responsebody.ErrorResponseBody;
 import com.tqhy.client.utils.FileUtils;
+import com.tqhy.client.utils.MD5Utils;
 import com.tqhy.client.utils.ViewsUtils;
 import io.reactivex.Observable;
 import io.reactivex.schedulers.Schedulers;
@@ -151,8 +152,9 @@ public class Main extends Application {
      */
     private void requestAiHelper(Stage primaryStage, String key) {
         logger.info(" into requestAiHelper...key is: "+key);
+        String md5 = MD5Utils.getMD5(key);
         Network.getAiHelperApi()
-                .getAiWarning(key)
+                .getAiWarning(md5)
                 /* .repeatWhen(objectObservable ->
                          objectObservable.flatMap(o ->
                                  Observable.just(1).delay(5000, TimeUnit.MILLISECONDS)))*/
