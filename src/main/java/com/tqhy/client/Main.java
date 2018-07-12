@@ -60,7 +60,7 @@ public class Main extends Application {
         JnaCaller.getUserInfo();
         Observable.interval(3000, TimeUnit.MILLISECONDS)
                 .map(aLong -> {
-                            String screenImgPath = ViewsUtils.captureScreen("capture.png", rootPath);
+                            String screenImgPath = ViewsUtils.captureScreen("capture.jpg", rootPath);
                             String str = JnaCaller.fetchData(screenImgPath);
                             logger.info("capture screen img path: " + screenImgPath);
                             logger.info(".dll caller get: " + str);

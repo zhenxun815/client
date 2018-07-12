@@ -79,7 +79,7 @@ public class ViewsUtils {
             screenFile.mkdir();
         }
 
-        ImageIO.write(image, "png", screenFile);
+        ImageIO.write(image, "jpg", screenFile);
         //自动打开
         /*if (Desktop.isDesktopSupported()
                  && Desktop.getDesktop().isSupported(Desktop.Action.OPEN))

@@ -15,7 +15,7 @@ public class TestScreenCapture {
         String rootPath = FileUtils.getRootPath();
         System.out.println("rootPath is: "+rootPath);
         try {
-            ViewsUtils.captureScreen( "capture.png", rootPath);
+            ViewsUtils.captureScreen( "capture.jpg", rootPath);
         } catch (Exception e) {
             e.printStackTrace();
         }
