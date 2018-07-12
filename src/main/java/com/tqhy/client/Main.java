@@ -153,6 +153,7 @@ public class Main extends Application {
     private void requestAiHelper(Stage primaryStage, String key) {
         logger.info(" into requestAiHelper...key is: "+key);
         String md5 = MD5Utils.getMD5(key);
+        logger.info(" into requestAiHelper...key MD5 is: "+md5);
         Network.getAiHelperApi()
                 .getAiWarning(md5)
                 /* .repeatWhen(objectObservable ->
