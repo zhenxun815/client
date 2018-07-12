@@ -103,4 +103,17 @@ public class ClientMsg implements Serializable {
         setErrorFlag(errorFlag);
         setWarningFlag(warningFlag);
     }
+
+    @Override
+    public String toString() {
+        return "ClientMsg{" +
+                "aiDrId='" + aiDrId + '\'' +
+                ", operation=" + operation +
+                ", date='" + date + '\'' +
+                ", operationIp='" + operationIp + '\'' +
+                ", aiWarning=" + aiWarning +
+                ", errorFlag=" + errorFlag +
+                ", warningFlag=" + warningFlag +
+                '}';
+    }
 }

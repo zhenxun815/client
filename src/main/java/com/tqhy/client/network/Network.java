@@ -25,7 +25,7 @@ public class Network {
     public static String currentId = "0026086fd6654dbfb3d2a3e78cf67140";
 
     public static final String TEST_URL = "http://baidu.com/";
-    public static final String BASE_URL = "http://192.168.1.214:8080/ai/helper/";
+    public static final String BASE_URL = "http://192.168.1.189:8080/ai/helper/";
 
     public static final String HISTORY_PAGE = "history";
     public static final String REPORT_PAGE = "report";
