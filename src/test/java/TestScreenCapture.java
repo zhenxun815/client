@@ -1,5 +1,5 @@
 import com.tqhy.client.utils.FileUtils;
-import com.tqhy.client.utils.ViewsUtils;
+import com.tqhy.client.utils.ImgUtils;
 import org.junit.Test;
 
 /**
@@ -11,13 +11,19 @@ public class TestScreenCapture {
 
     @Test
     public void testScreenCapture() {
-
         String rootPath = FileUtils.getRootPath();
-        System.out.println("rootPath is: "+rootPath);
+        System.out.println("rootPath is: " + rootPath);
         try {
-            ViewsUtils.captureScreen( "capture.jpg", rootPath);
+            ImgUtils.captureScreen(rootPath + "/capture.jpg");
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @Test
+    public void testCutImg() {
+        String originImgPath = "C:/Users/qing/Desktop/capture.jpg";
+        String cuttedImgPath = "C:/Users/qing/Desktop/capture_cutted.jpg";
+        ImgUtils.cutImg(originImgPath, cuttedImgPath, 449, 79, 670, 670);
     }
 }

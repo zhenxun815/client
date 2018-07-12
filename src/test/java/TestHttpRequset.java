@@ -1,15 +1,18 @@
 import com.tqhy.client.network.Network;
 import com.tqhy.client.network.api.AiHelperApi;
 import io.reactivex.schedulers.Schedulers;
-import okhttp3.OkHttpClient;
-import okhttp3.ResponseBody;
+import okhttp3.*;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import retrofit2.Call;
 import retrofit2.*;
+import retrofit2.Callback;
+import retrofit2.Response;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -22,11 +25,18 @@ import java.net.UnknownHostException;
 public class TestHttpRequset {
 
     private Logger logger = LoggerFactory.getLogger(TestHttpRequset.class);
+
     @Test
     public void testCircleRequest() {
         //http:192.168.1.139:8080/ai/helper/warning/6d212354a62b48b1aab6c069e2006731
+        String cuttedImgPath = "C:/Users/qing/Desktop/capture_cutted.jpg";
+        File file = new File(cuttedImgPath);
+        RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
+        MultipartBody.Part part = MultipartBody.Part.createFormData("file", file.getName(), requestFile);
+
+        RequestBody key = RequestBody.create(MediaType.parse("text/plain"), "c4cd996cec662fb2fa7e67770ac2ed78");
         Network.getAiHelperApi()
-                .getAiWarning("c4cd996cec662fb2fa7e67770ac2ed78")
+                .getAiWarning(key, part)
                 .map(body -> {
                     logger.info(body.string());
                     return body.string();
