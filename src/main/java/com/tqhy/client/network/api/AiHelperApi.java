@@ -21,7 +21,7 @@ public interface AiHelperApi {
      */
     @Multipart
     @POST("warning")
-    Observable<ResponseBody> getAiWarning(@Part("key") RequestBody key, @Part("file") MultipartBody.Part part);
+    Observable<ResponseBody> getAiWarning(@Part("key") RequestBody key, @Part() MultipartBody.Part part);
 
     /**
      * 弹出提示信息后向后台返回否接收到弹窗信息及弹框相关操作
