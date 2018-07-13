@@ -22,8 +22,9 @@ public class TestScreenCapture {
 
     @Test
     public void testCutImg() {
-        String originImgPath = "C:/Users/qing/Desktop/capture.jpg";
+        String originImgPath = "C:/Users/qing/Desktop/rev/测试影像/立位腹平片.jpg";
         String cuttedImgPath = "C:/Users/qing/Desktop/capture_cutted.jpg";
-        ImgUtils.cutImg(originImgPath, cuttedImgPath, 449, 79, 670, 670);
+        String path = ImgUtils.cutImg(originImgPath, cuttedImgPath, 0, 0, 1196, 1600);
+        System.out.println(path);
     }
 }

@@ -1,5 +1,7 @@
 import com.tqhy.client.network.Network;
 import com.tqhy.client.network.api.AiHelperApi;
+import com.tqhy.client.utils.FileUtils;
+import com.tqhy.client.utils.PropertiesUtil;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.*;
 import org.junit.Test;
@@ -91,5 +93,16 @@ public class TestHttpRequset {
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }
+    }
+
+    @Test
+    public void testGetIp() {
+        String rootPath = FileUtils.getRootPath();
+        System.out.println("rootpath is: " + rootPath);
+        String ip = PropertiesUtil.getPropertiesKeyValue("ip");
+        System.out.println("ip is:" + ip);
+        Network.IP = ip;
+        Network.setBaseUrl(ip);
+        System.out.println(Network.BASE_URL);
     }
 }
