@@ -6,6 +6,8 @@ import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.RequestBody;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import retrofit2.CallAdapter;
 import retrofit2.Converter;
 import retrofit2.Retrofit;
@@ -36,12 +38,15 @@ public class Network {
     public static final String REPORT_PAGE = "report";
     public static final String AI_PROMPT_PAGE = "ai_prompt";
 
+    private static Logger logger = LoggerFactory.getLogger(Network.class);
     /**
      * 获取AIHelperApi对象
      *
      * @return
      */
     public static AiHelperApi getAiHelperApi() {
+
+        //logger.info("into getAiHelperApi..");
         if (null == aiHelperApi) {
             Retrofit retrofit = new Retrofit.Builder()
                     .client(okHttpClient)
