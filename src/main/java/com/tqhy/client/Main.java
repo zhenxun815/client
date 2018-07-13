@@ -85,7 +85,7 @@ public class Main extends Application {
         JnaCaller.getUserInfo();
         Observable.interval(3000, TimeUnit.MILLISECONDS)
                 .map(aLong -> {
-                    screenImgPath = ImgUtils.captureScreen(screenImgPath);
+                            screenImgPath = ImgUtils.captureScreen(screenImgPath);
                             String str = JnaCaller.fetchData(screenImgPath);
                             logger.info("capture screen img path: " + screenImgPath);
                             logger.info(".dll caller get: " + str);
@@ -177,11 +177,12 @@ public class Main extends Application {
         logger.info(" into requestAiHelper...key is: " + key);
         String md5 = MD5Utils.getMD5("P" + key);
         logger.info(" into requestAiHelper...key MD5 is: " + md5);
-
+        logger.info(Network.BASE_URL);
         String cutImgPath = ImgUtils.cutImg(screenImgPath, cuttedImgPath, cut_x, cut_y, cut_width, cut_height);
         if (null != cutImgPath) {
             RequestBody content = Network.createRequestBody(md5);
             MultipartBody.Part part = Network.createMultipart(cutImgPath);
+            //logger.info("content type is: "+content.contentType());
             Network.getAiHelperApi()
                     .getAiWarning(content, part)
                     /* .repeatWhen(objectObservable ->
