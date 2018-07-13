@@ -2,13 +2,17 @@ package com.tqhy.client.network;
 
 
 import com.tqhy.client.network.api.AiHelperApi;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
+import okhttp3.RequestBody;
 import retrofit2.CallAdapter;
 import retrofit2.Converter;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+import java.io.File;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
@@ -25,7 +29,8 @@ public class Network {
     public static String currentId = "0026086fd6654dbfb3d2a3e78cf67140";
 
     public static final String TEST_URL = "http://baidu.com/";
-    public static final String BASE_URL = "http://192.168.1.189:8080/ai/helper/";
+    public static String IP;
+    public static String BASE_URL;
 
     public static final String HISTORY_PAGE = "history";
     public static final String REPORT_PAGE = "report";
@@ -63,5 +68,33 @@ public class Network {
             e.printStackTrace();
         }
         return ip;
+    }
+
+    /**
+     * 根据待上传文件路径生成上传文件{@link MultipartBody.Part}对象
+     *
+     * @param filePath
+     * @return
+     */
+    public static MultipartBody.Part createMultipart(String filePath) {
+        File file = new File(filePath);
+        RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
+        MultipartBody.Part part = MultipartBody.Part.createFormData("file", file.getName(), requestFile);
+        return part;
+    }
+
+    /**
+     * 将字符串转换为{@link RequestBody}对象
+     *
+     * @param content
+     * @return
+     */
+    public static RequestBody createRequestBody(String content) {
+        RequestBody body = RequestBody.create(MediaType.parse("text/plain"), content);
+        return body;
+    }
+
+    public static void setBaseUrl(String ip) {
+        BASE_URL = "http://" + ip + ":8080/ai/helper/";
     }
 }

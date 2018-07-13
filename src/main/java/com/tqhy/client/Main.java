@@ -7,9 +7,7 @@ import com.tqhy.client.jna.JnaCaller;
 import com.tqhy.client.model.AiResult;
 import com.tqhy.client.network.Network;
 import com.tqhy.client.network.responsebody.ErrorResponseBody;
-import com.tqhy.client.utils.FileUtils;
-import com.tqhy.client.utils.MD5Utils;
-import com.tqhy.client.utils.ViewsUtils;
+import com.tqhy.client.utils.*;
 import io.reactivex.Observable;
 import io.reactivex.schedulers.Schedulers;
 import javafx.application.Application;
@@ -22,6 +20,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,20 +36,44 @@ public class Main extends Application {
 
     private String key = "";
     private Logger logger = LoggerFactory.getLogger(Main.class);
-    private String aiDrId = "";
     private String rootPath = FileUtils.getRootPath();
+    private String screenImgPath = rootPath + "/screen_capture.jpg";
+    private String cuttedImgPath = rootPath + "/capture_cutted.jpg";
+
+    private int cut_x;
+    private int cut_y;
+    private int cut_width;
+    private int cut_height;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
        /* String classPath = Main.class.getClassLoader().getResource("").getPath();
         System.out.println("path is: " + classPath);*/
-
-
         initPrimaryStage(primaryStage);
-
         initSystemTray(primaryStage);
+        initProperties();
         doRxJava(primaryStage);
-        //getAiDrId(primaryStage);
+    }
+
+    /**
+     * 初始化网络地址
+     */
+    private void initProperties() {
+        String ip = PropertiesUtil.getPropertiesKeyValue("ip");
+        logger.info("ip is:" + ip);
+        Network.IP = ip;
+        Network.setBaseUrl(ip);
+        logger.info("base url is: " + Network.BASE_URL);
+
+        //截图参数
+        String x = PropertiesUtil.getPropertiesKeyValue("x");
+        String y = PropertiesUtil.getPropertiesKeyValue("y");
+        String width = PropertiesUtil.getPropertiesKeyValue("width");
+        String height = PropertiesUtil.getPropertiesKeyValue("height");
+        this.cut_x = Integer.parseInt(x);
+        this.cut_y = Integer.parseInt(y);
+        this.cut_width = Integer.parseInt(width);
+        this.cut_height = Integer.parseInt(height);
     }
 
     /**
@@ -61,7 +85,7 @@ public class Main extends Application {
         JnaCaller.getUserInfo();
         Observable.interval(3000, TimeUnit.MILLISECONDS)
                 .map(aLong -> {
-                            String screenImgPath = ViewsUtils.captureScreen("capture.jpg", rootPath);
+                    screenImgPath = ImgUtils.captureScreen(screenImgPath);
                             String str = JnaCaller.fetchData(screenImgPath);
                             logger.info("capture screen img path: " + screenImgPath);
                             logger.info(".dll caller get: " + str);
@@ -91,7 +115,6 @@ public class Main extends Application {
                             break;
                         //根据key值请求后台AiHelper
                         default:
-                            //todo Network.currentId=key;
                             requestAiHelper(primaryStage, key);
                             break;
                     }
@@ -151,32 +174,41 @@ public class Main extends Application {
      * 根据key值请求后台获取ai提示内容,请求成功则弹出窗口,失败,则打印错误日志;
      */
     private void requestAiHelper(Stage primaryStage, String key) {
-        logger.info(" into requestAiHelper...key is: "+key);
-        String md5 = MD5Utils.getMD5(key);
-        logger.info(" into requestAiHelper...key MD5 is: "+md5);
-        Network.getAiHelperApi()
-                .getAiWarning(md5)
-                /* .repeatWhen(objectObservable ->
-                         objectObservable.flatMap(o ->
-                                 Observable.just(1).delay(5000, TimeUnit.MILLISECONDS)))*/
-                .observeOn(Schedulers.io())
-                .subscribeOn(Schedulers.trampoline())
-               /* .onErrorReturn((error) -> {
-                    logger.error("getAiDrId(key)请求异常", error);
-                    return new ErrorResponseBody(error);
-                })
-                .filter(body -> body instanceof ErrorResponseBody)*/
-                .subscribe(warningBody -> {
-                    String json = warningBody.string();
-                    logger.info("json is: "+json);
-                    AiResult aiResult = new Gson().fromJson(json, AiResult.class);
-                    if (AiResult.GET_RESULT_SUCCESS == aiResult.getStatus()) {
-                        showWarningDialog(primaryStage, aiResult);
-                        Network.currentId = aiResult.getAiDrId();
-                    } else {
-                        logger.info("ai提示未获取到对应数据");
-                    }
-                });
+        logger.info(" into requestAiHelper...key is: " + key);
+        String md5 = MD5Utils.getMD5("P" + key);
+        logger.info(" into requestAiHelper...key MD5 is: " + md5);
+
+        String cutImgPath = ImgUtils.cutImg(screenImgPath, cuttedImgPath, cut_x, cut_y, cut_width, cut_height);
+        if (null != cutImgPath) {
+            RequestBody content = Network.createRequestBody(md5);
+            MultipartBody.Part part = Network.createMultipart(cutImgPath);
+            Network.getAiHelperApi()
+                    .getAiWarning(content, part)
+                    /* .repeatWhen(objectObservable ->
+                             objectObservable.flatMap(o ->
+                                     Observable.just(1).delay(5000, TimeUnit.MILLISECONDS)))*/
+                    .observeOn(Schedulers.io())
+                    .subscribeOn(Schedulers.trampoline())
+                    /* .onErrorReturn((error) -> {
+                         logger.error("getAiDrId(key)请求异常", error);
+                         return new ErrorResponseBody(error);
+                     })
+                     .filter(body -> body instanceof ErrorResponseBody)*/
+                    .subscribe(warningBody -> {
+                        String json = warningBody.string();
+                        logger.info("json is: " + json);
+                        AiResult aiResult = new Gson().fromJson(json, AiResult.class);
+                        if (AiResult.GET_RESULT_SUCCESS == aiResult.getStatus()) {
+                            showWarningDialog(primaryStage, aiResult);
+                            Network.currentId = aiResult.getAiDrId();
+                        } else {
+                            logger.info("ai提示未获取到对应数据");
+                        }
+                    });
+        } else {
+            logger.info("截取图片失败...");
+        }
+
     }
 
     /**
