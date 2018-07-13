@@ -7,10 +7,7 @@ import com.tqhy.client.jna.JnaCaller;
 import com.tqhy.client.model.AiResult;
 import com.tqhy.client.network.Network;
 import com.tqhy.client.network.responsebody.ErrorResponseBody;
-import com.tqhy.client.utils.FileUtils;
-import com.tqhy.client.utils.ImgUtils;
-import com.tqhy.client.utils.MD5Utils;
-import com.tqhy.client.utils.ViewsUtils;
+import com.tqhy.client.utils.*;
 import io.reactivex.Observable;
 import io.reactivex.schedulers.Schedulers;
 import javafx.application.Application;
@@ -43,13 +40,40 @@ public class Main extends Application {
     private String screenImgPath = rootPath + "/screen_capture.jpg";
     private String cuttedImgPath = rootPath + "/capture_cutted.jpg";
 
+    private int cut_x;
+    private int cut_y;
+    private int cut_width;
+    private int cut_height;
+
     @Override
     public void start(Stage primaryStage) throws Exception {
        /* String classPath = Main.class.getClassLoader().getResource("").getPath();
         System.out.println("path is: " + classPath);*/
         initPrimaryStage(primaryStage);
         initSystemTray(primaryStage);
+        initProperties();
         doRxJava(primaryStage);
+    }
+
+    /**
+     * 初始化网络地址
+     */
+    private void initProperties() {
+        String ip = PropertiesUtil.getPropertiesKeyValue("ip");
+        logger.info("ip is:" + ip);
+        Network.IP = ip;
+        Network.setBaseUrl(ip);
+        logger.info("base url is: " + Network.BASE_URL);
+
+        //截图参数
+        String x = PropertiesUtil.getPropertiesKeyValue("x");
+        String y = PropertiesUtil.getPropertiesKeyValue("y");
+        String width = PropertiesUtil.getPropertiesKeyValue("width");
+        String height = PropertiesUtil.getPropertiesKeyValue("height");
+        this.cut_x = Integer.parseInt(x);
+        this.cut_y = Integer.parseInt(y);
+        this.cut_width = Integer.parseInt(width);
+        this.cut_height = Integer.parseInt(height);
     }
 
     /**
@@ -151,13 +175,13 @@ public class Main extends Application {
      */
     private void requestAiHelper(Stage primaryStage, String key) {
         logger.info(" into requestAiHelper...key is: " + key);
-        String md5 = MD5Utils.getMD5(key);
+        String md5 = MD5Utils.getMD5("P" + key);
         logger.info(" into requestAiHelper...key MD5 is: " + md5);
 
-        boolean cutted = ImgUtils.cutImg(screenImgPath, cuttedImgPath, 449, 79, 670, 670);
-        if (cutted) {
+        String cutImgPath = ImgUtils.cutImg(screenImgPath, cuttedImgPath, cut_x, cut_y, cut_width, cut_height);
+        if (null != cutImgPath) {
             RequestBody content = Network.createRequestBody(md5);
-            MultipartBody.Part part = Network.createMultipart(cuttedImgPath);
+            MultipartBody.Part part = Network.createMultipart(cutImgPath);
             Network.getAiHelperApi()
                     .getAiWarning(content, part)
                     /* .repeatWhen(objectObservable ->
