@@ -50,7 +50,7 @@ public class Network {
         if (null == aiHelperApi) {
             Retrofit retrofit = new Retrofit.Builder()
                     .client(okHttpClient)
-                    .baseUrl(BASE_URL)
+                    .baseUrl("http://192.168.1.189:8080/ai/helper/")
                     .addConverterFactory(gsonConverterFactory)
                     .addCallAdapterFactory(rxJavaCallAdapterFactory)
                     .build();

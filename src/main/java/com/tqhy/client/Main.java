@@ -12,6 +12,8 @@ import io.reactivex.Observable;
 import io.reactivex.schedulers.Schedulers;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -44,6 +46,9 @@ public class Main extends Application {
     private int cut_y;
     private int cut_width;
     private int cut_height;
+
+    private BooleanProperty callJnaFlag = new SimpleBooleanProperty();
+
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -89,6 +94,7 @@ public class Main extends Application {
                             String str = JnaCaller.fetchData(screenImgPath);
                             logger.info("capture screen img path: " + screenImgPath);
                             logger.info(".dll caller get: " + str);
+                    logger.info("callJnaFlag is: " + callJnaFlag);
                             return str;
                         }
                 )
@@ -200,10 +206,14 @@ public class Main extends Application {
                         logger.info("json is: " + json);
                         AiResult aiResult = new Gson().fromJson(json, AiResult.class);
                         if (AiResult.GET_RESULT_SUCCESS == aiResult.getStatus()) {
-                            showWarningDialog(primaryStage, aiResult);
-                            Network.currentId = aiResult.getAiDrId();
+                            if (null == aiResult.getAiImgResult()) {
+                                logger.info("ai未发现异常");
+                            } else {
+                                showWarningDialog(primaryStage, aiResult);
+                                Network.currentId = aiResult.getAiDrId();
+                            }
                         } else {
-                            logger.info("ai提示未获取到对应数据");
+                            logger.info("ai未获取到对应数据");
                         }
                     });
         } else {
@@ -224,7 +234,9 @@ public class Main extends Application {
 
             primaryStage.getScene().getRoot().setStyle("-fx-background-color: red;");
             AiWarningDialogController aiWarningDialogController = new AiWarningDialogController(aiResult);
-            aiWarningDialogController.show(primaryStage);
+            aiWarningDialogController.show(primaryStage, (webViewDialogController) -> {
+                callJnaFlag.bindBidirectional(webViewDialogController.webViewShowingProperty());
+            });
         });
     }
 
@@ -324,4 +336,6 @@ public class Main extends Application {
     public static void main(String[] args) {
         launch(args);
     }
+
+
 }

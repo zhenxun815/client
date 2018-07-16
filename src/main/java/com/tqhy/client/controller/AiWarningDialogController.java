@@ -1,5 +1,6 @@
 package com.tqhy.client.controller;
 
+import com.tqhy.client.listener.OnWebViewShowingListener;
 import com.tqhy.client.model.AiResult;
 import com.tqhy.client.model.ClientMsg;
 import com.tqhy.client.network.Network;
@@ -41,7 +42,7 @@ public class AiWarningDialogController extends BaseDialogController {
      *
      * @param primaryStage 悬浮窗口
      */
-    public void show(Stage primaryStage) {
+    public void show(Stage primaryStage, OnWebViewShowingListener webViewShowedListener) {
         primaryStage.hide();
         Optional<ButtonType> cmd = showAtRightBottom();
         primaryStage.getScene().getRoot().setStyle("-fx-background-color: dimgray;");
@@ -61,6 +62,7 @@ public class AiWarningDialogController extends BaseDialogController {
                 WebViewDialogController web = new WebViewDialogController();
                 //web.showWeb("http://192.168.1.214:8080/ai/helper/index?id=" + this.result.getAiDrId()+"&pageName=ai_prompt");
                 web.showTqWeb(this.result.getAiDrId(), Network.AI_PROMPT_PAGE);
+                webViewShowedListener.shouldJnaFetchData(web);
                 warning_flag = 0;
                 ai_warning = 1;
                 postAiWarningBack(ai_warning, error_flag, warning_flag);
