@@ -13,7 +13,9 @@ import io.reactivex.schedulers.Schedulers;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -48,7 +50,8 @@ public class Main extends Application {
     private int cut_height;
 
     private BooleanProperty webViewShowingFlag = new SimpleBooleanProperty(false);
-
+    private ObjectProperty<AiResult> aiResult = new SimpleObjectProperty<>();
+    private AiWarningDialogController aiWarningDialogController;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -88,10 +91,10 @@ public class Main extends Application {
      */
     private void doRxJava(Stage primaryStage) {
         JnaCaller.getUserInfo();
-        Observable.interval(3000, TimeUnit.MILLISECONDS)
+        Observable.interval(1000, TimeUnit.MILLISECONDS)
                 .map(aLong -> {
                             logger.info("webViewShowingFlag is: " + webViewShowingFlag);
-                            if (!webViewShowingFlag.get()) {
+                    if (!isWebViewShowingFlag()) {
                                 screenImgPath = ImgUtils.captureScreen(screenImgPath);
                                 String str = JnaCaller.fetchData(screenImgPath);
                                 logger.info("capture screen img path: " + screenImgPath);
@@ -107,11 +110,12 @@ public class Main extends Application {
                     boolean b = key.equals(this.key);
                     //logger.info("key: " + key + " this.key: " + this.key + " b: " + b);
                     this.key = key;
-                    return !b;
+                    return key.length() >= 5 && !b;
                 })
                 .observeOn(Schedulers.trampoline())
                 .subscribeOn(Schedulers.trampoline())
                 .subscribe(key -> {
+
                     switch (key) {
                         //未授权
                         case JnaCaller.FETCH_DATA_LICENSE:
@@ -205,9 +209,11 @@ public class Main extends Application {
      */
     private void requestAiHelper(Stage primaryStage, String key) {
 
+        String substring = key.substring(key.length() - 5);
         logger.info(" into requestAiHelper...key is: " + key);
-        String md5 = MD5Utils.getMD5("P" + key);
-        logger.info(" into requestAiHelper...key MD5 is: " + md5);
+        logger.info(" into requestAiHelper...substring is: " + substring);
+        String md5 = MD5Utils.getMD5(substring);
+        logger.info(" into requestAiHelper...substring MD5 is: " + md5);
         logger.info(Network.BASE_URL);
         String cutImgPath = ImgUtils.cutImg(screenImgPath, cuttedImgPath, cut_x, cut_y, cut_width, cut_height);
         if (null != cutImgPath) {
@@ -229,14 +235,15 @@ public class Main extends Application {
                         AiResult aiResult = new Gson().fromJson(json, AiResult.class);
                         if (AiResult.GET_RESULT_SUCCESS == aiResult.getStatus()) {
                             Network.currentId = aiResult.getAiDrId();
+                            logger.info("set current id: " + Network.currentId);
                             if (null == aiResult.getAiImgResult()) {
                                 logger.info("ai未发现异常");
                             } else {
-                                showWarningDialog(primaryStage, aiResult);
+                                this.aiResult.setValue(aiResult);
+                                showWarningDialog(primaryStage);
                             }
                         } else {
                             logger.info("ai未获取到对应数据");
-                            showWarningDialog(primaryStage, aiResult);
                         }
                     });
         } else {
@@ -249,15 +256,15 @@ public class Main extends Application {
      * 弹出ai提示窗口
      *
      * @param primaryStage
-     * @param aiResult     ai提示内容
      */
-    private void showWarningDialog(Stage primaryStage, AiResult aiResult) {
+    private void showWarningDialog(Stage primaryStage) {
         Platform.runLater(() -> {
             logger.info("subscribe aiResult: " + aiResult);
-
-            AiWarningDialogController aiWarningDialogController = new AiWarningDialogController(aiResult);
-
-
+            if (null == aiWarningDialogController) {
+                aiWarningDialogController = new AiWarningDialogController();
+                aiWarningDialogController.aiResultProperty().bindBidirectional(this.aiResult);
+            }
+            aiWarningDialogController.setDialogShowing(true);
             aiWarningDialogController.show(primaryStage, (webViewDialogController) -> {
                 webViewShowingFlag.bindBidirectional(webViewDialogController.webViewShowingProperty());
                 logger.info("webViewShowingFlag bined...");
@@ -363,4 +370,15 @@ public class Main extends Application {
     }
 
 
+    public boolean isWebViewShowingFlag() {
+        return webViewShowingFlag.get();
+    }
+
+    public BooleanProperty webViewShowingFlagProperty() {
+        return webViewShowingFlag;
+    }
+
+    public void setWebViewShowingFlag(boolean webViewShowingFlag) {
+        this.webViewShowingFlag.set(webViewShowingFlag);
+    }
 }

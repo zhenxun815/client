@@ -7,6 +7,8 @@ import com.tqhy.client.network.Network;
 import com.tqhy.client.network.api.ApiBean;
 import com.tqhy.client.utils.FxmlUtils;
 import io.reactivex.schedulers.Schedulers;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.fxml.FXML;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
@@ -23,18 +25,16 @@ import java.util.Optional;
  */
 public class AiWarningDialogController extends BaseDialogController {
 
-    private AiResult result;
     private Logger logger = LoggerFactory.getLogger(AiWarningDialogController.class);
+    private ObjectProperty<AiResult> aiResult = new SimpleObjectProperty<>();
     @FXML
     Label lb_ai_warning;
 
 
-    public AiWarningDialogController(AiResult result) {
-        this.result = result;
+    public AiWarningDialogController() {
+
         FxmlUtils.load("/dialog/ai_warning/ai_warning.fxml", this);
         initDialog();
-        //initButtonType();
-        lb_ai_warning.setText(null == this.result.getAiImgResult() ? "null" : this.result.getAiImgResult());
     }
 
     /**
@@ -43,6 +43,8 @@ public class AiWarningDialogController extends BaseDialogController {
      * @param primaryStage 悬浮窗口
      */
     public void show(Stage primaryStage, OnWebViewShowingListener webViewShowingListener) {
+
+        lb_ai_warning.setText(null == this.aiResult.get() ? "null" : this.aiResult.get().getAiImgResult());
 
         primaryStage.setAlwaysOnTop(false);
 
@@ -56,7 +58,7 @@ public class AiWarningDialogController extends BaseDialogController {
         Integer warning_flag = null;
         //0警告未解除,1继续警告
         Integer ai_warning = null;
-        //0误报,1非误报
+        //0非误报,1误报
         Integer error_flag = null;
         //医生是否确认
         Integer operation = null;
@@ -64,14 +66,15 @@ public class AiWarningDialogController extends BaseDialogController {
             case YES:
                 WebViewDialogController web = new WebViewDialogController();
                 webViewShowingListener.bindShowingProperty(web);
-                web.showTqWeb(this.result.getAiDrId(), Network.AI_PROMPT_PAGE);
+                web.showTqWeb(this.aiResult.get().getAiDrId(), Network.AI_PROMPT_PAGE);
                 warning_flag = 1;
                 ai_warning = 1;
+                error_flag = 0;
                 postAiWarningBack(ai_warning, error_flag, warning_flag);
                 break;
             case NO:
                 logger.info("exclude clicked....");
-                error_flag = 0;
+                error_flag = 1;
                 warning_flag = 1;
                 operation = 0;
                 ai_warning = 1;
@@ -80,8 +83,8 @@ public class AiWarningDialogController extends BaseDialogController {
                 break;
             case CANCEL_CLOSE:
                 warning_flag = 1;
-                ai_warning = 0;
-                //postAiWarningBack(ai_warning, error_flag, warning_flag);
+                ai_warning = 1;
+                postAiWarningBack(ai_warning, error_flag, warning_flag);
                 break;
         }
     }
@@ -139,5 +142,17 @@ public class AiWarningDialogController extends BaseDialogController {
                 .subscribe(json -> {
                     logger.info(json);
                 });
+    }
+
+    public AiResult getAiResult() {
+        return aiResult.get();
+    }
+
+    public ObjectProperty<AiResult> aiResultProperty() {
+        return aiResult;
+    }
+
+    public void setAiResult(AiResult aiResult) {
+        this.aiResult.set(aiResult);
     }
 }

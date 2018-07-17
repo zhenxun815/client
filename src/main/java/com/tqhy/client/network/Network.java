@@ -2,6 +2,8 @@ package com.tqhy.client.network;
 
 
 import com.tqhy.client.network.api.AiHelperApi;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
@@ -30,6 +32,7 @@ public class Network {
     private static CallAdapter.Factory rxJavaCallAdapterFactory = RxJava2CallAdapterFactory.create();
     public static String currentId = "";
 
+    private StringProperty currentAiDrId = new SimpleStringProperty();
     public static final String TEST_URL = "http://baidu.com/";
     public static String IP;
     public static String BASE_URL;
@@ -39,6 +42,7 @@ public class Network {
     public static final String AI_PROMPT_PAGE = "ai_prompt";
 
     private static Logger logger = LoggerFactory.getLogger(Network.class);
+
     /**
      * 获取AIHelperApi对象
      *
@@ -101,5 +105,18 @@ public class Network {
 
     public static void setBaseUrl(String ip) {
         BASE_URL = "http://" + ip + ":8080/ai/helper/";
+    }
+
+
+    public String getCurrentAiDrId() {
+        return currentAiDrId.get();
+    }
+
+    public StringProperty currentAiDrIdProperty() {
+        return currentAiDrId;
+    }
+
+    public void setCurrentAiDrId(String currentAiDrId) {
+        this.currentAiDrId.set(currentAiDrId);
     }
 }
