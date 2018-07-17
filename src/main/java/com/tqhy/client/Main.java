@@ -47,7 +47,7 @@ public class Main extends Application {
     private int cut_width;
     private int cut_height;
 
-    private BooleanProperty callJnaFlag = new SimpleBooleanProperty();
+    private BooleanProperty webViewShowingFlag = new SimpleBooleanProperty(false);
 
 
     @Override
@@ -90,12 +90,17 @@ public class Main extends Application {
         JnaCaller.getUserInfo();
         Observable.interval(3000, TimeUnit.MILLISECONDS)
                 .map(aLong -> {
-                            screenImgPath = ImgUtils.captureScreen(screenImgPath);
-                            String str = JnaCaller.fetchData(screenImgPath);
-                            logger.info("capture screen img path: " + screenImgPath);
-                            logger.info(".dll caller get: " + str);
-                    logger.info("callJnaFlag is: " + callJnaFlag);
-                            return str;
+                            logger.info("webViewShowingFlag is: " + webViewShowingFlag);
+                            if (!webViewShowingFlag.get()) {
+                                screenImgPath = ImgUtils.captureScreen(screenImgPath);
+                                String str = JnaCaller.fetchData(screenImgPath);
+                                logger.info("capture screen img path: " + screenImgPath);
+                                logger.info(".dll caller get: " + str);
+                                return str;
+                            } else {
+                                return key;
+                            }
+
                         }
                 )
                 .filter(key -> {
@@ -110,6 +115,7 @@ public class Main extends Application {
                     switch (key) {
                         //未授权
                         case JnaCaller.FETCH_DATA_LICENSE:
+                            showfloat(primaryStage);
                             getAuthWarning(primaryStage);
                             break;
                         //非RIS界面,未获取到数据
@@ -121,6 +127,7 @@ public class Main extends Application {
                             break;
                         //根据key值请求后台AiHelper
                         default:
+                            showfloat(primaryStage);
                             requestAiHelper(primaryStage, key);
                             break;
                     }
@@ -129,12 +136,29 @@ public class Main extends Application {
     }
 
     /**
+     * 显示悬浮窗
+     *
+     * @param primaryStage
+     */
+    private void showfloat(Stage primaryStage) {
+        Platform.runLater(() -> {
+            if (!primaryStage.isShowing()) {
+                primaryStage.show();
+            }
+        });
+    }
+
+    /**
      * 隐藏悬浮窗
      *
      * @param primaryStage
      */
     private void hidefloat(Stage primaryStage) {
-        Platform.runLater(() -> primaryStage.hide());
+        Platform.runLater(() -> {
+            if (primaryStage.isShowing()) {
+                primaryStage.hide();
+            }
+        });
     }
 
     /**
@@ -180,6 +204,7 @@ public class Main extends Application {
      * 根据key值请求后台获取ai提示内容,请求成功则弹出窗口,失败,则打印错误日志;
      */
     private void requestAiHelper(Stage primaryStage, String key) {
+
         logger.info(" into requestAiHelper...key is: " + key);
         String md5 = MD5Utils.getMD5("P" + key);
         logger.info(" into requestAiHelper...key MD5 is: " + md5);
@@ -191,29 +216,27 @@ public class Main extends Application {
             //logger.info("content type is: "+content.contentType());
             Network.getAiHelperApi()
                     .getAiWarning(content, part)
-                    /* .repeatWhen(objectObservable ->
-                             objectObservable.flatMap(o ->
-                                     Observable.just(1).delay(5000, TimeUnit.MILLISECONDS)))*/
                     .observeOn(Schedulers.io())
                     .subscribeOn(Schedulers.trampoline())
                     /* .onErrorReturn((error) -> {
-                         logger.error("getAiDrId(key)请求异常", error);
-                         return new ErrorResponseBody(error);
-                     })
+                          logger.error("getAiDrId(key)请求异常", error);
+                          return new ErrorResponseBody(error);
+                      })
                      .filter(body -> body instanceof ErrorResponseBody)*/
                     .subscribe(warningBody -> {
                         String json = warningBody.string();
                         logger.info("json is: " + json);
                         AiResult aiResult = new Gson().fromJson(json, AiResult.class);
                         if (AiResult.GET_RESULT_SUCCESS == aiResult.getStatus()) {
+                            Network.currentId = aiResult.getAiDrId();
                             if (null == aiResult.getAiImgResult()) {
                                 logger.info("ai未发现异常");
                             } else {
                                 showWarningDialog(primaryStage, aiResult);
-                                Network.currentId = aiResult.getAiDrId();
                             }
                         } else {
                             logger.info("ai未获取到对应数据");
+                            showWarningDialog(primaryStage, aiResult);
                         }
                     });
         } else {
@@ -232,10 +255,12 @@ public class Main extends Application {
         Platform.runLater(() -> {
             logger.info("subscribe aiResult: " + aiResult);
 
-            primaryStage.getScene().getRoot().setStyle("-fx-background-color: red;");
             AiWarningDialogController aiWarningDialogController = new AiWarningDialogController(aiResult);
+
+
             aiWarningDialogController.show(primaryStage, (webViewDialogController) -> {
-                callJnaFlag.bindBidirectional(webViewDialogController.webViewShowingProperty());
+                webViewShowingFlag.bindBidirectional(webViewDialogController.webViewShowingProperty());
+                logger.info("webViewShowingFlag bined...");
             });
         });
     }
