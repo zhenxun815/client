@@ -10,5 +10,5 @@ import com.tqhy.client.controller.WebViewDialogController;
  * @since 1.0.0
  */
 public interface OnWebViewShowingListener {
-    void shouldJnaFetchData(WebViewDialogController webViewDialogController);
+    void bindShowingProperty(WebViewDialogController webViewDialogController);
 }
