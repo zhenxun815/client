@@ -23,13 +23,14 @@ public class MenuController extends ContextMenu {
     @FXML
     HBox menuItemHistory;
     @FXML
-    HBox menuItemUpload;
-    @FXML
     HBox menuItemMin;
     @FXML
     HBox menuItemExit;
     @FXML
     HBox menuItemInfo;
+
+    /* @FXML
+    HBox menuItemUpload;*/
 
     Node anchor;
     private Stage stage;
@@ -48,15 +49,15 @@ public class MenuController extends ContextMenu {
         web.showTqWeb(Network.currentId, Network.HISTORY_PAGE);
     }
 
-    @FXML
-    public void upload(MouseEvent event) {
-        logger.info("upload click...");
-        WebViewDialogController web = new WebViewDialogController();
-        //web.showWeb(Network.BASE_URL+"index?id="+Network.currentId+"&pageName=report");
-        logger.info("current id is: "+Network.currentId);
-        web.showTqWeb(Network.currentId, Network.REPORT_PAGE);
-    }
-
+    /*  @FXML
+      public void upload(MouseEvent event) {
+          logger.info("upload click...");
+          WebViewDialogController web = new WebViewDialogController();
+          //web.showWeb(Network.BASE_URL+"index?id="+Network.currentId+"&pageName=report");
+          logger.info("current id is: "+Network.currentId);
+          web.showTqWeb(Network.currentId, Network.REPORT_PAGE);
+      }
+  */
     @FXML
     public void exit(MouseEvent event) {
         logger.info("exit click...");
@@ -91,10 +92,10 @@ public class MenuController extends ContextMenu {
     public void initItems() {
         // logger.info("menu controller init items...");
         getItems().add(0, new CustomMenuItem(menuItemHistory));
-        getItems().add(1, new CustomMenuItem(menuItemUpload));
-        getItems().add(2, new CustomMenuItem(menuItemMin));
-        getItems().add(3, new CustomMenuItem(menuItemExit));
-        getItems().add(4, new CustomMenuItem(menuItemInfo));
+        /* getItems().add(1, new CustomMenuItem(menuItemUpload));*/
+        getItems().add(1, new CustomMenuItem(menuItemMin));
+        getItems().add(2, new CustomMenuItem(menuItemExit));
+        getItems().add(3, new CustomMenuItem(menuItemInfo));
     }
 
     public void showMenu(Node anchor, double screenX, double screenY) {
