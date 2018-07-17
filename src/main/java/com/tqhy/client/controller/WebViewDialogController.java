@@ -5,6 +5,7 @@ import com.tqhy.client.network.Network;
 import com.tqhy.client.utils.FxmlUtils;
 import com.tqhy.client.utils.ViewsUtils;
 import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
@@ -27,14 +28,12 @@ public class WebViewDialogController extends AnchorPane {
     WebView webView;
 
     private Stage stage;
-    private BooleanProperty webViewShowing;
+    private BooleanProperty webViewShowing = new SimpleBooleanProperty();
     private Logger logger = LoggerFactory.getLogger(WebViewDialogController.class);
 
     //"/dialog/web_dialog/web.fxml"
     public WebViewDialogController() {
         FxmlUtils.load("/dialog/web/web.fxml", this);
-        double screenWidth = ViewsUtils.getScreenWidth();
-        double screenHeight = ViewsUtils.getScreenHeight();
         Scene scene = new Scene(this);
         stage = new Stage();
         stage.getIcons().addAll(new Image(getClass().getResourceAsStream("/deploy/package/windows/client.png")));
@@ -49,18 +48,11 @@ public class WebViewDialogController extends AnchorPane {
     public void showWeb(String url) {
         WebEngine engine = webView.getEngine();
         engine.load(url);
-      /*engine.setOnResized(
-                new EventHandler<WebEvent<Rectangle2D>>() {
-                    public void handle(WebEvent<Rectangle2D> ev) {
-                        Rectangle2D r = ev.getData();
-                        stage.setWidth(r.getWidth());
-                        stage.setHeight(r.getHeight());
-                    }
-                });*/
+        setWebViewShowing(true);
+        logger.info("showWeb(): "+webViewShowing.get());
         stage.setResizable(false);
         stage.setMaximized(true);
         stage.show();
-        setWebViewShowing(true);
     }
 
     public void showTqWeb(String id, String pageName) {
@@ -70,14 +62,6 @@ public class WebViewDialogController extends AnchorPane {
 
     public void showLocalWeb(String url) {
         WebEngine engine = webView.getEngine();
-      /*engine.setOnResized(
-                new EventHandler<WebEvent<Rectangle2D>>() {
-                    public void handle(WebEvent<Rectangle2D> ev) {
-                        Rectangle2D r = ev.getData();
-                        stage.setWidth(r.getWidth());
-                        stage.setHeight(r.getHeight());
-                    }
-                });*/
         String path = WebViewDialogController.class.getResource(url).toExternalForm();
         engine.load(path);
         stage.show();
