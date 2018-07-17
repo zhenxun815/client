@@ -28,7 +28,7 @@ public class Network {
     private static OkHttpClient okHttpClient = new OkHttpClient();
     private static Converter.Factory gsonConverterFactory = GsonConverterFactory.create();
     private static CallAdapter.Factory rxJavaCallAdapterFactory = RxJava2CallAdapterFactory.create();
-    public static String currentId = "0026086fd6654dbfb3d2a3e78cf67140";
+    public static String currentId = "";
 
     public static final String TEST_URL = "http://baidu.com/";
     public static String IP;
@@ -50,7 +50,7 @@ public class Network {
         if (null == aiHelperApi) {
             Retrofit retrofit = new Retrofit.Builder()
                     .client(okHttpClient)
-                    .baseUrl("http://192.168.1.189:8080/ai/helper/")
+                    .baseUrl(BASE_URL)
                     .addConverterFactory(gsonConverterFactory)
                     .addCallAdapterFactory(rxJavaCallAdapterFactory)
                     .build();
