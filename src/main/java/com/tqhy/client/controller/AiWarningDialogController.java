@@ -42,16 +42,19 @@ public class AiWarningDialogController extends BaseDialogController {
      *
      * @param primaryStage 悬浮窗口
      */
-    public void show(Stage primaryStage, OnWebViewShowingListener webViewShowedListener) {
-        primaryStage.hide();
+    public void show(Stage primaryStage, OnWebViewShowingListener webViewShowingListener) {
+
+        primaryStage.setAlwaysOnTop(false);
+
+        //切忌通过调用primaryStage.hide();来实现弹窗置顶!!
         Optional<ButtonType> cmd = showAtRightBottom();
         primaryStage.getScene().getRoot().setStyle("-fx-background-color: dimgray;");
         primaryStage.setAlwaysOnTop(true);
         primaryStage.show();
 
-        //1警告,0解除警告
+        //1已警告,0未警告
         Integer warning_flag = null;
-        //0未警告,1警告了
+        //0警告未解除,1继续警告
         Integer ai_warning = null;
         //0误报,1非误报
         Integer error_flag = null;
@@ -60,24 +63,25 @@ public class AiWarningDialogController extends BaseDialogController {
         switch (cmd.get().getButtonData()) {
             case YES:
                 WebViewDialogController web = new WebViewDialogController();
-                //web.showWeb("http://192.168.1.214:8080/ai/helper/index?id=" + this.result.getAiDrId()+"&pageName=ai_prompt");
+                webViewShowingListener.bindShowingProperty(web);
                 web.showTqWeb(this.result.getAiDrId(), Network.AI_PROMPT_PAGE);
-                webViewShowedListener.shouldJnaFetchData(web);
-                warning_flag = 0;
+                warning_flag = 1;
                 ai_warning = 1;
                 postAiWarningBack(ai_warning, error_flag, warning_flag);
                 break;
             case NO:
                 logger.info("exclude clicked....");
                 error_flag = 0;
-                warning_flag = 0;
+                warning_flag = 1;
                 operation = 0;
+                ai_warning = 1;
                 postAiWarningBack(ai_warning, error_flag, warning_flag);
                 postDocConfirm(operation);
                 break;
             case CANCEL_CLOSE:
                 warning_flag = 1;
-                postAiWarningBack(ai_warning, error_flag, warning_flag);
+                ai_warning = 0;
+                //postAiWarningBack(ai_warning, error_flag, warning_flag);
                 break;
         }
     }
@@ -120,7 +124,7 @@ public class AiWarningDialogController extends BaseDialogController {
         warningBack.setOperationIp(Network.getLocalIp());
         warningBack.setAiDrId(Network.currentId);
         warningBack.setWarningBack(aiWarning, errorFlag, warningFlag);
-        logger.info("post warning back: "+warningBack);
+        logger.info("post warning back: " + warningBack);
         apiBean.setBean(warningBack);
 
         Network.getAiHelperApi()
