@@ -1,6 +1,7 @@
 package com.tqhy.client.controller;
 
 import com.tqhy.client.utils.ViewsUtils;
+import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.geometry.Rectangle2D;
@@ -27,7 +28,7 @@ public class BaseDialogController extends DialogPane {
     protected Dialog<ButtonType> dialog;
     protected Stage owner;
     protected Logger logger = LoggerFactory.getLogger(this.getClass());
-    protected BooleanProperty dialogShowing = new SimpleBooleanProperty();
+    protected BooleanProperty dialogShouldShowingFlag = new SimpleBooleanProperty();
 
     /**
      * 初始化Dialog,子类构造方法中加载完fxml文件后调用.
@@ -42,18 +43,13 @@ public class BaseDialogController extends DialogPane {
         dialog.setDialogPane(this);
         dialog.initOwner(owner);
 
-
-        owner.setOnCloseRequest(event -> {
-            logger.info("dialog on close request...");
-            setDialogShowing(false);
-        });
     }
 
     /**
      * 右下角显示弹窗
      */
     public Optional<ButtonType> showAtRightBottom() {
-        setDialogShowing(true);
+        setDialogShouldShowingFlag(true);
         dialog.setX(ViewsUtils.getMaxX(this.getWidth()));
         dialog.setY(ViewsUtils.getMaxY(this.getHeight()));
         // logger.info("x: " + dialog.getX() + " y: " + dialog.getY());
@@ -66,7 +62,7 @@ public class BaseDialogController extends DialogPane {
      * 屏幕中心显示弹窗
      */
     public Optional<ButtonType> showAtCenter() {
-        setDialogShowing(true);
+        setDialogShouldShowingFlag(true);
         Rectangle2D visualBounds = Screen.getPrimary().getVisualBounds();
         dialog.setX(visualBounds.getMaxX() / 2 - this.getWidth() / 2);
         dialog.setY(visualBounds.getMaxY() / 2 - this.getHeight() / 2);
@@ -76,15 +72,31 @@ public class BaseDialogController extends DialogPane {
         return cmd;
     }
 
-    public boolean isDialogShowing() {
-        return dialogShowing.get();
+
+    /**
+     * 关闭当前ai提示弹窗
+     */
+    public void closeDialog() {
+        logger.info("closeDialog() invoked...");
+
+        if (dialog.isShowing()) {
+            logger.info("dialog.close() invoked...");
+            Platform.runLater(() -> {
+                dialog.setResult(ButtonType.CLOSE);
+                dialog.close();
+            });
+        }
     }
 
-    public BooleanProperty dialogShowingProperty() {
-        return dialogShowing;
+    public boolean getDialogShouldShowingFlag() {
+        return dialogShouldShowingFlag.get();
     }
 
-    public void setDialogShowing(boolean dialogShowing) {
-        this.dialogShowing.set(dialogShowing);
+    public BooleanProperty dialogShouldShowingFlagProperty() {
+        return dialogShouldShowingFlag;
+    }
+
+    public void setDialogShouldShowingFlag(boolean dialogShouldShowingFlag) {
+        this.dialogShouldShowingFlag.set(dialogShouldShowingFlag);
     }
 }

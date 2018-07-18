@@ -50,6 +50,7 @@ public class Main extends Application {
     private int cut_height;
 
     private BooleanProperty webViewShowingFlag = new SimpleBooleanProperty(false);
+    private BooleanProperty warningDialogShouldShowingFlag = new SimpleBooleanProperty(false);
     private ObjectProperty<AiResult> aiResult = new SimpleObjectProperty<>();
     private AiWarningDialogController aiWarningDialogController;
 
@@ -93,11 +94,11 @@ public class Main extends Application {
         JnaCaller.getUserInfo();
         Observable.interval(1000, TimeUnit.MILLISECONDS)
                 .map(aLong -> {
-                            logger.info("webViewShowingFlag is: " + webViewShowingFlag);
+                    //logger.info("webViewShowingFlag is: " + webViewShowingFlag);
                     if (!isWebViewShowingFlag()) {
                                 screenImgPath = ImgUtils.captureScreen(screenImgPath);
                                 String str = JnaCaller.fetchData(screenImgPath);
-                                logger.info("capture screen img path: " + screenImgPath);
+                        //logger.info("capture screen img path: " + screenImgPath);
                                 logger.info(".dll caller get: " + str);
                                 return str;
                             } else {
@@ -108,6 +109,8 @@ public class Main extends Application {
                 )
                 .filter(key -> {
                     boolean b = key.equals(this.key);
+                    setWarningDialogShouldShowingFlag(b);
+                    logger.info("setWarningDialogShouldShowingFlag: " + getWarningDialogShouldShowingFlag());
                     //logger.info("key: " + key + " this.key: " + this.key + " b: " + b);
                     this.key = key;
                     return key.length() >= 5 && !b;
@@ -210,10 +213,10 @@ public class Main extends Application {
     private void requestAiHelper(Stage primaryStage, String key) {
 
         String substring = key.substring(key.length() - 5);
-        logger.info(" into requestAiHelper...key is: " + key);
-        logger.info(" into requestAiHelper...substring is: " + substring);
+        //logger.info(" into requestAiHelper...key is: " + key);
+        //logger.info(" into requestAiHelper...substring is: " + substring);
         String md5 = MD5Utils.getMD5(substring);
-        logger.info(" into requestAiHelper...substring MD5 is: " + md5);
+        // logger.info(" into requestAiHelper...substring MD5 is: " + md5);
         logger.info(Network.BASE_URL);
         String cutImgPath = ImgUtils.cutImg(screenImgPath, cuttedImgPath, cut_x, cut_y, cut_width, cut_height);
         if (null != cutImgPath) {
@@ -235,7 +238,7 @@ public class Main extends Application {
                         AiResult aiResult = new Gson().fromJson(json, AiResult.class);
                         if (AiResult.GET_RESULT_SUCCESS == aiResult.getStatus()) {
                             Network.currentId = aiResult.getAiDrId();
-                            logger.info("set current id: " + Network.currentId);
+                            //logger.info("set current id: " + Network.currentId);
                             if (null == aiResult.getAiImgResult()) {
                                 logger.info("ai未发现异常");
                             } else {
@@ -262,9 +265,21 @@ public class Main extends Application {
             logger.info("subscribe aiResult: " + aiResult);
             if (null == aiWarningDialogController) {
                 aiWarningDialogController = new AiWarningDialogController();
-                aiWarningDialogController.aiResultProperty().bindBidirectional(this.aiResult);
+
+                aiWarningDialogController.aiResultProperty()
+                        .bindBidirectional(this.aiResult);
+
+                aiWarningDialogController.dialogShouldShowingFlagProperty()
+                        .bindBidirectional(this.warningDialogShouldShowingFlag);
+
+                aiWarningDialogController.dialogShouldShowingFlagProperty()
+                        .addListener((observable, oldValue, newValue) -> {
+                                    logger.info("dialogShouldShowingFlag changed,oldValue is: " + oldValue + ", newValue is: " + newValue);
+                                    aiWarningDialogController.closeDialog();
+                                }
+                        );
             }
-            aiWarningDialogController.setDialogShowing(true);
+
             aiWarningDialogController.show(primaryStage, (webViewDialogController) -> {
                 webViewShowingFlag.bindBidirectional(webViewDialogController.webViewShowingProperty());
                 logger.info("webViewShowingFlag bined...");
@@ -380,5 +395,17 @@ public class Main extends Application {
 
     public void setWebViewShowingFlag(boolean webViewShowingFlag) {
         this.webViewShowingFlag.set(webViewShowingFlag);
+    }
+
+    public boolean getWarningDialogShouldShowingFlag() {
+        return warningDialogShouldShowingFlag.get();
+    }
+
+    public BooleanProperty warningDialogShouldShowingFlagProperty() {
+        return warningDialogShouldShowingFlag;
+    }
+
+    public void setWarningDialogShouldShowingFlag(boolean warningDialogShouldShowingFlag) {
+        this.warningDialogShouldShowingFlag.set(warningDialogShouldShowingFlag);
     }
 }

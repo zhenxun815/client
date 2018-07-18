@@ -43,7 +43,6 @@ public class AiWarningDialogController extends BaseDialogController {
      * @param primaryStage 悬浮窗口
      */
     public void show(Stage primaryStage, OnWebViewShowingListener webViewShowingListener) {
-
         lb_ai_warning.setText(null == this.aiResult.get() ? "null" : this.aiResult.get().getAiImgResult());
 
         primaryStage.setAlwaysOnTop(false);
@@ -64,6 +63,7 @@ public class AiWarningDialogController extends BaseDialogController {
         Integer operation = null;
         switch (cmd.get().getButtonData()) {
             case YES:
+                logger.info("dialog confirm clicked....");
                 WebViewDialogController web = new WebViewDialogController();
                 webViewShowingListener.bindShowingProperty(web);
                 web.showTqWeb(this.aiResult.get().getAiDrId(), Network.AI_PROMPT_PAGE);
@@ -73,7 +73,7 @@ public class AiWarningDialogController extends BaseDialogController {
                 postAiWarningBack(ai_warning, error_flag, warning_flag);
                 break;
             case NO:
-                logger.info("exclude clicked....");
+                logger.info("dialog exclude clicked....");
                 error_flag = 1;
                 warning_flag = 1;
                 operation = 0;
@@ -82,6 +82,7 @@ public class AiWarningDialogController extends BaseDialogController {
                 postDocConfirm(operation);
                 break;
             case CANCEL_CLOSE:
+                logger.info("dialog close invoked..");
                 warning_flag = 1;
                 ai_warning = 1;
                 postAiWarningBack(ai_warning, error_flag, warning_flag);
@@ -143,6 +144,7 @@ public class AiWarningDialogController extends BaseDialogController {
                     logger.info(json);
                 });
     }
+
 
     public AiResult getAiResult() {
         return aiResult.get();
