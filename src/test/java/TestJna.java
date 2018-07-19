@@ -14,7 +14,7 @@ public class TestJna {
 
     @Test
     public void testFetchData() {
-        CharSequence o = JnaCaller.fetchData();
+        CharSequence o = JnaCaller.fetchData("");
         logger.info("testFetchData..." + o);
     }
 

@@ -5,7 +5,7 @@
          type="javafx.scene.control.ContextMenu">
     <fx:define>
         <fx:include fx:id="menuItemHistory" source="menu_item_history.fxml" onMousePressed="#history"></fx:include>
-        <fx:include fx:id="menuItemUpload" source="menu_item_upload.fxml" onMousePressed="#upload"></fx:include>
+        <!--<fx:include fx:id="menuItemUpload" source="menu_item_upload.fxml" onMousePressed="#upload"></fx:include>-->
         <fx:include fx:id="menuItemExit" source="menu_item_exit.fxml" onMousePressed="#exit"></fx:include>
         <fx:include fx:id="menuItemMin" source="menu_item_min.fxml" onMousePressed="#min"></fx:include>
         <fx:include fx:id="menuItemInfo" source="menu_item_info.fxml" onMousePressed="#info"></fx:include>

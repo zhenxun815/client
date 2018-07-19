@@ -1,11 +1,14 @@
 package com.tqhy.client.controller;
 
-import com.tqhy.client.model.bean.AiResult;
-import com.tqhy.client.model.bean.ClientMsg;
+import com.tqhy.client.listener.OnWebViewShowingListener;
+import com.tqhy.client.model.AiResult;
+import com.tqhy.client.model.ClientMsg;
 import com.tqhy.client.network.Network;
 import com.tqhy.client.network.api.ApiBean;
 import com.tqhy.client.utils.FxmlUtils;
 import io.reactivex.schedulers.Schedulers;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.fxml.FXML;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
@@ -22,18 +25,16 @@ import java.util.Optional;
  */
 public class AiWarningDialogController extends BaseDialogController {
 
-    private AiResult result;
     private Logger logger = LoggerFactory.getLogger(AiWarningDialogController.class);
+    private ObjectProperty<AiResult> aiResult = new SimpleObjectProperty<>();
     @FXML
     Label lb_ai_warning;
 
 
-    public AiWarningDialogController(AiResult result) {
-        this.result = result;
+    public AiWarningDialogController() {
+
         FxmlUtils.load("/dialog/ai_warning/ai_warning.fxml", this);
         initDialog();
-        //initButtonType();
-        lb_ai_warning.setText(this.result.toString());
     }
 
     /**
@@ -41,40 +42,46 @@ public class AiWarningDialogController extends BaseDialogController {
      *
      * @param primaryStage 悬浮窗口
      */
-    public void show(Stage primaryStage) {
-        primaryStage.hide();
+    public void show(Stage primaryStage, OnWebViewShowingListener webViewShowingListener) {
+        lb_ai_warning.setText(null == this.aiResult.get() ? "null" : this.aiResult.get().getAiImgResult());
+
+        primaryStage.setAlwaysOnTop(false);
+
+        //切忌通过调用primaryStage.hide();来实现弹窗置顶!!
         Optional<ButtonType> cmd = showAtRightBottom();
         primaryStage.getScene().getRoot().setStyle("-fx-background-color: dimgray;");
         primaryStage.setAlwaysOnTop(true);
         primaryStage.show();
 
-        //1警告,0解除警告
-        Integer warning_flag = null;
-        //0未警告,1警告了
+        //1已警告,0未警告
+        Integer warning_flag = 1;
+        //0警告未解除,1继续警告
         Integer ai_warning = null;
-        //0误报,1非误报
+        //0非误报,1误报
         Integer error_flag = null;
         //医生是否确认
         Integer operation = null;
         switch (cmd.get().getButtonData()) {
             case YES:
+                logger.info("dialog confirm clicked....");
                 WebViewDialogController web = new WebViewDialogController();
-                //web.showWeb("http://192.168.1.214:8080/ai/helper/index?id=" + this.result.getAiDrId()+"&pageName=ai_prompt");
-                web.showTqWeb(this.result.getAiDrId(), Network.AI_PROMPT_PAGE);
-                warning_flag = 0;
-                ai_warning = 1;
+                webViewShowingListener.bindShowingProperty(web);
+                web.showTqWeb(this.aiResult.get().getAiDrId(), Network.AI_PROMPT_PAGE);
+                ai_warning = 0;
+                error_flag = 0;
                 postAiWarningBack(ai_warning, error_flag, warning_flag);
                 break;
             case NO:
-                logger.info("exclude clicked....");
-                error_flag = 0;
-                warning_flag = 0;
+                logger.info("dialog exclude clicked....");
+                error_flag = 1;
                 operation = 0;
+                ai_warning = 0;
                 postAiWarningBack(ai_warning, error_flag, warning_flag);
                 postDocConfirm(operation);
                 break;
             case CANCEL_CLOSE:
-                warning_flag = 1;
+                logger.info("dialog close invoked..");
+                ai_warning = 1;
                 postAiWarningBack(ai_warning, error_flag, warning_flag);
                 break;
         }
@@ -89,7 +96,6 @@ public class AiWarningDialogController extends BaseDialogController {
         ApiBean<ClientMsg> apiBean = new ApiBean<>();
         ClientMsg docConfirm = new ClientMsg();
         docConfirm.setAiDrId(Network.currentId);
-        docConfirm.setOperationIp(Network.getLocalIp());
         docConfirm.setOperation(operation);
         apiBean.setBean(docConfirm);
         Network.getAiHelperApi()
@@ -119,10 +125,11 @@ public class AiWarningDialogController extends BaseDialogController {
         warningBack.setOperationIp(Network.getLocalIp());
         warningBack.setAiDrId(Network.currentId);
         warningBack.setWarningBack(aiWarning, errorFlag, warningFlag);
+        logger.info("post warning back: " + warningBack);
         apiBean.setBean(warningBack);
 
         Network.getAiHelperApi()
-                .postAiWarning(apiBean)
+                .postAiWarningBack(apiBean)
                 .map(body -> {
                     String json = body.string();
                     logger.info("AiWarningDialogController postAiWarningBack recieve json:" + json);
@@ -133,5 +140,18 @@ public class AiWarningDialogController extends BaseDialogController {
                 .subscribe(json -> {
                     logger.info(json);
                 });
+    }
+
+
+    public AiResult getAiResult() {
+        return aiResult.get();
+    }
+
+    public ObjectProperty<AiResult> aiResultProperty() {
+        return aiResult;
+    }
+
+    public void setAiResult(AiResult aiResult) {
+        this.aiResult.set(aiResult);
     }
 }

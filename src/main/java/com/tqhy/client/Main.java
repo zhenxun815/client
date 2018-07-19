@@ -4,14 +4,18 @@ import com.google.gson.Gson;
 import com.tqhy.client.controller.AiWarningDialogController;
 import com.tqhy.client.controller.AuthWarningDialogController;
 import com.tqhy.client.jna.JnaCaller;
-import com.tqhy.client.model.bean.AiResult;
+import com.tqhy.client.model.AiResult;
 import com.tqhy.client.network.Network;
-import com.tqhy.client.network.response.ErrorResponseBody;
-import com.tqhy.client.utils.ViewsUtils;
+import com.tqhy.client.network.responsebody.ErrorResponseBody;
+import com.tqhy.client.utils.*;
 import io.reactivex.Observable;
 import io.reactivex.schedulers.Schedulers;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -20,6 +24,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,18 +40,49 @@ public class Main extends Application {
 
     private String key = "";
     private Logger logger = LoggerFactory.getLogger(Main.class);
+    private String rootPath = FileUtils.getRootPath();
+    private String screenImgPath = rootPath + "/screen_capture.jpg";
+    private String cuttedImgPath = rootPath + "/capture_cutted.jpg";
+
+    private int cut_x;
+    private int cut_y;
+    private int cut_width;
+    private int cut_height;
+
+    private BooleanProperty webViewShowingFlag = new SimpleBooleanProperty(false);
+    private BooleanProperty warningDialogShouldShowingFlag = new SimpleBooleanProperty(false);
+    private ObjectProperty<AiResult> aiResult = new SimpleObjectProperty<>();
+    private AiWarningDialogController aiWarningDialogController;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
        /* String classPath = Main.class.getClassLoader().getResource("").getPath();
         System.out.println("path is: " + classPath);*/
-
-
         initPrimaryStage(primaryStage);
-
         initSystemTray(primaryStage);
+        initProperties();
         doRxJava(primaryStage);
-        //requestAiHelper(primaryStage);
+    }
+
+    /**
+     * 初始化网络地址
+     */
+    private void initProperties() {
+        String ip = PropertiesUtil.getPropertiesKeyValue("ip");
+        logger.info("ip is:" + ip);
+        Network.IP = ip;
+        Network.setBaseUrl(ip);
+        logger.info("base url is: " + Network.BASE_URL);
+
+        //截图参数
+        String x = PropertiesUtil.getPropertiesKeyValue("x");
+        String y = PropertiesUtil.getPropertiesKeyValue("y");
+        String width = PropertiesUtil.getPropertiesKeyValue("width");
+        String height = PropertiesUtil.getPropertiesKeyValue("height");
+        this.cut_x = Integer.parseInt(x);
+        this.cut_y = Integer.parseInt(y);
+        this.cut_width = Integer.parseInt(width);
+        this.cut_height = Integer.parseInt(height);
     }
 
     /**
@@ -55,27 +92,37 @@ public class Main extends Application {
      */
     private void doRxJava(Stage primaryStage) {
         JnaCaller.getUserInfo();
-        Observable.interval(3000, TimeUnit.MILLISECONDS)
+        Observable.interval(1000, TimeUnit.MILLISECONDS)
                 .map(aLong -> {
-                            String str = null;
-                            str = JnaCaller.fetchData();
-                            logger.info(".dll caller get: " + str);
-                            //todo Network.currentId=key;
-                            return str;
+                    //logger.info("webViewShowingFlag is: " + webViewShowingFlag);
+                    if (!isWebViewShowingFlag()) {
+                                screenImgPath = ImgUtils.captureScreen(screenImgPath);
+                                String str = JnaCaller.fetchData(screenImgPath);
+                        //logger.info("capture screen img path: " + screenImgPath);
+                                logger.info(".dll caller get: " + str);
+                                return str;
+                            } else {
+                                return key;
+                            }
+
                         }
                 )
                 .filter(key -> {
-                    //logger.info("key: " + key + "this.key: " + this.key + "b: " + b);
                     boolean b = key.equals(this.key);
+                    setWarningDialogShouldShowingFlag(b);
+                    logger.info("setWarningDialogShouldShowingFlag: " + getWarningDialogShouldShowingFlag());
+                    //logger.info("key: " + key + " this.key: " + this.key + " b: " + b);
                     this.key = key;
-                    return !b;
+                    return key.length() >= 5 && !b;
                 })
-                .observeOn(Schedulers.io())
+                .observeOn(Schedulers.trampoline())
                 .subscribeOn(Schedulers.trampoline())
                 .subscribe(key -> {
+
                     switch (key) {
                         //未授权
                         case JnaCaller.FETCH_DATA_LICENSE:
+                            showfloat(primaryStage);
                             getAuthWarning(primaryStage);
                             break;
                         //非RIS界面,未获取到数据
@@ -85,12 +132,27 @@ public class Main extends Application {
                         //连接动态库失败
                         case JnaCaller.FETCH_DATA_FAILED:
                             break;
+                        //根据key值请求后台AiHelper
                         default:
-                            getAiHelperWarning(primaryStage, key);
+                            showfloat(primaryStage);
+                            requestAiHelper(primaryStage, key);
                             break;
                     }
                     //logger.info("subscribe: " + key);
                 });
+    }
+
+    /**
+     * 显示悬浮窗
+     *
+     * @param primaryStage
+     */
+    private void showfloat(Stage primaryStage) {
+        Platform.runLater(() -> {
+            if (!primaryStage.isShowing()) {
+                primaryStage.show();
+            }
+        });
     }
 
     /**
@@ -99,7 +161,11 @@ public class Main extends Application {
      * @param primaryStage
      */
     private void hidefloat(Stage primaryStage) {
-        Platform.runLater(() -> primaryStage.hide());
+        Platform.runLater(() -> {
+            if (primaryStage.isShowing()) {
+                primaryStage.hide();
+            }
+        });
     }
 
     /**
@@ -142,32 +208,108 @@ public class Main extends Application {
     }
 
     /**
-     * 请求后台,获取警告弹框内容
+     * 根据key值请求后台获取ai提示内容,请求成功则弹出窗口,失败,则打印错误日志;
      */
-    private void getAiHelperWarning(Stage primaryStage, String key) {
-        logger.info(" into getAiHelperWarning...");
+    private void requestAiHelper(Stage primaryStage, String key) {
+
+        String substring = key.substring(key.length() - 5);
+        //logger.info(" into requestAiHelper...key is: " + key);
+        //logger.info(" into requestAiHelper...substring is: " + substring);
+        String md5 = MD5Utils.getMD5(substring);
+        // logger.info(" into requestAiHelper...substring MD5 is: " + md5);
+        logger.info(Network.BASE_URL);
+        String cutImgPath = ImgUtils.cutImg(screenImgPath, cuttedImgPath, cut_x, cut_y, cut_width, cut_height);
+        if (null != cutImgPath) {
+            RequestBody content = Network.createRequestBody(md5);
+            MultipartBody.Part part = Network.createMultipart(cutImgPath);
+            //logger.info("content type is: "+content.contentType());
+            Network.getAiHelperApi()
+                    .getAiWarning(content, part)
+                    .observeOn(Schedulers.io())
+                    .subscribeOn(Schedulers.trampoline())
+                    /* .onErrorReturn((error) -> {
+                          logger.error("getAiDrId(key)请求异常", error);
+                          return new ErrorResponseBody(error);
+                      })
+                     .filter(body -> body instanceof ErrorResponseBody)*/
+                    .subscribe(warningBody -> {
+                        String json = warningBody.string();
+                        logger.info("json is: " + json);
+                        AiResult aiResult = new Gson().fromJson(json, AiResult.class);
+                        if (AiResult.GET_RESULT_SUCCESS == aiResult.getStatus()) {
+                            Network.currentId = aiResult.getAiDrId();
+                            //logger.info("set current id: " + Network.currentId);
+                            if (null == aiResult.getAiImgResult()) {
+                                logger.info("ai未发现异常");
+                            } else {
+                                this.aiResult.setValue(aiResult);
+                                showWarningDialog(primaryStage);
+                            }
+                        } else {
+                            logger.info("ai未获取到对应数据");
+                        }
+                    });
+        } else {
+            logger.info("截取图片失败...");
+        }
+
+    }
+
+    /**
+     * 弹出ai提示窗口
+     *
+     * @param primaryStage
+     */
+    private void showWarningDialog(Stage primaryStage) {
+        Platform.runLater(() -> {
+            logger.info("subscribe aiResult: " + aiResult);
+            if (null == aiWarningDialogController) {
+                aiWarningDialogController = new AiWarningDialogController();
+
+                aiWarningDialogController.aiResultProperty()
+                        .bindBidirectional(this.aiResult);
+
+                aiWarningDialogController.dialogShouldShowingFlagProperty()
+                        .bindBidirectional(this.warningDialogShouldShowingFlag);
+
+                aiWarningDialogController.dialogShouldShowingFlagProperty()
+                        .addListener((observable, oldValue, newValue) -> {
+                                    logger.info("dialogShouldShowingFlag changed,oldValue is: " + oldValue + ", newValue is: " + newValue);
+                                    aiWarningDialogController.closeDialog();
+                                }
+                        );
+            }
+
+            aiWarningDialogController.show(primaryStage, (webViewDialogController) -> {
+                webViewShowingFlag.bindBidirectional(webViewDialogController.webViewShowingProperty());
+                logger.info("webViewShowingFlag bined...");
+            });
+        });
+    }
+
+    /**
+     * 通过key值请求后台获取当前aiDrId值,请求成功则赋值给{@link Network#currentId}
+     *
+     * @param primaryStage
+     * @param key
+     */
+    private void getAiDrId(Stage primaryStage, String key) {
         Network.getAiHelperApi()
-                .requestAiHelper(key)
-                /* .repeatWhen(objectObservable ->
-                         objectObservable.flatMap(o ->
-                                 Observable.just(1).delay(5000, TimeUnit.MILLISECONDS)))
-                 .filter(testMsg -> !key.equals(testMsg))*/
-                .onErrorReturn((error) -> new ErrorResponseBody(error))
+                .getAiDrId(key)
                 .observeOn(Schedulers.io())
                 .subscribeOn(Schedulers.trampoline())
-                .subscribe(data -> {
-                    if (data instanceof ErrorResponseBody) {
-                        logger.info("subscribe error " + data.string());
+                .onErrorReturn((error) -> {
+                    logger.error("getAiDrId(primaryStage,aidrId)请求异常", error);
+                    return new ErrorResponseBody(error);
+                })
+                .filter(body -> body instanceof ErrorResponseBody)
+                .subscribe(warningBody -> {
+                    String json = warningBody.string();
+                    AiResult aiResult = new Gson().fromJson(json, AiResult.class);
+                    if (AiResult.GET_RESULT_SUCCESS == aiResult.getStatus()) {
+                        Network.currentId = aiResult.getAiDrId();
                     } else {
-                        String json = data.string();
-                        Platform.runLater(() -> {
-                            logger.info("subscribe str: " + json);
-                            AiResult aiResult = new Gson().fromJson(json, AiResult.class);
-                            primaryStage.getScene().getRoot().setStyle("-fx-background-color: red;");
-                            logger.info("subscribe aiResult : " + aiResult);
-                            AiWarningDialogController aiWarningDialogController = new AiWarningDialogController(aiResult);
-                            aiWarningDialogController.show(primaryStage);
-                        });
+                        logger.info("未能成功获取当前对应aiDrId");
                     }
                 });
     }
@@ -240,5 +382,30 @@ public class Main extends Application {
 
     public static void main(String[] args) {
         launch(args);
+    }
+
+
+    public boolean isWebViewShowingFlag() {
+        return webViewShowingFlag.get();
+    }
+
+    public BooleanProperty webViewShowingFlagProperty() {
+        return webViewShowingFlag;
+    }
+
+    public void setWebViewShowingFlag(boolean webViewShowingFlag) {
+        this.webViewShowingFlag.set(webViewShowingFlag);
+    }
+
+    public boolean getWarningDialogShouldShowingFlag() {
+        return warningDialogShouldShowingFlag.get();
+    }
+
+    public BooleanProperty warningDialogShouldShowingFlagProperty() {
+        return warningDialogShouldShowingFlag;
+    }
+
+    public void setWarningDialogShouldShowingFlag(boolean warningDialogShouldShowingFlag) {
+        this.warningDialogShouldShowingFlag.set(warningDialogShouldShowingFlag);
     }
 }
