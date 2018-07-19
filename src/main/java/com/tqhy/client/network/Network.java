@@ -104,7 +104,7 @@ public class Network {
     }
 
     public static void setBaseUrl(String ip) {
-        BASE_URL = "http://" + ip + ":8080/ai/helper/";
+        BASE_URL = "http://" + ip + ":8080/";
     }
 
 

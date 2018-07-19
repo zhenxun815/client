@@ -3,7 +3,6 @@ package com.tqhy.client.controller;
 import com.tqhy.client.network.JavaApp;
 import com.tqhy.client.network.Network;
 import com.tqhy.client.utils.FxmlUtils;
-import com.tqhy.client.utils.ViewsUtils;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.fxml.FXML;
@@ -56,7 +55,7 @@ public class WebViewDialogController extends AnchorPane {
     }
 
     public void showTqWeb(String id, String pageName) {
-        String url = Network.BASE_URL + "index?id=" + id + "&pageName=" + pageName;
+        String url = Network.BASE_URL + "index.html?id=" + id + "&pageName=" + pageName;
         showWeb(url);
     }
 

@@ -20,7 +20,7 @@ public interface AiHelperApi {
      * @return
      */
     @Multipart
-    @POST("warning")
+    @POST("ai/helper/warning")
     Observable<ResponseBody> getAiWarning(@Part("key") RequestBody key, @Part() MultipartBody.Part part);
 
     /**
@@ -28,7 +28,7 @@ public interface AiHelperApi {
      * @param warningBack
      * @return
      */
-    @POST("warningback")
+    @POST("ai/helper/warningback")
     Observable<ResponseBody> postAiWarningBack(@Body ApiBean<ClientMsg> warningBack);
 
     /**
@@ -36,7 +36,7 @@ public interface AiHelperApi {
      * @param date
      * @return
      */
-    @POST("confirm")
+    @POST("ai/helper/confirm")
     Observable<ResponseBody> postHistory(@Body ApiBean<ClientMsg> date);
 
     /**
@@ -44,7 +44,7 @@ public interface AiHelperApi {
      * @param key
      * @return
      */
-    @GET("aiDrId/{key}")
+    @GET("ai/helper/aiDrId/{key}")
     Observable<ResponseBody> getAiDrId(@Path("key") String key);
 
     /**
@@ -52,6 +52,6 @@ public interface AiHelperApi {
      * @param key
      * @return
      */
-    @GET("warning/{key}")
+    @GET("ai/helper/warning/{key}")
     Call<ResponseBody> getTest(@Path("key") String key);
 }
