@@ -54,7 +54,7 @@ public class AiWarningDialogController extends BaseDialogController {
         primaryStage.show();
 
         //1已警告,0未警告
-        Integer warning_flag = null;
+        Integer warning_flag = 1;
         //0警告未解除,1继续警告
         Integer ai_warning = null;
         //0非误报,1误报
@@ -67,23 +67,20 @@ public class AiWarningDialogController extends BaseDialogController {
                 WebViewDialogController web = new WebViewDialogController();
                 webViewShowingListener.bindShowingProperty(web);
                 web.showTqWeb(this.aiResult.get().getAiDrId(), Network.AI_PROMPT_PAGE);
-                warning_flag = 1;
-                ai_warning = 1;
+                ai_warning = 0;
                 error_flag = 0;
                 postAiWarningBack(ai_warning, error_flag, warning_flag);
                 break;
             case NO:
                 logger.info("dialog exclude clicked....");
                 error_flag = 1;
-                warning_flag = 1;
                 operation = 0;
-                ai_warning = 1;
+                ai_warning = 0;
                 postAiWarningBack(ai_warning, error_flag, warning_flag);
                 postDocConfirm(operation);
                 break;
             case CANCEL_CLOSE:
                 logger.info("dialog close invoked..");
-                warning_flag = 1;
                 ai_warning = 1;
                 postAiWarningBack(ai_warning, error_flag, warning_flag);
                 break;
