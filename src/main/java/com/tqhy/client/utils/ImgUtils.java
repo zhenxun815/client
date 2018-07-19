@@ -5,8 +5,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
-import java.awt.geom.AffineTransform;
-import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -29,7 +27,7 @@ public class ImgUtils {
                 BufferedImage bufferedSubImage = bufferedImage.getSubimage(x, y, width, height);
                 boolean cutted = ImageIO.write(bufferedSubImage, "jpg", cuttedImmg);
                 if (cutted) {
-                    return zoomImage(cuttedImmg, 50 * 1024);
+                    return zoomImage(cuttedImmg, 100);
                 }
             }
         } catch (IOException e) {
@@ -84,38 +82,43 @@ public class ImgUtils {
      * 绝对路径.
      *
      * @param originImgFile 原图绝对路径
-     * @param maxlength     文件不能超过的指定大小
+     * @param newWidth     压缩后图片宽度
      * @return 压缩后图片文件绝对路径, 如果未压缩, 则为原图路径
      * @throws Exception
      */
-    public static String zoomImage(File originImgFile, long maxlength) {
+    public static String zoomImage(File originImgFile, int newWidth) {
         long length = originImgFile.length();
         logger.info("originImgFile.length() is: " + length);
-        if (length < maxlength) {
-            return originImgFile.getAbsolutePath();
-        }
-        double sqrt = Math.sqrt((length + 0.0d) / maxlength);
-        logger.info("sqrt is: " + sqrt);
-        double sideRate = 1 / sqrt;
-        logger.info("sideRate is: " + sideRate);
-        BufferedImage bufImg = null;
+
+        BufferedImage bufImgOld = null;
+        BufferedImage bufImgNew = null;
         try {
-            bufImg = ImageIO.read(originImgFile);
+            bufImgOld = ImageIO.read(originImgFile);
+            int originHeight = bufImgOld.getHeight();
+            int originWidth = bufImgOld.getWidth();
+            int newHeight = Integer.parseInt(new java.text.DecimalFormat("0").format(originHeight * newWidth / (originWidth * 1.0)));
+            logger.debug("change image's height, width:{}, height:{}.", newWidth, newHeight);
+
+            bufImgNew = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_INT_RGB);
+            Graphics g = bufImgNew.getGraphics();
+            g.drawImage(bufImgOld, 0, 0, newWidth, newHeight, Color.LIGHT_GRAY, null);
+            g.dispose();
+            // 刷新此 Image 对象正在使用的所有可重构的资源.
+            bufImgOld.flush();
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        AffineTransformOp ato = new AffineTransformOp(AffineTransform.getScaleInstance(sideRate, sideRate), null);
-        BufferedImage bufferedImage = ato.filter(bufImg, null);
         File tempFile = new File(FileUtils.getRootPath() + "/temp_img.jpg");
         if (!tempFile.exists() && !tempFile.isDirectory()) {
             tempFile.mkdir();
         }
         try {
-            ImageIO.write(bufferedImage, "jpg", tempFile);
+            ImageIO.write(bufImgNew, "jpg", tempFile);
         } catch (IOException e) {
             e.printStackTrace();
         }
         return tempFile.getAbsolutePath();
     }
+
 }
