@@ -62,22 +62,21 @@ public class AiWarningDialogController extends BaseDialogController {
         //医生是否确认
         Integer operation = null;
         switch (cmd.get().getButtonData()) {
-            case YES:
-                logger.info("dialog confirm clicked....");
+            case YES: //进入webView详情页
+                logger.info("dialog detail clicked....");
                 WebViewDialogController web = new WebViewDialogController();
                 webViewShowingListener.bindShowingProperty(web);
                 web.showTqWeb(this.aiResult.get().getAiDrId(), Network.AI_PROMPT_PAGE);
-                ai_warning = 0;
-                error_flag = 0;
+                ai_warning = 1;
                 postAiWarningBack(ai_warning, error_flag, warning_flag);
                 break;
             case NO:
                 logger.info("dialog exclude clicked....");
                 error_flag = 1;
-                operation = 0;
+                //operation = 1;
                 ai_warning = 0;
                 postAiWarningBack(ai_warning, error_flag, warning_flag);
-                postDocConfirm(operation);
+                //postDocConfirm(operation);
                 break;
             case CANCEL_CLOSE:
                 logger.info("dialog close invoked..");
@@ -89,8 +88,11 @@ public class AiWarningDialogController extends BaseDialogController {
 
     /**
      * 向后台反馈医生"确认"还是"排除"ai提示的操作
+     * 参数operation的值与数据控表中error_flag值相对应,
+     * 即operation==1,则设定error_flag=1,即医生点击了排除;
+     * operation==0,则设定error_flag=0,医生点击了确认.
      *
-     * @param operation 1:确认,0:排除
+     * @param operation 0:确认,1:排除
      */
     private void postDocConfirm(Integer operation) {
         ApiBean<ClientMsg> apiBean = new ApiBean<>();
