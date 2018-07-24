@@ -16,7 +16,7 @@ import java.util.List;
 public class ListViewDialogController extends BaseDialogController {
 
     @FXML
-    private ListView dialog_lv;
+    private ListView<String> dialog_lv;
     private List<String> datas;
     private ObservableList observableList;
     /**
