@@ -56,6 +56,7 @@ public class WebViewController extends AnchorPane {
         setWebViewShowing(true);
         logger.info("showWeb(): " + webViewShowing.get());
         //stage.setMaximized(true);
+        showAnimation();
         stage.show();
     }
 
@@ -69,10 +70,18 @@ public class WebViewController extends AnchorPane {
         String path = WebViewController.class.getResource(url).toExternalForm();
         engine.load(path);
 
+        showAnimation();
+        stage.show();
+        JSObject window = (JSObject) engine.executeScript("window");
+        JavaApp javaApp = new JavaApp(stage);
+        window.setMember("app", javaApp);
+    }
+
+    private void showAnimation() {
         stage.setOnShowing(event -> {
             logger.info("into onShown...");
             Pane pane = new Pane();
-            TranslateTransition transTrans = new TranslateTransition(Duration.millis(1000), pane);
+            TranslateTransition transTrans = new TranslateTransition(Duration.millis(500), pane);
             double screenWidth = ViewsUtils.getScreenWidth();
             double screenHeight = ViewsUtils.getScreenHeight();
             double originWidth = screenWidth / 3;
@@ -94,7 +103,7 @@ public class WebViewController extends AnchorPane {
                         this.setLayoutY(0D);
                     });
 
-            ScaleTransition scaleTrans = new ScaleTransition(Duration.millis(1000), pane);
+            ScaleTransition scaleTrans = new ScaleTransition(Duration.millis(500), pane);
             scaleTrans.setFromX(0.2D);
             scaleTrans.setToX(1.0D);
 
@@ -114,10 +123,6 @@ public class WebViewController extends AnchorPane {
 
             logger.info("play finish...");
         });
-        stage.show();
-        JSObject window = (JSObject) engine.executeScript("window");
-        JavaApp javaApp = new JavaApp(stage);
-        window.setMember("app", javaApp);
     }
 
     public boolean isWebViewShowing() {
