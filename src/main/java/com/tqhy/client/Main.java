@@ -61,7 +61,7 @@ public class Main extends Application {
         initPrimaryStage(primaryStage);
         initSystemTray(primaryStage);
         initProperties();
-        doRxJava(primaryStage);
+        //doRxJava(primaryStage);
     }
 
     /**

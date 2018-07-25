@@ -43,6 +43,7 @@ public class BaseDialogController extends DialogPane {
         dialog.setDialogPane(this);
         dialog.initOwner(owner);
 
+
     }
 
     /**
@@ -64,10 +65,11 @@ public class BaseDialogController extends DialogPane {
     public Optional<ButtonType> showAtCenter() {
         setDialogShouldShowingFlag(true);
         Rectangle2D visualBounds = Screen.getPrimary().getVisualBounds();
-        dialog.setX(visualBounds.getMaxX() / 2 - this.getWidth() / 2);
-        dialog.setY(visualBounds.getMaxY() / 2 - this.getHeight() / 2);
-        // logger.info("x: " + dialog.getX() + " y: " + dialog.getY());
-        // dialog.showAndWait();
+        double x = visualBounds.getMaxX() / 2 - this.getWidth() / 2;
+        double y = visualBounds.getMaxY() / 2 - this.getHeight() / 2;
+        dialog.setX(x);
+        dialog.setY(y);
+        logger.info(" into showAtCenter, x: " + dialog.getX() + " y: " + dialog.getY());
         Optional<ButtonType> cmd = dialog.showAndWait();
         return cmd;
     }
