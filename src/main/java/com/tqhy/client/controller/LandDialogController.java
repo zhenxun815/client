@@ -27,6 +27,7 @@ public class LandDialogController extends BaseDialogController {
 
     public void show() {
         Optional<ButtonType> cmd = showAtCenter();
+
         switch (cmd.get().getButtonData()) {
             case OK_DONE:
                 String name = user_name.getText();

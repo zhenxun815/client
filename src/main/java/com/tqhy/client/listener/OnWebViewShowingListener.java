@@ -1,6 +1,6 @@
 package com.tqhy.client.listener;
 
-import com.tqhy.client.controller.WebViewDialogController;
+import com.tqhy.client.controller.WebViewController;
 
 /**
  *
@@ -10,5 +10,5 @@ import com.tqhy.client.controller.WebViewDialogController;
  * @since 1.0.0
  */
 public interface OnWebViewShowingListener {
-    void bindShowingProperty(WebViewDialogController webViewDialogController);
+    void bindShowingProperty(WebViewController webViewController);
 }

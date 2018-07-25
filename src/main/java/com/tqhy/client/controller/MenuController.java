@@ -44,7 +44,7 @@ public class MenuController extends ContextMenu {
     @FXML
     public void history(MouseEvent event) {
         logger.info("detail click...");
-        WebViewDialogController web = new WebViewDialogController();
+        WebViewController web = new WebViewController();
         //web.showWeb(Network.BASE_URL+"index?id="+Network.currentId+"&pageName=history");
         web.showTqWeb(Network.currentId, Network.HISTORY_PAGE);
     }
@@ -52,7 +52,7 @@ public class MenuController extends ContextMenu {
     /*  @FXML
       public void upload(MouseEvent event) {
           logger.info("upload click...");
-          WebViewDialogController web = new WebViewDialogController();
+          WebViewController web = new WebViewController();
           //web.showWeb(Network.BASE_URL+"index?id="+Network.currentId+"&pageName=report");
           logger.info("current id is: "+Network.currentId);
           web.showTqWeb(Network.currentId, Network.REPORT_PAGE);
@@ -73,9 +73,8 @@ public class MenuController extends ContextMenu {
     @FXML
     public void info(MouseEvent event) {
         logger.info("info click...");
-        //testWeb();
-        testland();
-
+        testWeb();
+        //testland();
     }
 
     private void testland() {
@@ -84,8 +83,8 @@ public class MenuController extends ContextMenu {
     }
 
     private void testWeb() {
-        WebViewDialogController web = new WebViewDialogController();
-        web.showLocalWeb("/html/test.html");
+        WebViewController web = new WebViewController();
+        web.showLocalWeb("/html/request.html");
         //web.showWeb("http://192.168.1.212:8080/ai/helper/test/" + "testId");
     }
 
