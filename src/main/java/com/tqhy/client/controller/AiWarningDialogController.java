@@ -64,7 +64,7 @@ public class AiWarningDialogController extends BaseDialogController {
         switch (cmd.get().getButtonData()) {
             case YES: //进入webView详情页
                 logger.info("dialog detail clicked....");
-                WebViewDialogController web = new WebViewDialogController();
+                WebViewController web = new WebViewController();
                 webViewShowingListener.bindShowingProperty(web);
                 web.showTqWeb(this.aiResult.get().getAiDrId(), Network.AI_PROMPT_PAGE);
                 ai_warning = 1;
