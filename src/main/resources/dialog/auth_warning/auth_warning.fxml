@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<fx:root headerText="未授权提示"  prefHeight="400" prefWidth="600"
+         stylesheets="/dialog/ai_warning/ai_warning.css" type="javafx.scene.control.DialogPane"
+         xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1">
+    <graphic>
+        <ImageView fitHeight="32.0" fitWidth="32.0" nodeOrientation="INHERIT" pickOnBounds="true" preserveRatio="true">
+            <image>
+                <Image url="@../icons/warning.png"/>
+            </image>
+        </ImageView>
+    </graphic>
+    <content>
+        <Label fx:id="lb_auth_warning" minWidth="600.0" prefWidth="600.0" text="Label"/>
+    </content>
+    <buttonTypes>
+        <ButtonType fx:id="bt_detail" buttonData="YES" text="确认"/>
+        <ButtonType fx:id="bt_close" buttonData="CANCEL_CLOSE" text="关闭"/>
+    </buttonTypes>
+</fx:root>

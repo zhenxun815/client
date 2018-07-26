@@ -1,5 +1,6 @@
 package com.tqhy.client.controller;
 
+import com.tqhy.client.network.Network;
 import com.tqhy.client.utils.FxmlUtils;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -9,12 +10,8 @@ import javafx.scene.control.CustomMenuItem;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
-
-import javax.imageio.ImageIO;
-import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Yiheng
@@ -22,10 +19,9 @@ import java.io.IOException;
  * @since 1.0.0
  */
 public class MenuController extends ContextMenu {
+
     @FXML
-    HBox menuItemDetail;
-    @FXML
-    HBox menuItemConfig;
+    HBox menuItemHistory;
     @FXML
     HBox menuItemMin;
     @FXML
@@ -33,7 +29,12 @@ public class MenuController extends ContextMenu {
     @FXML
     HBox menuItemInfo;
 
+    /* @FXML
+    HBox menuItemUpload;*/
+
     Node anchor;
+    private Stage stage;
+    private Logger logger = LoggerFactory.getLogger(MenuController.class);
 
     public MenuController() {
         FxmlUtils.load("/menu/menu_root.fxml", this);
@@ -41,105 +42,72 @@ public class MenuController extends ContextMenu {
     }
 
     @FXML
-    public void detail(MouseEvent event) {
-        System.out.println("detail click...");
+    public void history(MouseEvent event) {
+        logger.info("detail click...");
+        WebViewController web = new WebViewController();
+        //web.showWeb(Network.BASE_URL+"index?id="+Network.currentId+"&pageName=history");
+        web.showTqWeb(Network.currentId, Network.HISTORY_PAGE);
     }
 
-    @FXML
-    public void config(MouseEvent event) {
-        System.out.println("config click...");
-    }
-
+    /*  @FXML
+      public void upload(MouseEvent event) {
+          logger.info("upload click...");
+          WebViewController web = new WebViewController();
+          //web.showWeb(Network.BASE_URL+"index?id="+Network.currentId+"&pageName=report");
+          logger.info("current id is: "+Network.currentId);
+          web.showTqWeb(Network.currentId, Network.REPORT_PAGE);
+      }
+  */
     @FXML
     public void exit(MouseEvent event) {
-        System.out.println("exit click...");
+        logger.info("exit click...");
+        stage.close();
         System.exit(0);
     }
 
     @FXML
     public void min(MouseEvent event) {
-        System.out.println("min click...");
-        Stage window = (Stage) anchor.getScene().getWindow();
-        System.out.println("window is: " + window);
-        SystemTray systemTray = SystemTray.getSystemTray();
-        PopupMenu popupMenu = createPopMenu(window);
-        try {
-            BufferedImage image = ImageIO.read(getClass().getResourceAsStream("/deploy/package/windows/client.png"));
-            final TrayIcon trayIcon = new TrayIcon(image, "打开悬浮窗", popupMenu);
-            trayIcon.addMouseListener(new MouseAdapter() {
-                @Override
-                public void mouseClicked(java.awt.event.MouseEvent e) {
-                    super.mouseClicked(e);
-                    if (java.awt.event.MouseEvent.BUTTON1 == e.getButton()) {
-                        if (2 == e.getClickCount()) {
-                            System.out.println("双击666...");
-                            Platform.runLater(window::show);
-                        }
-                    }
-                }
-            });
-            systemTray.add(trayIcon);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (AWTException e) {
-            e.printStackTrace();
-        }
-        Platform.runLater(window::hide);
-
-    }
-
-    private PopupMenu createPopMenu(Stage window) {
-        PopupMenu popup = new PopupMenu();
-
-        MenuItem itemShowDetail = new MenuItem("Detail");
-        MenuItem itemShowFloat = new MenuItem("Float");
-        MenuItem itemConfig = new MenuItem("Config");
-        MenuItem itemExit = new MenuItem("Exit");
-        itemShowDetail.addActionListener(e -> {
-            System.out.println("click itemShowDetail...");
-        });
-        itemShowFloat.addActionListener(e -> {
-            System.out.println("click itemShowFloat...");
-            Platform.runLater(window::show);
-        });
-        itemConfig.addActionListener(e -> {
-            System.out.println("click itemConfig...");
-        });
-        itemExit.addActionListener(e -> {
-            System.out.println("click itemExit...");
-            System.exit(0);
-        });
-        popup.add(itemShowDetail);
-        popup.add(itemShowFloat);
-        popup.add(itemConfig);
-        popup.add(itemExit);
-        return popup;
+        Platform.runLater(stage::hide);
     }
 
     @FXML
     public void info(MouseEvent event) {
-        System.out.println("info click...");
+        logger.info("info click...");
+        testWeb();
+        //testland();
+    }
+
+    private void testland() {
+        LandDialogController landDialogController = new LandDialogController();
+        landDialogController.show();
+    }
+
+    private void testWeb() {
+        WebViewController web = new WebViewController();
+        web.showLocalWeb("/html/test.html");
+        //web.showWeb("http://192.168.1.212:8080/ai/helper/test/" + "testId");
     }
 
     public void initItems() {
-        // System.out.println("menu controller init items...");
-        getItems().add(0, new CustomMenuItem(menuItemDetail));
-        getItems().add(1, new CustomMenuItem(menuItemConfig));
-        getItems().add(2, new CustomMenuItem(menuItemMin));
-        getItems().add(3, new CustomMenuItem(menuItemExit));
-        getItems().add(4, new CustomMenuItem(menuItemInfo));
+        // logger.info("menu controller init items...");
+        getItems().add(0, new CustomMenuItem(menuItemHistory));
+        /* getItems().add(1, new CustomMenuItem(menuItemUpload));*/
+        getItems().add(1, new CustomMenuItem(menuItemMin));
+        getItems().add(2, new CustomMenuItem(menuItemExit));
+        getItems().add(3, new CustomMenuItem(menuItemInfo));
     }
 
     public void showMenu(Node anchor, double screenX, double screenY) {
-        // System.out.println("menu controller show...");
-        // System.out.println("menu items size: " + getItems().size());
-        // System.out.println("menu anchor is: " + anchor + " x: " + screenX + " y: " + screenY);
+        // logger.info("menu controller showAtRightBottom...");
+        // logger.info("menu items size: " + getItems().size());
+        // logger.info("menu anchor is: " + anchor + " x: " + screenX + " y: " + screenY);
         this.anchor = anchor;
+        this.stage = (Stage) anchor.getScene().getWindow();
         show(anchor, screenX, screenY);
     }
 
     public void hideMenu() {
-        // System.out.println("menu controller hide...");
+        logger.info("menu controller hide...");
         hide();
     }
 }

@@ -13,7 +13,7 @@
                 <Image url="@/menu/icons/min.png"/>
             </image>
         </ImageView>
-        <Label text="  最小化 "/>
+        <Label text="  隐藏 "/>
     </children>
 </HBox>
 

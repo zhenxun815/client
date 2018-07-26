@@ -10,10 +10,10 @@
         <ImageView disable="true" pickOnBounds="true"
                    preserveRatio="true" fitHeight="13" fitWidth="13">
             <image>
-                <Image url="@/menu/icons/config.png"/>
+                <Image url="@/menu/icons/upload.png"/>
             </image>
         </ImageView>
-        <Label text="  设置 "/>
+        <Label text="  上报 "/>
     </children>
 </HBox>
 
