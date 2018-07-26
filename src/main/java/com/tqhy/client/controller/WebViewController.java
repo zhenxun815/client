@@ -4,20 +4,16 @@ import com.tqhy.client.network.JavaApp;
 import com.tqhy.client.network.Network;
 import com.tqhy.client.utils.FxmlUtils;
 import com.tqhy.client.utils.ViewsUtils;
-import javafx.animation.ParallelTransition;
-import javafx.animation.ScaleTransition;
-import javafx.animation.TranslateTransition;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.concurrent.Worker;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Pane;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javafx.stage.Stage;
-import javafx.util.Duration;
 import netscape.javascript.JSObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,16 +43,27 @@ public class WebViewController extends AnchorPane {
         stage.setOnCloseRequest(event -> {
             logger.info("webview window on close request...");
             setWebViewShowing(false);
+            stage.close();
         });
     }
 
     public void showWeb(String url) {
         WebEngine engine = webView.getEngine();
+        JavaApp javaApp = new JavaApp(stage);
+        engine.getLoadWorker()
+              .stateProperty()
+              .addListener((ov, oldState, newState) -> {
+                  if (Worker.State.SUCCEEDED == newState) {
+                      JSObject window = (JSObject) engine.executeScript("window");
+                      window.setMember("tq_client", javaApp);
+                      logger.info("set tq_client...");
+                  }
+              });
         engine.load(url);
         setWebViewShowing(true);
         logger.info("showWeb(): " + webViewShowing.get());
         //stage.setMaximized(true);
-        showAnimation();
+        ViewsUtils.stageShowingAnimation(stage);
         stage.show();
     }
 
@@ -66,63 +73,8 @@ public class WebViewController extends AnchorPane {
     }
 
     public void showLocalWeb(String url) {
-        WebEngine engine = webView.getEngine();
         String path = WebViewController.class.getResource(url).toExternalForm();
-        engine.load(path);
-
-        showAnimation();
-        stage.show();
-        JSObject window = (JSObject) engine.executeScript("window");
-        JavaApp javaApp = new JavaApp(stage);
-        window.setMember("app", javaApp);
-    }
-
-    private void showAnimation() {
-        stage.setOnShowing(event -> {
-            logger.info("into onShown...");
-            Pane pane = new Pane();
-            TranslateTransition transTrans = new TranslateTransition(Duration.millis(500), pane);
-            double screenWidth = ViewsUtils.getScreenWidth();
-            double screenHeight = ViewsUtils.getScreenHeight();
-            double originWidth = screenWidth / 3;
-            double originHeight = 4 * screenHeight / 5;
-            stage.setWidth(originWidth);
-            stage.setHeight(originHeight);
-            transTrans.setFromX(screenWidth - originWidth);
-            transTrans.setFromY(-originWidth);
-            transTrans.setToX(screenWidth - originWidth);
-            transTrans.setToY(0);
-            pane.translateXProperty()
-                    .addListener((observable, oldValue, newValue) -> {
-                        stage.setX(newValue.doubleValue());
-                        this.setLayoutX(0D);
-                    });
-            pane.translateYProperty()
-                    .addListener((observable, oldValue, newValue) -> {
-                        stage.setY(newValue.doubleValue());
-                        this.setLayoutY(0D);
-                    });
-
-            ScaleTransition scaleTrans = new ScaleTransition(Duration.millis(500), pane);
-            scaleTrans.setFromX(0.2D);
-            scaleTrans.setToX(1.0D);
-
-            pane.scaleXProperty()
-                    .addListener((observable, oldValue, newValue) -> {
-                        logger.info("newValue is: " + newValue);
-                        logger.info("scene width is: " + this.getWidth());
-                        logger.info("stage width is: " + stage.getWidth());
-                        //this.setWidth(newValue.doubleValue() * originWidth);
-                        stage.setWidth(newValue.doubleValue() * originWidth);
-                    });
-
-
-            ParallelTransition paralTrans = new ParallelTransition(pane, transTrans);
-            paralTrans.play();
-            //stage.setResizable(false);
-
-            logger.info("play finish...");
-        });
+        showWeb(path);
     }
 
     public boolean isWebViewShowing() {
