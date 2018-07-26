@@ -48,7 +48,7 @@ public class TestObjectBox {
 
     @Test
     public void testOB() {
-        BoxStore store = MyObjectBox.builder().name("objectbox-notes-db").build();
+        BoxStore store = MyObjectBox.builder().name("objectbox-db").build();
         Box<User> box = store.boxFor(User.class);
         box.put(new User(0, "asdf", "扁鹊", "123"));
         logger.info(box.count() + " notes in ObjectBox database:");
