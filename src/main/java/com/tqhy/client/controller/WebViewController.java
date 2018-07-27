@@ -37,7 +37,7 @@ public class WebViewController extends AnchorPane {
         FxmlUtils.load("/dialog/web/web.fxml", this);
         Scene scene = new Scene(this);
         stage = new Stage();
-        stage.getIcons().addAll(new Image(getClass().getResourceAsStream("/deploy/package/windows/client.png")));
+        stage.getIcons().addAll(new Image(getClass().getResourceAsStream("/deploy/package/windows/logo_title.png")));
         stage.setScene(scene);
 
         stage.setOnCloseRequest(event -> {

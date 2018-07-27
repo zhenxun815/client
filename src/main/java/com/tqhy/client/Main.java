@@ -31,9 +31,8 @@ import org.slf4j.LoggerFactory;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.net.URL;
 import java.util.concurrent.TimeUnit;
 
 public class Main extends Application {
@@ -59,7 +58,8 @@ public class Main extends Application {
        /* String classPath = Main.class.getClassLoader().getResource("").getPath();
         System.out.println("path is: " + classPath);*/
         initPrimaryStage(primaryStage);
-        initSystemTray(primaryStage);
+        javax.swing.SwingUtilities.invokeLater(() -> initSystemTray(primaryStage));
+        //initSystemTray(primaryStage);
         initProperties();
         //doRxJava(primaryStage);
     }
@@ -193,7 +193,7 @@ public class Main extends Application {
         Parent root = FXMLLoader.load(getClass().getResource("/float/float.fxml"));
         primaryStage.initStyle(StageStyle.TRANSPARENT);
         primaryStage.setAlwaysOnTop(true);
-        primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("/deploy/package/windows/client.png")));
+        primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("/deploy/package/windows/logo_title.png")));
         Rectangle rect = new Rectangle(50, 50);
         rect.setArcHeight(25);
         rect.setArcWidth(25);
@@ -320,24 +320,21 @@ public class Main extends Application {
      * @param stage
      */
     private void initSystemTray(Stage stage) {
-        SystemTray systemTray = SystemTray.getSystemTray();
-        //PopupMenu popupMenu = createPopMenu(stage);
         try {
-            BufferedImage image = ImageIO.read(getClass().getResourceAsStream("/deploy/package/windows/client.png"));
+            Toolkit.getDefaultToolkit();
+            if (!java.awt.SystemTray.isSupported()) {
+                System.out.println("系统不支持托盘图标,程序退出..");
+                Platform.exit();
+            }
+            //PopupMenu popupMenu = createPopMenu(stage);
+
+            SystemTray systemTray = SystemTray.getSystemTray();
+            String iconPath = Main.class.getResource("/deploy/package/windows/logo_systray.png").toExternalForm();
+            URL imageLoc = new URL(iconPath);
+            java.awt.Image image = ImageIO.read(imageLoc);
             //final TrayIcon trayIcon = new TrayIcon(image, "打开悬浮窗",popupMenu);
             final TrayIcon trayIcon = new TrayIcon(image, "双击打开悬浮窗");
-            trayIcon.addMouseListener(new MouseAdapter() {
-                @Override
-                public void mouseClicked(java.awt.event.MouseEvent e) {
-                    super.mouseClicked(e);
-                    if (java.awt.event.MouseEvent.BUTTON1 == e.getButton()) {
-                        if (2 == e.getClickCount()) {
-                            logger.info("双击666...");
-                            Platform.runLater(stage::show);
-                        }
-                    }
-                }
-            });
+            trayIcon.addActionListener(e -> Platform.runLater(stage::show));
 
             systemTray.add(trayIcon);
         } catch (IOException e) {
