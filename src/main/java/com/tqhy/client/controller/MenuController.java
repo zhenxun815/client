@@ -1,7 +1,7 @@
 package com.tqhy.client.controller;
 
 import com.tqhy.client.network.Network;
-import com.tqhy.client.utils.FxmlUtils;
+import com.tqhy.client.view.FxmlUtils;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.Node;

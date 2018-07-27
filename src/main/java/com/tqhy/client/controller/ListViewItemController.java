@@ -1,6 +1,6 @@
 package com.tqhy.client.controller;
 
-import com.tqhy.client.utils.FxmlUtils;
+import com.tqhy.client.view.FxmlUtils;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;

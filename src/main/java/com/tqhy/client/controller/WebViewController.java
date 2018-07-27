@@ -2,8 +2,9 @@ package com.tqhy.client.controller;
 
 import com.tqhy.client.network.JavaApp;
 import com.tqhy.client.network.Network;
-import com.tqhy.client.utils.FxmlUtils;
-import com.tqhy.client.utils.ViewsUtils;
+import com.tqhy.client.view.FxmlUtils;
+import com.tqhy.client.view.ViewsUtils;
+import com.tqhy.client.view.animation.StageMovingAnim.StageMovingAnimMode;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.concurrent.Worker;
@@ -63,7 +64,8 @@ public class WebViewController extends AnchorPane {
         setWebViewShowing(true);
         logger.info("showWeb(): " + webViewShowing.get());
         //stage.setMaximized(true);
-        ViewsUtils.stageShowingAnimation(stage);
+        ViewsUtils.setStageScaleAccordingScreen(stage, 1 / 3.0D, 4 / 5.0D);
+        ViewsUtils.setStageAnimation(stage, StageMovingAnimMode.SLIDE_IN_FROM_TOP_RIGHT);
         stage.show();
     }
 

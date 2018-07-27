@@ -1,7 +1,7 @@
 package com.tqhy.client.controller;
 
-import com.tqhy.client.utils.FxmlUtils;
-import com.tqhy.client.utils.ViewsUtils;
+import com.tqhy.client.view.FxmlUtils;
+import com.tqhy.client.view.ViewsUtils;
 import javafx.fxml.FXML;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;

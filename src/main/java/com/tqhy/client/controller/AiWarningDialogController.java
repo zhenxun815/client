@@ -5,7 +5,9 @@ import com.tqhy.client.model.AiResult;
 import com.tqhy.client.model.ClientMsg;
 import com.tqhy.client.network.Network;
 import com.tqhy.client.network.api.ApiBean;
-import com.tqhy.client.utils.FxmlUtils;
+import com.tqhy.client.view.FxmlUtils;
+import com.tqhy.client.view.ViewsUtils;
+import com.tqhy.client.view.animation.StageMovingAnim.StageMovingAnimMode;
 import io.reactivex.schedulers.Schedulers;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -69,6 +71,7 @@ public class AiWarningDialogController extends BaseDialogController {
                 web.showTqWeb(this.aiResult.get().getAiDrId(), Network.AI_PROMPT_PAGE);
                 ai_warning = 1;
                 postAiWarningBack(ai_warning, error_flag, warning_flag);
+                ViewsUtils.setStageAnimation(primaryStage, StageMovingAnimMode.SLIDE_OUT_TO_BOTTOM);
                 break;
             case NO:
                 logger.info("dialog exclude clicked....");
@@ -101,17 +104,17 @@ public class AiWarningDialogController extends BaseDialogController {
         docConfirm.setOperation(operation);
         apiBean.setBean(docConfirm);
         Network.getAiHelperApi()
-                .postHistory(apiBean)
-                .map(body -> {
-                    String json = body.string();
-                    logger.info("AiWarningDialogController postDocConfirm recieve json:" + json);
-                    return json;
-                })
-                .observeOn(Schedulers.io())
-                .subscribeOn(Schedulers.trampoline())
-                .subscribe(json -> {
-                    logger.info(json);
-                });
+               .postHistory(apiBean)
+               .map(body -> {
+                   String json = body.string();
+                   logger.info("AiWarningDialogController postDocConfirm recieve json:" + json);
+                   return json;
+               })
+               .observeOn(Schedulers.io())
+               .subscribeOn(Schedulers.trampoline())
+               .subscribe(json -> {
+                   logger.info(json);
+               });
     }
 
     /**
@@ -131,17 +134,17 @@ public class AiWarningDialogController extends BaseDialogController {
         apiBean.setBean(warningBack);
 
         Network.getAiHelperApi()
-                .postAiWarningBack(apiBean)
-                .map(body -> {
-                    String json = body.string();
-                    logger.info("AiWarningDialogController postAiWarningBack recieve json:" + json);
-                    return json;
-                })
-                .observeOn(Schedulers.io())
-                .subscribeOn(Schedulers.trampoline())
-                .subscribe(json -> {
-                    logger.info(json);
-                });
+               .postAiWarningBack(apiBean)
+               .map(body -> {
+                   String json = body.string();
+                   logger.info("AiWarningDialogController postAiWarningBack recieve json:" + json);
+                   return json;
+               })
+               .observeOn(Schedulers.io())
+               .subscribeOn(Schedulers.trampoline())
+               .subscribe(json -> {
+                   logger.info(json);
+               });
     }
 
 
