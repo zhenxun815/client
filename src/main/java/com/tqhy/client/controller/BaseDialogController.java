@@ -41,6 +41,7 @@ public class BaseDialogController extends DialogPane {
         dialog = new Dialog<>();
         dialog.initStyle(StageStyle.TRANSPARENT);
         dialog.setDialogPane(this);
+
         dialog.initOwner(owner);
 
 
@@ -51,9 +52,10 @@ public class BaseDialogController extends DialogPane {
      */
     public Optional<ButtonType> showAtRightBottom() {
         setDialogShouldShowingFlag(true);
+
         dialog.setX(ViewsUtils.getMaxX(this.getWidth()));
         dialog.setY(ViewsUtils.getMaxY(this.getHeight()));
-        // logger.info("x: " + dialog.getX() + " y: " + dialog.getY());
+        // logger.info("dialog x: " + dialog.getX() + " y: " + dialog.getY());
         // dialog.showAndWait();
         Optional<ButtonType> cmd = dialog.showAndWait();
         return cmd;
