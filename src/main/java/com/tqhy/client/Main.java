@@ -41,7 +41,7 @@ public class Main extends Application {
     private String key = "";
     private Logger logger = LoggerFactory.getLogger(Main.class);
     private String rootPath = FileUtils.getRootPath();
-    private String screenImgPath = rootPath + "/screen_capture.jpg";
+    //private String screenImgPath = rootPath + "/screen_capture.jpg";
     private String cuttedImgPath = rootPath + "/capture_cutted.jpg";
 
     private int cut_x;
@@ -83,6 +83,7 @@ public class Main extends Application {
         this.cut_y = Integer.parseInt(y);
         this.cut_width = Integer.parseInt(width);
         this.cut_height = Integer.parseInt(height);
+        logger.info("cut_x: " + cut_x);
     }
 
     /**
@@ -96,7 +97,10 @@ public class Main extends Application {
                 .map(aLong -> {
                     //logger.info("webViewShowingFlag is: " + webViewShowingFlag);
                     if (!isWebViewShowingFlag()) {
-                                screenImgPath = ImgUtils.captureScreen(screenImgPath);
+                        //screenImgPath = ImgUtils.captureScreen(screenImgPath);
+                        //ImgUtils.cutImg("E:/jyPacs.jpg", cuttedImgPath, cut_x, cut_y, cut_width, cut_height);
+                        String screenImgPath = "E:/Users/tqhy/Desktop/capture/cap2.jpg";
+
                                 String str = JnaCaller.fetchData(screenImgPath);
                         //logger.info("capture screen img path: " + screenImgPath);
                                 logger.info(".dll caller get: " + str);
@@ -112,8 +116,12 @@ public class Main extends Application {
                     setWarningDialogShouldShowingFlag(b);
                     logger.info("setWarningDialogShouldShowingFlag: " + getWarningDialogShouldShowingFlag());
                     //logger.info("key: " + key + " this.key: " + this.key + " b: " + b);
+                    boolean matchKey = StringUtils.matchKey(key, StringUtils.BTJ_REG);
+                    if (!matchKey) {
+                        logger.info("识别值无效: " + key);
+                    }
                     this.key = key;
-                    return key.length() >= 5 && !b;
+                    return key.length() >= 5 && !b && matchKey;
                 })
                 .observeOn(Schedulers.trampoline())
                 .subscribeOn(Schedulers.trampoline())
@@ -211,14 +219,11 @@ public class Main extends Application {
      * 根据key值请求后台获取ai提示内容,请求成功则弹出窗口,失败,则打印错误日志;
      */
     private void requestAiHelper(Stage primaryStage, String key) {
+        String md5 = createMD5Str(key);
 
-        String substring = key.substring(key.length() - 5);
-        //logger.info(" into requestAiHelper...key is: " + key);
-        //logger.info(" into requestAiHelper...substring is: " + substring);
-        String md5 = MD5Utils.getMD5(substring);
-        // logger.info(" into requestAiHelper...substring MD5 is: " + md5);
-        logger.info(Network.BASE_URL);
-        String cutImgPath = ImgUtils.cutImg(screenImgPath, cuttedImgPath, cut_x, cut_y, cut_width, cut_height);
+        //logger.info(Network.BASE_URL);
+        //String cutImgPath = ImgUtils.cutImg(screenImgPath, cuttedImgPath, cut_x, cut_y, cut_width, cut_height);
+        String cutImgPath = ImgUtils.cutImg("E:/Users/tqhy/Desktop/capture/jyPacs.jpg", cuttedImgPath, cut_x, cut_y, cut_width, cut_height);
         if (null != cutImgPath) {
             RequestBody content = Network.createRequestBody(md5);
             MultipartBody.Part part = Network.createMultipart(cutImgPath);
@@ -253,6 +258,25 @@ public class Main extends Application {
             logger.info("截取图片失败...");
         }
 
+    }
+
+    /**
+     * 将获取的key值进行MD5加密并返回加密后的MD5值
+     *
+     * @param key 动态库获取的key值
+     * @return 加密后的MD5值
+     */
+    private String createMD5Str(String key) {
+        //logger.info(" into requestAiHelper...key is: " + key);
+        //logger.info(" into requestAiHelper...substring is: " + substring);
+        int secondIndex = key.lastIndexOf("$");
+        int firstIndex = key.indexOf("$");
+        String subStr1 = key.substring(0, firstIndex);
+        String subStr2 = key.substring(secondIndex + 1);
+        subStr2 = subStr2.replaceAll("-", "");
+        //logger.info("subStr1: " + subStr1 + " subStr2: " + subStr2 + " s: " + subStr2);
+        // logger.info(" into requestAiHelper...substring MD5 is: " + md5);
+        return MD5Utils.getMD5(subStr1 + subStr2);
     }
 
     /**
