@@ -45,15 +45,17 @@ public class ImgUtils {
      */
     public static String captureScreen(String screenImgPath) {
 
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        Rectangle screenRectangle = new Rectangle(screenSize);
+        GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+        GraphicsDevice[] screenDevices = ge.getScreenDevices();
+        GraphicsDevice secondDevice = screenDevices[1];
+        Rectangle secondBounds = secondDevice.getDefaultConfiguration().getBounds();
         Robot robot = null;
         try {
             robot = new Robot();
         } catch (AWTException e) {
             e.printStackTrace();
         }
-        BufferedImage image = robot.createScreenCapture(screenRectangle);
+        BufferedImage image = robot.createScreenCapture(secondBounds);
         // 截图保存的路径
         File screenImg = new File(screenImgPath);
         // 如果路径不存在,则创建
