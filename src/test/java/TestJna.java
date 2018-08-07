@@ -14,8 +14,11 @@ public class TestJna {
 
     @Test
     public void testFetchData() {
-        CharSequence o = JnaCaller.fetchData("");
-        logger.info("testFetchData..." + o);
+        String str = JnaCaller.fetchData("D:/capture.jpg");
+        logger.info("testFetchData..." + str);
+        int secondIndex = str.lastIndexOf("$");
+        String subStr2 = str.substring(secondIndex + 1);
+        //StringUtils.formatDateString(subStr2)
     }
 
 

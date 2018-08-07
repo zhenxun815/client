@@ -15,10 +15,13 @@ public class PropertiesUtil {
      * @return 返回properties 文件
      */
 
+
     public static String getPropertiesKeyValue(String key) {
+
         Properties properties = null;
         try {
             BufferedReader bufferedReader = new BufferedReader(new FileReader(FileUtils.getRootPath() + "/manager.properties"));
+
             properties = new Properties();
             properties.load(bufferedReader);
             return properties.getProperty(key);

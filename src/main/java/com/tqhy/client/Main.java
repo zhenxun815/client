@@ -41,13 +41,15 @@ public class Main extends Application {
     private String key = "";
     private Logger logger = LoggerFactory.getLogger(Main.class);
     private String rootPath = FileUtils.getRootPath();
-    //private String screenImgPath = rootPath + "/screen_capture.jpg";
+    private String screenImgPath = rootPath + "/screen_capture.jpg";
     private String cuttedImgPath = rootPath + "/capture_cutted.jpg";
 
     private int cut_x;
     private int cut_y;
     private int cut_width;
     private int cut_height;
+
+    private String dateSplit;
 
     private BooleanProperty webViewShowingFlag = new SimpleBooleanProperty(false);
     private BooleanProperty warningDialogShouldShowingFlag = new SimpleBooleanProperty(false);
@@ -68,6 +70,7 @@ public class Main extends Application {
      * 初始化网络地址
      */
     private void initProperties() {
+        logger.info("file root path is: " + FileUtils.getRootPath());
         String ip = PropertiesUtil.getPropertiesKeyValue("ip");
         logger.info("ip is:" + ip);
         Network.IP = ip;
@@ -84,6 +87,10 @@ public class Main extends Application {
         this.cut_width = Integer.parseInt(width);
         this.cut_height = Integer.parseInt(height);
         logger.info("cut_x: " + cut_x);
+
+        //日期分割参数
+        this.dateSplit = PropertiesUtil.getPropertiesKeyValue("dateSplit");
+        logger.info("dateSplit: " + dateSplit);
     }
 
     /**
@@ -97,11 +104,10 @@ public class Main extends Application {
                 .map(aLong -> {
                     //logger.info("webViewShowingFlag is: " + webViewShowingFlag);
                     if (!isWebViewShowingFlag()) {
-                        //screenImgPath = ImgUtils.captureScreen(screenImgPath);
-                        //ImgUtils.cutImg("E:/jyPacs.jpg", cuttedImgPath, cut_x, cut_y, cut_width, cut_height);
-                        String screenImgPath = "E:/Users/tqhy/Desktop/capture/cap2.jpg";
+                        screenImgPath = ImgUtils.captureScreen(screenImgPath);
+                        //String screenImgPath = "E:/Users/tqhy/Desktop/capture/cap2.jpg";
 
-                                String str = JnaCaller.fetchData(screenImgPath);
+                        String str = JnaCaller.fetchData("D:/capture.jpg");
                         //logger.info("capture screen img path: " + screenImgPath);
                                 logger.info(".dll caller get: " + str);
                                 return str;
@@ -116,12 +122,12 @@ public class Main extends Application {
                     setWarningDialogShouldShowingFlag(b);
                     logger.info("setWarningDialogShouldShowingFlag: " + getWarningDialogShouldShowingFlag());
                     //logger.info("key: " + key + " this.key: " + this.key + " b: " + b);
-                    boolean matchKey = StringUtils.matchKey(key, StringUtils.BTJ_REG);
-                    if (!matchKey) {
+                    //boolean matchKey = StringUtils.matchKey(key, StringUtils.BTJ_REG);
+                   /* if (!matchKey) {
                         logger.info("识别值无效: " + key);
-                    }
+                    }*/
                     this.key = key;
-                    return key.length() >= 5 && !b && matchKey;
+                    return key.length() >= 5 && !b;
                 })
                 .observeOn(Schedulers.trampoline())
                 .subscribeOn(Schedulers.trampoline())
@@ -220,10 +226,10 @@ public class Main extends Application {
      */
     private void requestAiHelper(Stage primaryStage, String key) {
         String md5 = createMD5Str(key);
-
+        logger.info(" into requestAiHelper...substring MD5 is: " + md5);
         //logger.info(Network.BASE_URL);
-        //String cutImgPath = ImgUtils.cutImg(screenImgPath, cuttedImgPath, cut_x, cut_y, cut_width, cut_height);
-        String cutImgPath = ImgUtils.cutImg("E:/Users/tqhy/Desktop/capture/jyPacs.jpg", cuttedImgPath, cut_x, cut_y, cut_width, cut_height);
+        String cutImgPath = ImgUtils.cutImg("D:/capture.jpg", cuttedImgPath, cut_x, cut_y, cut_width, cut_height);
+        //String cutImgPath = ImgUtils.cutImg("E:/Users/tqhy/Desktop/capture/jyPacs.jpg", cuttedImgPath, cut_x, cut_y, cut_width, cut_height);
         if (null != cutImgPath) {
             RequestBody content = Network.createRequestBody(md5);
             MultipartBody.Part part = Network.createMultipart(cutImgPath);
@@ -273,9 +279,10 @@ public class Main extends Application {
         int firstIndex = key.indexOf("$");
         String subStr1 = key.substring(0, firstIndex);
         String subStr2 = key.substring(secondIndex + 1);
-        subStr2 = subStr2.replaceAll("-", "");
-        //logger.info("subStr1: " + subStr1 + " subStr2: " + subStr2 + " s: " + subStr2);
-        // logger.info(" into requestAiHelper...substring MD5 is: " + md5);
+
+        subStr2 = StringUtils.formatDateString(subStr2, dateSplit);
+        logger.info("subStr1: " + subStr1 + " subStr2: " + subStr2);
+
         return MD5Utils.getMD5(subStr1 + subStr2);
     }
 

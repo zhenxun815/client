@@ -27,4 +27,13 @@ public class TestUtils {
         boolean b = StringUtils.matchKey(key, StringUtils.BTJ_REG);
         System.out.println("match: " + b);
     }
+
+    @Test
+    public void testParseDateString() {
+        String dateStr = "2018-07-16";
+        String split = "-";
+
+        String parsedDateStr = StringUtils.formatDateString(dateStr, split);
+        logger.info("parsedDateStr: " + parsedDateStr);
+    }
 }
