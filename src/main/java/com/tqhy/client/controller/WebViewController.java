@@ -15,6 +15,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import netscape.javascript.JSObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,21 +51,26 @@ public class WebViewController extends AnchorPane {
 
     public void showWeb(String url) {
         WebEngine engine = webView.getEngine();
+        logger.info("webview width: " + webView.getWidth() + " ,height: " + webView.getHeight());
         JavaApp javaApp = new JavaApp(stage);
         engine.getLoadWorker()
               .stateProperty()
               .addListener((ov, oldState, newState) -> {
                   if (Worker.State.SUCCEEDED == newState) {
                       JSObject window = (JSObject) engine.executeScript("window");
-                      window.setMember("tq_client", javaApp);
-                      logger.info("set tq_client...");
+                      window.setMember("tqClient", javaApp);
+                      logger.info("set tqClient...");
                   }
               });
         engine.load(url);
         setWebViewShowing(true);
         logger.info("showWeb(): " + webViewShowing.get());
         //stage.setMaximized(true);
-        ViewsUtils.setStageScaleAccordingScreen(stage, 1 / 3.0D, 4 / 5.0D);
+        //ViewsUtils.setStageScaleAccordingScreen(stage, 1 / 3.0D, 4 / 5.0D);
+        stage.initStyle(StageStyle.TRANSPARENT);
+        stage.setWidth(400);
+        stage.setHeight(668);
+
         ViewsUtils.setStageAnimation(stage, StageMovingAnimMode.SLIDE_IN_FROM_TOP_RIGHT);
         stage.show();
     }

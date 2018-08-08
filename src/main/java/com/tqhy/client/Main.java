@@ -72,6 +72,8 @@ public class Main extends Application {
      * 初始化网络地址
      */
     private void initProperties() {
+        logger.info("root path is:" + FileUtils.getRootPath());
+        logger.info("deploy path is:" + System.getProperty("exe.path"));
         String ip = PropertiesUtil.getPropertiesKeyValue("ip");
         logger.info("ip is:" + ip);
         Network.IP = ip;
@@ -108,7 +110,6 @@ public class Main extends Application {
                               } else {
                                   return key;
                               }
-
                           }
                   )
                   .filter(key -> {
