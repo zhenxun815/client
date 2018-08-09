@@ -45,15 +45,17 @@ public class ImgUtils {
      */
     public static String captureScreen(String screenImgPath) {
 
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        Rectangle screenRectangle = new Rectangle(screenSize);
+        GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+        GraphicsDevice[] screenDevices = ge.getScreenDevices();
+        GraphicsDevice secondDevice = screenDevices[1];
+        Rectangle secondBounds = secondDevice.getDefaultConfiguration().getBounds();
         Robot robot = null;
         try {
             robot = new Robot();
         } catch (AWTException e) {
             e.printStackTrace();
         }
-        BufferedImage image = robot.createScreenCapture(screenRectangle);
+        BufferedImage image = robot.createScreenCapture(secondBounds);
         // 截图保存的路径
         File screenImg = new File(screenImgPath);
         // 如果路径不存在,则创建
@@ -82,13 +84,13 @@ public class ImgUtils {
      * 绝对路径.
      *
      * @param originImgFile 原图绝对路径
-     * @param newWidth      压缩后图片宽度
+     * @param newWidth     压缩后图片宽度
      * @return 压缩后图片文件绝对路径, 如果未压缩, 则为原图路径
      * @throws Exception
      */
     public static String zoomImage(File originImgFile, int newWidth) {
         long length = originImgFile.length();
-        //logger.info("originImgFile.length() is: " + length);
+        logger.info("originImgFile.length() is: " + length);
 
         BufferedImage bufImgOld = null;
         BufferedImage bufImgNew = null;
@@ -97,7 +99,7 @@ public class ImgUtils {
             int originHeight = bufImgOld.getHeight();
             int originWidth = bufImgOld.getWidth();
             int newHeight = Integer.parseInt(new java.text.DecimalFormat("0").format(originHeight * newWidth / (originWidth * 1.0)));
-            //logger.debug("change image's height, width:{}, height:{}.", newWidth, newHeight);
+            logger.debug("change image's height, width:{}, height:{}.", newWidth, newHeight);
 
             bufImgNew = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_INT_RGB);
             Graphics g = bufImgNew.getGraphics();
