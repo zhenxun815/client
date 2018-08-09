@@ -273,17 +273,16 @@ public class Main extends Application {
                 aiWarningDialogController = new AiWarningDialogController();
 
                 aiWarningDialogController.aiResultProperty()
-                        .bindBidirectional(this.aiResult);
+                                         .bindBidirectional(this.aiResult);
 
                 aiWarningDialogController.dialogShouldShowingFlagProperty()
-                        .bindBidirectional(this.warningDialogShouldShowingFlag);
+                                         .bindBidirectional(this.warningDialogShouldShowingFlag);
 
                 aiWarningDialogController.dialogShouldShowingFlagProperty()
-                        .addListener((observable, oldValue, newValue) -> {
-                                    logger.info("dialogShouldShowingFlag changed,oldValue is: " + oldValue + ", newValue is: " + newValue);
-                                    aiWarningDialogController.closeDialog();
-                                }
-                        );
+                                         .addListener((observable, oldValue, newValue) -> {
+                                             logger.info("dialogShouldShowingFlag changed,oldValue is: " + oldValue + ", newValue is: " + newValue);
+                                             aiWarningDialogController.closeDialog();
+                                         });
             }
 
             aiWarningDialogController.show(primaryStage, (webViewDialogController) -> {
