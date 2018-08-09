@@ -84,8 +84,8 @@ public class MenuController extends ContextMenu {
 
     private void testWeb() {
         WebViewController web = new WebViewController();
-        web.showLocalWeb("/html/test.html");
-        //web.showWeb("http://192.168.1.212:8080/ai/helper/test/" + "testId");
+        //web.showLocalWeb("/html/test.html");
+        web.showWeb("http://localhost:8080/html/index.html?id=02cfb244f6194ff3aebb7632ac029369&pageName=index-main");
     }
 
     public void initItems() {
