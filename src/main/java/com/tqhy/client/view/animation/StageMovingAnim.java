@@ -25,6 +25,7 @@ public class StageMovingAnim {
     private StageMovingAnimMode stageMovingAnimMode;
     private Logger logger = LoggerFactory.getLogger(StageMovingAnim.class);
 
+
     public void bindStageWithAnim() {
 
         double stageWidth = stage.getWidth();
@@ -34,16 +35,25 @@ public class StageMovingAnim {
             case SLIDE_OUT_TO_BOTTOM:
                 fromX = stage.getX();
                 fromY = stage.getY();
+                // logger.info("fromX is: " + fromX);
+                // logger.info("fromY is: " + fromY);
                 toX = fromX;
                 toY = screenHeight;
-                stage.setOnHiding(event -> setAnimation());
+                stage.setOnHiding(event -> {
+                    // logger.info("event is: " + event.getEventType());
+                    setAnimation();
+                });
                 break;
             case SLIDE_IN_FROM_TOP_RIGHT:
                 fromX = screenWidth - stageWidth;
                 fromY = -stageHeight;
                 toX = fromX;
                 toY = 0;
-                stage.setOnShowing(event -> setAnimation());
+
+                stage.setOnShowing(event -> {
+                    //logger.info("event is: "+event.getEventType());
+                    setAnimation();
+                });
                 break;
             case SLIDE_IN_FROM_BOTTOM_RIGHT:
                 fromX = screenWidth - stageWidth;
@@ -62,25 +72,28 @@ public class StageMovingAnim {
      * 设定动画事件
      */
     public void setAnimation() {
-        logger.info("into setAnimation...");
+        logger.info("into setOnHidingAnim...");
         Pane pane = new Pane();
         TranslateTransition transTrans = new TranslateTransition(Duration.millis(500), pane);
-
+        stage.setX(fromX);
+        stage.setY(fromY);
         transTrans.setFromX(fromX);
         transTrans.setFromY(fromY);
         transTrans.setToX(toX);
         transTrans.setToY(toY);
         pane.translateXProperty()
-            .addListener((observable, oldValue, newValue) -> {
-                stage.setX(newValue.doubleValue());
-            });
+                .addListener((observable, oldValue, newValue) -> {
+                    stage.setX(newValue.doubleValue());
+                    // logger.info("stage x is: " + stage.getX());
+                });
         pane.translateYProperty()
-            .addListener((observable, oldValue, newValue) -> {
-                stage.setY(newValue.doubleValue());
-            });
+                .addListener((observable, oldValue, newValue) -> {
+                    stage.setY(newValue.doubleValue());
+                    // logger.info("stage y is: " + stage.getY());
+                });
         transTrans.play();
         //stage.setResizable(false);
-        logger.info("animation finished...");
+        // logger.info("animation finished...");
 
     }
 
@@ -88,6 +101,7 @@ public class StageMovingAnim {
         this.stage = stage;
         this.stageMovingAnimMode = stageMovingAnimMode;
     }
+
 
     public enum StageMovingAnimMode {
         NO_ANIMATION,

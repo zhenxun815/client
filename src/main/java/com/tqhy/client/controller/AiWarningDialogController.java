@@ -7,14 +7,16 @@ import com.tqhy.client.network.Network;
 import com.tqhy.client.network.api.ApiBean;
 import com.tqhy.client.view.FxmlUtils;
 import com.tqhy.client.view.ViewsUtils;
-import com.tqhy.client.view.animation.StageMovingAnim.StageMovingAnimMode;
 import io.reactivex.schedulers.Schedulers;
+import javafx.animation.TranslateTransition;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.fxml.FXML;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,6 +39,43 @@ public class AiWarningDialogController extends BaseDialogController {
 
         FxmlUtils.load("/dialog/ai_warning/ai_warning.fxml", this);
         initDialog();
+        setOnHidingAnim();
+    }
+
+    public void setOnHidingAnim() {
+
+
+        dialog.setOnCloseRequest(event -> {
+            double fromX = dialog.getX();
+            double fromY = dialog.getY();
+            logger.info("dialog fromX is: " + fromX);
+            logger.info("dialog fromY is: " + fromY);
+            double toX = fromX;
+            double toY = ViewsUtils.getScreenHeight();
+            logger.info("into dialog setOnHidingAnim...");
+            Pane pane = new Pane();
+            TranslateTransition transTrans = new TranslateTransition(Duration.millis(2000), this);
+            transTrans.setFromX(fromX);
+            transTrans.setFromY(fromY);
+            transTrans.setToX(toX);
+            transTrans.setToY(toY);
+
+           /* pane.translateXProperty()
+                    .addListener((observable, oldValue, newValue) -> {
+                        dialog.setX(newValue.doubleValue());
+                        logger.info("dialog x is: " + dialog.getX());
+                    });
+            pane.translateYProperty()
+                    .addListener((observable, oldValue, newValue) -> {
+                        dialog.setY(newValue.doubleValue());
+                        logger.info("dialog y is: " + dialog.getY());
+                    });*/
+            transTrans.play();
+            //stage.setResizable(false);
+            logger.info("animation finished...");
+        });
+
+
     }
 
     /**
@@ -49,8 +88,10 @@ public class AiWarningDialogController extends BaseDialogController {
 
         primaryStage.setAlwaysOnTop(false);
 
+
         //切忌通过调用primaryStage.hide();来实现弹窗置顶!!
         Optional<ButtonType> cmd = showAtRightBottom();
+
         primaryStage.getScene().getRoot().setStyle("-fx-background-color: dimgray;");
         primaryStage.setAlwaysOnTop(true);
         primaryStage.show();
@@ -63,23 +104,24 @@ public class AiWarningDialogController extends BaseDialogController {
         Integer error_flag = null;
         //医生是否确认
         Integer operation = null;
+
         switch (cmd.get().getButtonData()) {
             case YES: //进入webView详情页
+
                 logger.info("dialog detail clicked....");
                 WebViewController web = new WebViewController();
                 webViewShowingListener.bindShowingProperty(web);
                 web.showTqWeb(this.aiResult.get().getAiDrId(), Network.AI_PROMPT_PAGE);
                 ai_warning = 1;
                 postAiWarningBack(ai_warning, error_flag, warning_flag);
-                ViewsUtils.setStageAnimation(primaryStage, StageMovingAnimMode.SLIDE_OUT_TO_BOTTOM);
+
                 break;
             case NO:
                 logger.info("dialog exclude clicked....");
                 error_flag = 1;
-                //operation = 1;
                 ai_warning = 0;
                 postAiWarningBack(ai_warning, error_flag, warning_flag);
-                //postDocConfirm(operation);
+
                 break;
             case CANCEL_CLOSE:
                 logger.info("dialog close invoked..");
@@ -104,17 +146,17 @@ public class AiWarningDialogController extends BaseDialogController {
         docConfirm.setOperation(operation);
         apiBean.setBean(docConfirm);
         Network.getAiHelperApi()
-               .postHistory(apiBean)
-               .map(body -> {
-                   String json = body.string();
-                   logger.info("AiWarningDialogController postDocConfirm recieve json:" + json);
-                   return json;
-               })
-               .observeOn(Schedulers.io())
-               .subscribeOn(Schedulers.trampoline())
-               .subscribe(json -> {
-                   logger.info(json);
-               });
+                .postHistory(apiBean)
+                .map(body -> {
+                    String json = body.string();
+                    logger.info("AiWarningDialogController postDocConfirm recieve json:" + json);
+                    return json;
+                })
+                .observeOn(Schedulers.io())
+                .subscribeOn(Schedulers.trampoline())
+                .subscribe(json -> {
+                    logger.info(json);
+                });
     }
 
     /**
@@ -134,17 +176,17 @@ public class AiWarningDialogController extends BaseDialogController {
         apiBean.setBean(warningBack);
 
         Network.getAiHelperApi()
-               .postAiWarningBack(apiBean)
-               .map(body -> {
-                   String json = body.string();
-                   logger.info("AiWarningDialogController postAiWarningBack recieve json:" + json);
-                   return json;
-               })
-               .observeOn(Schedulers.io())
-               .subscribeOn(Schedulers.trampoline())
-               .subscribe(json -> {
-                   logger.info(json);
-               });
+                .postAiWarningBack(apiBean)
+                .map(body -> {
+                    String json = body.string();
+                    logger.info("AiWarningDialogController postAiWarningBack recieve json:" + json);
+                    return json;
+                })
+                .observeOn(Schedulers.io())
+                .subscribeOn(Schedulers.trampoline())
+                .subscribe(json -> {
+                    logger.info(json);
+                });
     }
 
 

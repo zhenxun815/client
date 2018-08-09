@@ -88,7 +88,7 @@ public class ImgUtils {
      */
     public static String zoomImage(File originImgFile, int newWidth) {
         long length = originImgFile.length();
-        logger.info("originImgFile.length() is: " + length);
+        //logger.info("originImgFile.length() is: " + length);
 
         BufferedImage bufImgOld = null;
         BufferedImage bufImgNew = null;
@@ -97,7 +97,7 @@ public class ImgUtils {
             int originHeight = bufImgOld.getHeight();
             int originWidth = bufImgOld.getWidth();
             int newHeight = Integer.parseInt(new java.text.DecimalFormat("0").format(originHeight * newWidth / (originWidth * 1.0)));
-            logger.debug("change image's height, width:{}, height:{}.", newWidth, newHeight);
+            //logger.debug("change image's height, width:{}, height:{}.", newWidth, newHeight);
 
             bufImgNew = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_INT_RGB);
             Graphics g = bufImgNew.getGraphics();

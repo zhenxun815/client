@@ -34,7 +34,7 @@ public class WebViewController extends AnchorPane {
     private BooleanProperty webViewShowing = new SimpleBooleanProperty();
     private Logger logger = LoggerFactory.getLogger(WebViewController.class);
 
-    //"/dialog/web_dialog/web.fxml"
+
     public WebViewController() {
         FxmlUtils.load("/dialog/web/web.fxml", this);
         Scene scene = new Scene(this);
@@ -72,7 +72,9 @@ public class WebViewController extends AnchorPane {
         stage.setHeight(668);
 
         ViewsUtils.setStageAnimation(stage, StageMovingAnimMode.SLIDE_IN_FROM_TOP_RIGHT);
+        logger.info("stage animation set finish..");
         stage.show();
+        logger.info("after stage show..");
     }
 
     public void showTqWeb(String id, String pageName) {

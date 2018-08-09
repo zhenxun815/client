@@ -38,12 +38,12 @@ public class JnaCaller {
      */
     public static String fetchData(String imgPath) {
         try {
-            logger.info("into fetchData....");
+            //logger.info("into fetchData....");
             // NativeLibrary.addSearchPath("jyTQAITools", jniRootPath);
             // Native.register(TqaiDll.class, "jyTQAITools");
             Pointer p = TqaiDll.caller.jyFetchData(imgPath);
             String result = p.getString(0L);
-            logger.info("fetch data success: " + result);
+            //logger.info("fetch data success: " + result);
             return result;
         } catch (Throwable e) {
             logger.error("load dll fail..", e);

@@ -1,11 +1,13 @@
 package com.tqhy.client.view;
 
 import com.tqhy.client.view.animation.StageMovingAnim;
+import com.tqhy.client.view.animation.StageMovingAnim.StageMovingAnimMode;
 import javafx.geometry.Rectangle2D;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 
 /**
  * 界面相关工具类
@@ -68,7 +70,7 @@ public class ViewsUtils {
      * @param stage
      * @param stageMovingAnimMode
      */
-    public static void setStageAnimation(Stage stage, StageMovingAnim.StageMovingAnimMode stageMovingAnimMode) {
+    public static void setStageAnimation(Stage stage, StageMovingAnimMode stageMovingAnimMode) {
         StageMovingAnim stageMovingAnim = new StageMovingAnim(stage, stageMovingAnimMode);
         stageMovingAnim.bindStageWithAnim();
     }
