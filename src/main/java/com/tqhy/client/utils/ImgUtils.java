@@ -82,7 +82,7 @@ public class ImgUtils {
      * 绝对路径.
      *
      * @param originImgFile 原图绝对路径
-     * @param newWidth     压缩后图片宽度
+     * @param newWidth      压缩后图片宽度
      * @return 压缩后图片文件绝对路径, 如果未压缩, 则为原图路径
      * @throws Exception
      */

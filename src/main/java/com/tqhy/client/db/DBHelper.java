@@ -19,9 +19,9 @@ public class DBHelper {
 
     public static BoxStore buildDB(String dbName) {
         BoxStore boxStore = MyObjectBox.builder()
-                .baseDirectory(BASE_DIRECTORY)
-                .name(dbName)
-                .build();
+                                       .baseDirectory(BASE_DIRECTORY)
+                                       .name(dbName)
+                                       .build();
         return boxStore;
     }
 }

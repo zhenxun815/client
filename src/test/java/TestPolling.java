@@ -23,14 +23,14 @@ public class TestPolling {
     @Test
     public void testPolling() {
         Observable.interval(3000, TimeUnit.MICROSECONDS)
-                .doOnNext(l -> {
-                    Object i = JnaCaller.fetchData("");
-                    logger.info(i + "");
-                })
-                .observeOn(Schedulers.io())
-                .subscribeOn(Schedulers.trampoline())
-                .subscribe(l -> {
-                    logger.info("subscribe: " + l);
-                });
+                  .doOnNext(l -> {
+                      Object i = JnaCaller.fetchData("");
+                      logger.info(i + "");
+                  })
+                  .observeOn(Schedulers.io())
+                  .subscribeOn(Schedulers.trampoline())
+                  .subscribe(l -> {
+                      logger.info("subscribe: " + l);
+                  });
     }
 }

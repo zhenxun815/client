@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
  */
 public class TestJavaFxBinding {
     private Logger logger = LoggerFactory.getLogger(TestJavaFxBinding.class);
+
     @Test
     public void testBinding() {
         Bill bill1 = new Bill();
@@ -20,20 +21,21 @@ public class TestJavaFxBinding {
         Bill bill3 = new Bill();
 
         NumberBinding total = Bindings.add(bill1.amountDueProperty().add(bill2.amountDueProperty()), bill3.amountDueProperty());
-        total.addListener(o-> logger.info("The binding is now invalid."));
+        total.addListener(o -> logger.info("The binding is now invalid."));
 
         bill1.setAmountDue(200.00);
         bill2.setAmountDue(100.00);
         bill3.setAmountDue(75.00);
-        logger.info(total.getValue()+"");
+        logger.info(total.getValue() + "");
 
         bill3.setAmountDue(150.00);
-        logger.info(total.getValue()+"");
+        logger.info(total.getValue() + "");
     }
 
     class Bill {
 
         private DoubleProperty amountDue = new SimpleDoubleProperty();
+
         public final double getAmountDue() {
             return amountDue.get();
         }

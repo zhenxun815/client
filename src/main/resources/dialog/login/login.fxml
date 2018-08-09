@@ -1,48 +1,47 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.ButtonType?>
-<?import javafx.scene.control.DialogPane?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.PasswordField?>
-<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.*?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.HBox?>
-
-<fx:root headerText="登录" prefHeight="250" prefWidth="350" stylesheets="@login.css" type="javafx.scene.control.DialogPane" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1">
+<?import javafx.scene.layout.*?>
+<fx:root headerText="登录" prefHeight="250" prefWidth="350" stylesheets="@login.css"
+         type="javafx.scene.control.DialogPane" xmlns="http://javafx.com/javafx/8.0.121"
+         xmlns:fx="http://javafx.com/fxml/1">
     <graphic>
-        <ImageView fitHeight="32.0" fitWidth="32.0" layoutX="150.0" layoutY="50.0" pickOnBounds="true" preserveRatio="true">
+        <ImageView fitHeight="32.0" fitWidth="32.0" layoutX="150.0" layoutY="50.0" pickOnBounds="true"
+                   preserveRatio="true">
             <image>
-                <Image url="@../icons/land.png" />
+                <Image url="@../icons/land.png"/>
             </image>
         </ImageView>
     </graphic>
     <buttonTypes>
-        <ButtonType buttonData="OK_DONE" text="登录" />
-        <ButtonType buttonData="CANCEL_CLOSE" text="关闭" />
+        <ButtonType buttonData="OK_DONE" text="登录"/>
+        <ButtonType buttonData="CANCEL_CLOSE" text="关闭"/>
     </buttonTypes>
     <content>
-        
+
     </content>
-   <content>
-      <AnchorPane>
-         <children>
-            <HBox id="hb_1" fx:id="hb_1" AnchorPane.topAnchor="20.0" styleClass="h_box">
-               <children>
-                  <Label id="lb_user_name" fx:id="lb_user_name" alignment="CENTER_RIGHT" text="用户名" textAlignment="RIGHT">
-            </Label>
-                  <TextField fx:id="user_name" />
-               </children>
-            </HBox>
-            <HBox id="hb_2" fx:id="hb_2" AnchorPane.topAnchor="70.0" styleClass="h_box">
-               <children>
-                  <Label id="lb_user_pwd" fx:id="lb_user_pwd" alignment="CENTER_RIGHT" text="密   码" textAlignment="RIGHT">
-              </Label>
-                  <PasswordField id="user_pwd" fx:id="user_pwd" styleClass="password-field"/>
-               </children>
-            </HBox>
-         </children>
-      </AnchorPane>
-   </content>
+    <content>
+        <AnchorPane>
+            <children>
+                <HBox id="hb_1" fx:id="hb_1" AnchorPane.topAnchor="20.0" styleClass="h_box">
+                    <children>
+                        <Label id="lb_user_name" fx:id="lb_user_name" alignment="CENTER_RIGHT" text="用户名"
+                               textAlignment="RIGHT">
+                        </Label>
+                        <TextField fx:id="user_name"/>
+                    </children>
+                </HBox>
+                <HBox id="hb_2" fx:id="hb_2" AnchorPane.topAnchor="70.0" styleClass="h_box">
+                    <children>
+                        <Label id="lb_user_pwd" fx:id="lb_user_pwd" alignment="CENTER_RIGHT" text="密   码"
+                               textAlignment="RIGHT">
+                        </Label>
+                        <PasswordField id="user_pwd" fx:id="user_pwd" styleClass="password-field"/>
+                    </children>
+                </HBox>
+            </children>
+        </AnchorPane>
+    </content>
 </fx:root>

@@ -146,17 +146,17 @@ public class AiWarningDialogController extends BaseDialogController {
         docConfirm.setOperation(operation);
         apiBean.setBean(docConfirm);
         Network.getAiHelperApi()
-                .postHistory(apiBean)
-                .map(body -> {
-                    String json = body.string();
-                    logger.info("AiWarningDialogController postDocConfirm recieve json:" + json);
-                    return json;
-                })
-                .observeOn(Schedulers.io())
-                .subscribeOn(Schedulers.trampoline())
-                .subscribe(json -> {
-                    logger.info(json);
-                });
+               .postHistory(apiBean)
+               .map(body -> {
+                   String json = body.string();
+                   logger.info("AiWarningDialogController postDocConfirm recieve json:" + json);
+                   return json;
+               })
+               .observeOn(Schedulers.io())
+               .subscribeOn(Schedulers.trampoline())
+               .subscribe(json -> {
+                   logger.info(json);
+               });
     }
 
     /**
@@ -176,17 +176,17 @@ public class AiWarningDialogController extends BaseDialogController {
         apiBean.setBean(warningBack);
 
         Network.getAiHelperApi()
-                .postAiWarningBack(apiBean)
-                .map(body -> {
-                    String json = body.string();
-                    logger.info("AiWarningDialogController postAiWarningBack recieve json:" + json);
-                    return json;
-                })
-                .observeOn(Schedulers.io())
-                .subscribeOn(Schedulers.trampoline())
-                .subscribe(json -> {
-                    logger.info(json);
-                });
+               .postAiWarningBack(apiBean)
+               .map(body -> {
+                   String json = body.string();
+                   logger.info("AiWarningDialogController postAiWarningBack recieve json:" + json);
+                   return json;
+               })
+               .observeOn(Schedulers.io())
+               .subscribeOn(Schedulers.trampoline())
+               .subscribe(json -> {
+                   logger.info(json);
+               });
     }
 
 

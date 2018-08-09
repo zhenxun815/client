@@ -82,15 +82,15 @@ public class StageMovingAnim {
         transTrans.setToX(toX);
         transTrans.setToY(toY);
         pane.translateXProperty()
-                .addListener((observable, oldValue, newValue) -> {
-                    stage.setX(newValue.doubleValue());
-                    // logger.info("stage x is: " + stage.getX());
-                });
+            .addListener((observable, oldValue, newValue) -> {
+                stage.setX(newValue.doubleValue());
+                // logger.info("stage x is: " + stage.getX());
+            });
         pane.translateYProperty()
-                .addListener((observable, oldValue, newValue) -> {
-                    stage.setY(newValue.doubleValue());
-                    // logger.info("stage y is: " + stage.getY());
-                });
+            .addListener((observable, oldValue, newValue) -> {
+                stage.setY(newValue.doubleValue());
+                // logger.info("stage y is: " + stage.getY());
+            });
         transTrans.play();
         //stage.setResizable(false);
         // logger.info("animation finished...");

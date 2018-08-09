@@ -38,14 +38,14 @@ public class TestHttpRequset {
 
         RequestBody key = RequestBody.create(MediaType.parse("text/plain"), "c4cd996cec662fb2fa7e67770ac2ed78");
         Network.getAiHelperApi()
-                .getAiWarning(key, part)
-                .map(body -> {
-                    logger.info(body.string());
-                    return body.string();
-                })
-                .observeOn(Schedulers.trampoline())
-                .subscribeOn(Schedulers.trampoline())
-                .subscribe(str -> logger.info(str));
+               .getAiWarning(key, part)
+               .map(body -> {
+                   logger.info(body.string());
+                   return body.string();
+               })
+               .observeOn(Schedulers.trampoline())
+               .subscribeOn(Schedulers.trampoline())
+               .subscribe(str -> logger.info(str));
     }
 
     @Test

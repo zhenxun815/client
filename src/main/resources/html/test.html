@@ -1,65 +1,64 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="UTF-8">
-	<title>Title</title>
-	<style type="text/css">
-		#submitBtn {
-			background: white;
-		}
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style type="text/css">
+        #submitBtn {
+            background: white;
+        }
 
-	</style>
-	<!--<script type="text/javascript" src="/js/jquery-3.3.1.js"/>-->
-	<script src="https://code.jquery.com/jquery-3.3.1.js"></script>
-	<script type="text/javascript">
-		$(document).ready(function () {
+    </style>
+    <!--<script type="text/javascript" src="/js/jquery-3.3.1.js"/>-->
+    <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
 
-			$("#submitBtn").click(function () {
-				$("#log").text("click...");
-				//$("#log").text(window.location.href);
+            $("#submitBtn").click(function () {
+                $("#log").text("click...");
+                //$("#log").text(window.location.href);
 
-				tq_client.closeWindow();
-			});
-		});
+                tq_client.closeWindow();
+            });
+        });
 
-		function questHistory() {
-			var today = new Date();
-			var submitTime = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
-			$("#log").text(submitTime);
-			$.ajax({
-				type: "POST",
-				url: "http://192.168.1.214:8080/ai/helper/history",
-				async: true,
-				dataType: "json",
-				contentType: "application/json;charset=utf-8",
-				data: JSON.stringify({
-					key: "",
-					bean: {
-						date: submitTime
-					}
-				})
-			}).done(function (data) {
-				$("#log").text(JSON.stringify(data));
-				tq_client.showLog(JSON.stringify(data));
-			});
-		}
+        function questHistory() {
+            var today = new Date();
+            var submitTime = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
+            $("#log").text(submitTime);
+            $.ajax({
+                type: "POST",
+                url: "http://192.168.1.214:8080/ai/helper/history",
+                async: true,
+                dataType: "json",
+                contentType: "application/json;charset=utf-8",
+                data: JSON.stringify({
+                    key: "",
+                    bean: {
+                        date: submitTime
+                    }
+                })
+            }).done(function (data) {
+                $("#log").text(JSON.stringify(data));
+                tq_client.showLog(JSON.stringify(data));
+            });
+        }
 
-	</script>
+    </script>
 </head>
 <body>
 <!-- 空iframe，用于协助处理form提交后不进行页面跳转的问题 -->
 
 
-
 <form id="form" action="http://localhost:8080/ai/helper/history"
       method="post">
-	患者姓名: <input name="patientName" type="text" id="name">
-	出生日期:<input name="birthDate" type="text">
+    患者姓名: <input name="patientName" type="text" id="name">
+    出生日期:<input name="birthDate" type="text">
 </form>
 <input type="button" id="submitBtn" value="提交"/>
 
 <div>
-	<span id="log">log</span>
+    <span id="log">log</span>
 </div>
 </body>
 </html>
