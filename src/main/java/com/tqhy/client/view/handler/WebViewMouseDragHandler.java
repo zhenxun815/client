@@ -43,8 +43,8 @@ public class WebViewMouseDragHandler implements EventHandler<MouseEvent> {
                     x = pressX;
                     y = pressY;
                 }
-                logger.info("pressed...titleFlag: " + titleFlag);
-                logger.info("x: " + x + " ,y: " + y);
+                //logger.info("pressed...titleFlag: " + titleFlag);
+                //logger.info("x: " + x + " ,y: " + y);
                 break;
             case "MOUSE_RELEASED":
                 if (titleFlag) {
@@ -52,20 +52,20 @@ public class WebViewMouseDragHandler implements EventHandler<MouseEvent> {
                     stage.setY(screenY - y);
                 }
                 titleFlag = false;
-                logger.info("released...");
+                // logger.info("released...");
                 break;
             case "DRAG_DETECTED":
                 if (titleFlag) {
                     webView.startFullDrag();
                 }
-                logger.info("drag detected...");
+                // logger.info("drag detected...");
                 break;
             case "MOUSE_DRAGGED":
                 if (titleFlag) {
                     stage.setX(screenX - x);
                     stage.setY(screenY - y);
                 }
-                logger.info("dragging...");
+                // logger.info("dragging...");
                 break;
         }
     }
