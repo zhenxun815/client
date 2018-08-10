@@ -7,8 +7,8 @@ package com.tqhy.client.model;
  */
 public class AiResult {
 
-    public static final int GET_RESULT_SUCCESS =1;
-    public static final int GET_RESULT_FAILURE=0;
+    public static final int GET_RESULT_SUCCESS = 1;
+    public static final int GET_RESULT_FAILURE = 0;
     private String aiDrId;
 
     private String patientId;

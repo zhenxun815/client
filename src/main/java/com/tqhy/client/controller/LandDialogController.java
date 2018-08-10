@@ -1,6 +1,6 @@
 package com.tqhy.client.controller;
 
-import com.tqhy.client.utils.FxmlUtils;
+import com.tqhy.client.view.FxmlUtils;
 import javafx.fxml.FXML;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.PasswordField;
@@ -27,6 +27,7 @@ public class LandDialogController extends BaseDialogController {
 
     public void show() {
         Optional<ButtonType> cmd = showAtCenter();
+
         switch (cmd.get().getButtonData()) {
             case OK_DONE:
                 String name = user_name.getText();

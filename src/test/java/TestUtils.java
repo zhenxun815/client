@@ -1,8 +1,11 @@
+import com.tqhy.client.utils.ImgUtils;
 import com.tqhy.client.utils.MD5Utils;
 import com.tqhy.client.utils.StringUtils;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.File;
 
 /**
  * @author Yiheng
@@ -20,6 +23,7 @@ public class TestUtils {
     }
 
     @Test
+
     public void testStingUtilsMatch() {
         String key = "91807160022$JYSP$2018-07-16";
 
@@ -35,5 +39,14 @@ public class TestUtils {
 
         String parsedDateStr = StringUtils.formatDateString(dateStr, split);
         logger.info("parsedDateStr: " + parsedDateStr);
+
+    }
+
+    @Test
+    public void testZoomImg() {
+        String path = "D:/workspace/client/src/main/resources/deploy/package/windows/logo_title.png";
+        File img = new File(path);
+        ImgUtils.zoomImage(img, 16);
+
     }
 }

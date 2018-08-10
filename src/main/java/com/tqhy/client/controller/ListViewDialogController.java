@@ -1,6 +1,6 @@
 package com.tqhy.client.controller;
 
-import com.tqhy.client.utils.FxmlUtils;
+import com.tqhy.client.view.FxmlUtils;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -16,7 +16,7 @@ import java.util.List;
 public class ListViewDialogController extends BaseDialogController {
 
     @FXML
-    private ListView dialog_lv;
+    private ListView<String> dialog_lv;
     private List<String> datas;
     private ObservableList observableList;
     /**

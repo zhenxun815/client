@@ -16,31 +16,33 @@
 
             $("#submitBtn").click(function () {
                 $("#log").text("click...");
-                $("#log").text(window.location.href);
+                //$("#log").text(window.location.href);
 
-                var today = new Date();
-                var submitTime = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
-                $("#log").text(submitTime);
-                $.ajax({
-                    type: "POST",
-                    url: "http://192.168.1.214:8080/ai/helper/history",
-                    async: true,
-                    dataType: "json",
-                    contentType: "application/json;charset=utf-8",
-                    data: JSON.stringify({
-                        key: "",
-                        bean:{
-                            date:submitTime
-                        }
-                    })
-                }).done(function (data) {
-                    $("#log").text(JSON.stringify(data));
-                    app.showLog(JSON.stringify(data));
-                });
-
-
+                tq_client.closeWindow();
             });
         });
+
+        function questHistory() {
+            var today = new Date();
+            var submitTime = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
+            $("#log").text(submitTime);
+            $.ajax({
+                type: "POST",
+                url: "http://192.168.1.214:8080/ai/helper/history",
+                async: true,
+                dataType: "json",
+                contentType: "application/json;charset=utf-8",
+                data: JSON.stringify({
+                    key: "",
+                    bean: {
+                        date: submitTime
+                    }
+                })
+            }).done(function (data) {
+                $("#log").text(JSON.stringify(data));
+                tq_client.showLog(JSON.stringify(data));
+            });
+        }
 
     </script>
 </head>
@@ -48,7 +50,6 @@
 <!-- 空iframe，用于协助处理form提交后不进行页面跳转的问题 -->
 
 
-<a href="" onclick="app.closeWindow()" style="color: #000;">Click</a>
 <form id="form" action="http://localhost:8080/ai/helper/history"
       method="post">
     患者姓名: <input name="patientName" type="text" id="name">

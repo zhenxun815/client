@@ -16,6 +16,7 @@ import retrofit2.http.*;
 public interface AiHelperApi {
     /**
      * 获取ai提示弹框提示内容
+     *
      * @param key
      * @return
      */
@@ -25,6 +26,7 @@ public interface AiHelperApi {
 
     /**
      * 弹出提示信息后向后台返回否接收到弹窗信息及弹框相关操作
+     *
      * @param warningBack
      * @return
      */
@@ -33,6 +35,7 @@ public interface AiHelperApi {
 
     /**
      * 向后台发送用户操作历史
+     *
      * @param date
      * @return
      */
@@ -41,6 +44,7 @@ public interface AiHelperApi {
 
     /**
      * 获取当前aiDrId
+     *
      * @param key
      * @return
      */
@@ -49,6 +53,7 @@ public interface AiHelperApi {
 
     /**
      * 测试
+     *
      * @param key
      * @return
      */

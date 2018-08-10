@@ -1,4 +1,4 @@
-package com.tqhy.client.utils;
+package com.tqhy.client.view;
 
 import javafx.fxml.FXMLLoader;
 

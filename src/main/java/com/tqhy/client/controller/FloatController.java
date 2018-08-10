@@ -1,6 +1,6 @@
 package com.tqhy.client.controller;
 
-import com.tqhy.client.utils.ViewsUtils;
+import com.tqhy.client.view.ViewsUtils;
 import javafx.fxml.FXML;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;

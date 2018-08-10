@@ -1,19 +1,26 @@
-apply plugin: 'java'
-apply plugin: 'javafx-gradle-plugin'
-
-
-version '1.0.0'
-sourceCompatibility = 1.8
-
 buildscript {
     dependencies {
         classpath group: 'de.dynamicfiles.projects.gradle.plugins', name: 'javafx-gradle-plugin', version: '8.8.2'
+        classpath 'net.ltgt.gradle:gradle-apt-plugin:0.18'
+        classpath 'io.objectbox:objectbox-gradle-plugin:1.4.4'
     }
     repositories {
+        jcenter()
         mavenLocal()
         mavenCentral()
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
     }
 }
+
+apply plugin: 'java'
+apply plugin: 'net.ltgt.apt-idea' // annotation processor plugin
+apply plugin: 'io.objectbox'
+apply plugin: 'javafx-gradle-plugin'
+
+version '1.0.0'
+sourceCompatibility = 1.8
 
 jfx {
     verbose = true
@@ -22,7 +29,7 @@ jfx {
     jfxMainAppJarName = "client.jar"
     deployDir = "/deploy"
     useEnvironmentRelativeExecutables = true
-    copyAdditionalAppResourcesToJar =true
+    copyAdditionalAppResourcesToJar = true
     additionalAppResources = "/"
     css2bin = true
     preLoader = null
@@ -33,9 +40,25 @@ jfx {
     checkForAbsolutePaths = true
 }
 
+
+// enable debug output for plugin
+objectbox {
+    debug true
+}
+// enable debug output for annotation processor
+tasks.withType(JavaCompile) {
+    options.compilerArgs += [ "-Aobjectbox.modelPath=$projectDir/src/main/java/com/tqhy/client/db/objectbox.json" ]
+    options.compilerArgs += [ "-Aobjectbox.debug=true" ]
+    options.encoding= 'utf-8'
+}
+
 repositories {
+    jcenter()
     mavenLocal()
     mavenCentral()
+    maven {
+        url "https://plugins.gradle.org/m2/"
+    }
 }
 
 dependencies {
@@ -62,4 +85,10 @@ dependencies {
     implementation 'org.slf4j:slf4j-log4j12:1.7.25'
 
     implementation 'commons-codec:commons-codec:1.11'
+
+    /**
+     * 数据库objectbox
+     */
+
+    implementation "io.objectbox:objectbox-windows:1.4.4"
 }

@@ -1,6 +1,5 @@
 import org.junit.Test;
 
-import java.io.BufferedInputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -13,7 +12,7 @@ import java.io.FileOutputStream;
 public class TestCopyFile {
 
     @Test
-    public void testCopyToSys32(){
+    public void testCopyToSys32() {
         FileInputStream fis = null;
         FileOutputStream fos = null;
 

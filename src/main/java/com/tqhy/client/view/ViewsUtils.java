@@ -1,7 +1,13 @@
-package com.tqhy.client.utils;
+package com.tqhy.client.view;
 
+import com.tqhy.client.view.animation.StageMovingAnim;
+import com.tqhy.client.view.animation.StageMovingAnim.StageMovingAnimMode;
 import javafx.geometry.Rectangle2D;
 import javafx.stage.Screen;
+import javafx.stage.Stage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 /**
  * 界面相关工具类
@@ -14,6 +20,7 @@ public class ViewsUtils {
 
     public static final String SHOW_VIEW_TAG = "show_view_tag";
     public static final String CLOSE_VIEW_TAG = "close_view_tag";
+    private static Logger logger = LoggerFactory.getLogger(ViewsUtils.class);
 
     /**
      * 获取屏幕最大可用宽度
@@ -57,6 +64,30 @@ public class ViewsUtils {
         return getScreenHeight() - height;
     }
 
+    /**
+     * 设定窗口移动动画
+     *
+     * @param stage
+     * @param stageMovingAnimMode
+     */
+    public static void setStageAnimation(Stage stage, StageMovingAnimMode stageMovingAnimMode) {
+        StageMovingAnim stageMovingAnim = new StageMovingAnim(stage, stageMovingAnimMode);
+        stageMovingAnim.bindStageWithAnim();
+    }
 
-
+    /**
+     * 按照与屏幕比率,设定窗口宽高
+     *
+     * @param stage       待设定宽高的窗口对象
+     * @param widthRatio  窗口宽度与屏幕宽度比率
+     * @param heightRatio 窗口高度与屏幕高度比率
+     */
+    public static void setStageScaleAccordingScreen(Stage stage, double widthRatio, double heightRatio) {
+        double screenWidth = ViewsUtils.getScreenWidth();
+        double screenHeight = ViewsUtils.getScreenHeight();
+        double stageWidth = screenWidth * widthRatio;
+        double stageHeight = screenHeight * heightRatio;
+        stage.setWidth(stageWidth);
+        stage.setHeight(stageHeight);
+    }
 }

@@ -1,7 +1,7 @@
 package com.tqhy.client.controller;
 
 import com.tqhy.client.network.Network;
-import com.tqhy.client.utils.FxmlUtils;
+import com.tqhy.client.view.FxmlUtils;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
@@ -44,7 +44,7 @@ public class MenuController extends ContextMenu {
     @FXML
     public void history(MouseEvent event) {
         logger.info("detail click...");
-        WebViewDialogController web = new WebViewDialogController();
+        WebViewController web = new WebViewController();
         //web.showWeb(Network.BASE_URL+"index?id="+Network.currentId+"&pageName=history");
         web.showTqWeb(Network.currentId, Network.HISTORY_PAGE);
     }
@@ -52,7 +52,7 @@ public class MenuController extends ContextMenu {
     /*  @FXML
       public void upload(MouseEvent event) {
           logger.info("upload click...");
-          WebViewDialogController web = new WebViewDialogController();
+          WebViewController web = new WebViewController();
           //web.showWeb(Network.BASE_URL+"index?id="+Network.currentId+"&pageName=report");
           logger.info("current id is: "+Network.currentId);
           web.showTqWeb(Network.currentId, Network.REPORT_PAGE);
@@ -73,9 +73,8 @@ public class MenuController extends ContextMenu {
     @FXML
     public void info(MouseEvent event) {
         logger.info("info click...");
-        //testWeb();
-        testland();
-
+        testWeb();
+        //testland();
     }
 
     private void testland() {
@@ -84,9 +83,9 @@ public class MenuController extends ContextMenu {
     }
 
     private void testWeb() {
-        WebViewDialogController web = new WebViewDialogController();
-        web.showLocalWeb("/html/test.html");
-        //web.showWeb("http://192.168.1.212:8080/ai/helper/test/" + "testId");
+        WebViewController web = new WebViewController();
+        //web.showLocalWeb("/html/test.html");
+        web.showWeb("http://localhost:8080/html/index.html?id=02cfb244f6194ff3aebb7632ac029369&pageName=index-main");
     }
 
     public void initItems() {
