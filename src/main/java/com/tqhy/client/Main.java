@@ -8,6 +8,7 @@ import com.tqhy.client.model.AiResult;
 import com.tqhy.client.network.Network;
 import com.tqhy.client.network.responsebody.ErrorResponseBody;
 import com.tqhy.client.utils.*;
+import com.tqhy.client.view.ViewsUtils;
 import io.reactivex.Observable;
 import io.reactivex.schedulers.Schedulers;
 import javafx.application.Application;
@@ -31,9 +32,8 @@ import org.slf4j.LoggerFactory;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.net.URL;
 import java.util.concurrent.TimeUnit;
 
 public class Main extends Application {
@@ -64,7 +64,7 @@ public class Main extends Application {
         javax.swing.SwingUtilities.invokeLater(() -> initSystemTray(primaryStage));
         //initSystemTray(primaryStage);
         initProperties();
-        doRxJava(primaryStage);
+        //doRxJava(primaryStage);
     }
 
     /**
@@ -103,14 +103,14 @@ public class Main extends Application {
         JnaCaller.getUserInfo();
         Observable.interval(1000, TimeUnit.MILLISECONDS)
                 .map(aLong -> {
-                            //logger.info("webViewShowingFlag is: " + webViewShowingFlag);
-                            if (!isWebViewShowingFlag()) {
+                    //logger.info("webViewShowingFlag is: " + webViewShowingFlag);
+                    if (!isWebViewShowingFlag()) {
                         screenImgPath = ImgUtils.captureScreen(screenImgPath);
                         //String screenImgPath = "E:/Users/tqhy/Desktop/capture/cap2.jpg";
 
                         String str = JnaCaller.fetchData("D:/capture.jpg");
-                                //logger.info("capture screen img path: " + screenImgPath);
-                                //logger.info(".dll caller get: " + str);
+                        //logger.info("capture screen img path: " + screenImgPath);
+                        //logger.info(".dll caller get: " + str);
                                 return str;
                             } else {
                                 return key;

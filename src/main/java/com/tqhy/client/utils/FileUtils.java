@@ -25,7 +25,7 @@ public class FileUtils {
         String rootPath = jarPath.substring(1, end);
         end = rootPath.lastIndexOf("/");
         rootPath = rootPath.substring(0, end);
-        logger.info("rootPath is: " + rootPath);
+        //logger.info("rootPath is: " + rootPath);
         return rootPath;
     }
 

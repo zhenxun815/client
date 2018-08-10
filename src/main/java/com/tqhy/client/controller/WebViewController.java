@@ -51,6 +51,7 @@ public class WebViewController extends AnchorPane {
 
     public void showWeb(String url) {
         WebEngine engine = webView.getEngine();
+        webView.setContextMenuEnabled(false);
         logger.info("webview width: " + webView.getWidth() + " ,height: " + webView.getHeight());
         JavaApp javaApp = new JavaApp(stage);
         engine.getLoadWorker()

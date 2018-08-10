@@ -41,7 +41,7 @@ jfx {
 }
 
 
-// enable debug output for plugin
+/*// enable debug output for plugin
 objectbox {
     debug true
 }
@@ -50,7 +50,7 @@ tasks.withType(JavaCompile) {
     options.compilerArgs += [ "-Aobjectbox.modelPath=$projectDir/src/main/java/com/tqhy/client/db/objectbox.json" ]
     options.compilerArgs += [ "-Aobjectbox.debug=true" ]
     options.encoding= 'utf-8'
-}
+}*/
 
 repositories {
     jcenter()

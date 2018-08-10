@@ -36,9 +36,9 @@ public class JavaApp {
      * @param pageY   鼠标相对页面y坐标
      */
     public void moveStage(int screenX, int screenY, int pageX, int pageY) {
-        //logger.info("screenX: " + screenX + ", screenY: " + screenY);
-        //logger.info("pageX: " + pageX + ", pageY: " + pageY);
-        //logger.info("stageX: " + stage.getX() + " ,stageY: " + stage.getY());
+        logger.info("screenX: " + screenX + ", screenY: " + screenY);
+        logger.info("pageX: " + pageX + ", pageY: " + pageY);
+        logger.info("stageX: " + stage.getX() + " ,stageY: " + stage.getY());
         stage.setX(screenX - pageX);
         stage.setY(screenY - pageY);
     }

@@ -47,7 +47,7 @@ public class TestScreenCapture {
             Rectangle bounds = config.getBounds();
             logger.info("bounds x: " + bounds.x + " y: " + bounds.y + " width: " + bounds.width + " height: " + bounds.height);
         }
-        GraphicsDevice secondDevice = screenDevices[1];
+        GraphicsDevice secondDevice = screenDevices[0];
         Rectangle secondBounds = secondDevice.getDefaultConfiguration().getBounds();
         Robot robot = null;
         try {
