@@ -112,7 +112,6 @@ public class Main extends Application {
                             } else {
                                 return key;
                             }
-
                         }
                 )
                 .filter(key -> {
@@ -252,6 +251,7 @@ public class Main extends Application {
                             }
                         } else {
                             logger.info("ai未获取到对应数据");
+
                         }
                     });
         } else {

@@ -1,7 +1,8 @@
 package com.tqhy.client.controller;
 
-import com.tqhy.client.network.JavaApp;
 import com.tqhy.client.network.Network;
+import com.tqhy.client.network.app.JavaAppAiPrompt;
+import com.tqhy.client.network.app.JavaAppBase;
 import com.tqhy.client.view.FxmlUtils;
 import com.tqhy.client.view.ViewsUtils;
 import com.tqhy.client.view.animation.StageMovingAnim.StageMovingAnimMode;
@@ -36,6 +37,9 @@ public class WebViewController extends AnchorPane {
     private BooleanProperty webViewShowing = new SimpleBooleanProperty();
     private Logger logger = LoggerFactory.getLogger(WebViewController.class);
 
+    public static final int WEB_TYPE_AI_PROMPT = 0;
+    public static final int WEB_TYPE_AI_WARNING = 1;
+    public static final int WEB_TYPE_AI_INFO = 2;
 
     public WebViewController() {
         FxmlUtils.load("/dialog/web/web.fxml", this);
@@ -50,17 +54,46 @@ public class WebViewController extends AnchorPane {
             stage.close();
         });
 
-
+        stage.setOnHiding(event -> {
+            logger.info("webview window on hiding request...");
+            setWebViewShowing(false);
+            stage.close();
+        });
     }
 
-    public void showWeb(String url) {
+    public void showWeb(String url, int webType) {
         WebEngine engine = webView.getEngine();
 
-        logger.info("webview width: " + webView.getWidth() + " ,height: " + webView.getHeight());
-        WebViewMouseDragHandler webViewMouseDragHandler = new WebViewMouseDragHandler(stage, webView);
-        webView.addEventHandler(MouseEvent.ANY, webViewMouseDragHandler);
+        switch (webType) {
+            case WEB_TYPE_AI_PROMPT:
+                WebViewMouseDragHandler webViewMouseDragHandler = new WebViewMouseDragHandler(stage, webView);
+                webView.addEventHandler(MouseEvent.ANY, webViewMouseDragHandler);
 
-        JavaApp javaApp = new JavaApp(stage);
+                JavaAppAiPrompt javaAppAiPrompt = new JavaAppAiPrompt(stage);
+                engineBindApp(engine, javaAppAiPrompt);
+                stage.initStyle(StageStyle.TRANSPARENT);
+                stage.setWidth(400);
+                stage.setHeight(668);
+                ViewsUtils.setStageAnimation(stage, StageMovingAnimMode.SLIDE_IN_FROM_TOP_RIGHT);
+                logger.info("stage animation set finish..");
+                break;
+            case WEB_TYPE_AI_INFO:
+                stage.setResizable(false);
+                break;
+
+            default:
+                break;
+        }
+        engine.load(url);
+        setWebViewShowing(true);
+        logger.info("showWeb(): " + webViewShowing.get());
+        //stage.setMaximized(true);
+
+        stage.show();
+        logger.info("after stage show..");
+    }
+
+    private void engineBindApp(WebEngine engine, JavaAppBase javaApp) {
         engine.getLoadWorker()
               .stateProperty()
               .addListener((ov, oldState, newState) -> {
@@ -70,29 +103,16 @@ public class WebViewController extends AnchorPane {
                       logger.info("set tqClient...");
                   }
               });
-        engine.load(url);
-        setWebViewShowing(true);
-        logger.info("showWeb(): " + webViewShowing.get());
-        //stage.setMaximized(true);
-        //ViewsUtils.setStageScaleAccordingScreen(stage, 1 / 3.0D, 4 / 5.0D);
-        stage.initStyle(StageStyle.TRANSPARENT);
-        stage.setWidth(400);
-        stage.setHeight(668);
-
-        ViewsUtils.setStageAnimation(stage, StageMovingAnimMode.SLIDE_IN_FROM_TOP_RIGHT);
-        logger.info("stage animation set finish..");
-        stage.show();
-        logger.info("after stage show..");
     }
 
     public void showTqWeb(String id, String pageName) {
         String url = Network.BASE_URL + "index.html?id=" + id + "&pageName=" + pageName;
-        showWeb(url);
+        showWeb(url, WEB_TYPE_AI_PROMPT);
     }
 
     public void showLocalWeb(String url) {
         String path = WebViewController.class.getResource(url).toExternalForm();
-        showWeb(path);
+        showWeb(path, WEB_TYPE_AI_INFO);
     }
 
     public boolean isWebViewShowing() {

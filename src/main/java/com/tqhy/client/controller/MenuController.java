@@ -1,6 +1,5 @@
 package com.tqhy.client.controller;
 
-import com.tqhy.client.network.Network;
 import com.tqhy.client.view.FxmlUtils;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -45,8 +44,8 @@ public class MenuController extends ContextMenu {
     public void history(MouseEvent event) {
         logger.info("detail click...");
         WebViewController web = new WebViewController();
-        //web.showWeb(Network.BASE_URL+"index?id="+Network.currentId+"&pageName=history");
-        web.showTqWeb(Network.currentId, Network.HISTORY_PAGE);
+        //web.showWeb(Network.BASE_URL+"index?id="+Network.currentId+"&pageName=history",WebViewController.WEB_TYPE_AI_PROMPT);
+        // web.showTqWeb(Network.currentId, Network.HISTORY_PAGE);
     }
 
     /*  @FXML
@@ -85,7 +84,8 @@ public class MenuController extends ContextMenu {
     private void testWeb() {
         WebViewController web = new WebViewController();
         //web.showLocalWeb("/html/test.html");
-        web.showWeb("http://localhost:8080/html/index.html?id=02cfb244f6194ff3aebb7632ac029369&pageName=index-main");
+        web.showWeb("http://localhost:8080/html/index.html?id=02cfb244f6194ff3aebb7632ac029369&pageName=index-main", WebViewController.WEB_TYPE_AI_PROMPT);
+        //web.showWeb("http://www.enlightmentcloud.com/", WebViewController.WEB_TYPE_AI_INFO);
     }
 
     public void initItems() {

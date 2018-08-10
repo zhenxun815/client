@@ -6,17 +6,13 @@ import com.tqhy.client.model.ClientMsg;
 import com.tqhy.client.network.Network;
 import com.tqhy.client.network.api.ApiBean;
 import com.tqhy.client.view.FxmlUtils;
-import com.tqhy.client.view.ViewsUtils;
 import io.reactivex.schedulers.Schedulers;
-import javafx.animation.TranslateTransition;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.fxml.FXML;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
-import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
-import javafx.util.Duration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,48 +30,10 @@ public class AiWarningDialogController extends BaseDialogController {
     @FXML
     Label lb_ai_warning;
 
-
     public AiWarningDialogController() {
 
         FxmlUtils.load("/dialog/ai_warning/ai_warning.fxml", this);
         initDialog();
-        setOnHidingAnim();
-    }
-
-    public void setOnHidingAnim() {
-
-
-        dialog.setOnCloseRequest(event -> {
-            double fromX = dialog.getX();
-            double fromY = dialog.getY();
-            logger.info("dialog fromX is: " + fromX);
-            logger.info("dialog fromY is: " + fromY);
-            double toX = fromX;
-            double toY = ViewsUtils.getScreenHeight();
-            logger.info("into dialog setOnHidingAnim...");
-            Pane pane = new Pane();
-            TranslateTransition transTrans = new TranslateTransition(Duration.millis(2000), this);
-            transTrans.setFromX(fromX);
-            transTrans.setFromY(fromY);
-            transTrans.setToX(toX);
-            transTrans.setToY(toY);
-
-           /* pane.translateXProperty()
-                    .addListener((observable, oldValue, newValue) -> {
-                        dialog.setX(newValue.doubleValue());
-                        logger.info("dialog x is: " + dialog.getX());
-                    });
-            pane.translateYProperty()
-                    .addListener((observable, oldValue, newValue) -> {
-                        dialog.setY(newValue.doubleValue());
-                        logger.info("dialog y is: " + dialog.getY());
-                    });*/
-            transTrans.play();
-            //stage.setResizable(false);
-            logger.info("animation finished...");
-        });
-
-
     }
 
     /**
