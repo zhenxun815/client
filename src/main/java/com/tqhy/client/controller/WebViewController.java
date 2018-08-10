@@ -5,12 +5,14 @@ import com.tqhy.client.network.Network;
 import com.tqhy.client.view.FxmlUtils;
 import com.tqhy.client.view.ViewsUtils;
 import com.tqhy.client.view.animation.StageMovingAnim.StageMovingAnimMode;
+import com.tqhy.client.view.handler.WebViewMouseDragHandler;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.concurrent.Worker;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
@@ -47,11 +49,17 @@ public class WebViewController extends AnchorPane {
             setWebViewShowing(false);
             stage.close();
         });
+
+
     }
 
     public void showWeb(String url) {
         WebEngine engine = webView.getEngine();
+
         logger.info("webview width: " + webView.getWidth() + " ,height: " + webView.getHeight());
+        WebViewMouseDragHandler webViewMouseDragHandler = new WebViewMouseDragHandler(stage, webView);
+        webView.addEventHandler(MouseEvent.ANY, webViewMouseDragHandler);
+
         JavaApp javaApp = new JavaApp(stage);
         engine.getLoadWorker()
               .stateProperty()
