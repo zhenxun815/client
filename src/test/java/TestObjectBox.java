@@ -31,11 +31,11 @@ public class TestObjectBox {
         tempFile.delete();
         boxStoreDir = tempFile;
         store = MyObjectBox.builder()
-                // add directory flag to change where ObjectBox puts its database files
-                .directory(boxStoreDir)
-                // optional: add debug flags for more detailed ObjectBox log output
-                .debugFlags(DebugFlags.LOG_QUERIES | DebugFlags.LOG_QUERY_PARAMETERS)
-                .build();
+                           // add directory flag to change where ObjectBox puts its database files
+                           .directory(boxStoreDir)
+                           // optional: add debug flags for more detailed ObjectBox log output
+                           .debugFlags(DebugFlags.LOG_QUERIES | DebugFlags.LOG_QUERY_PARAMETERS)
+                           .build();
     }
 
     @After

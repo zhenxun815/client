@@ -17,6 +17,7 @@ public class MD5Utils {
 
     /**
      * 对字符串进行MD5加密
+     *
      * @param originStr
      * @return md5 value
      */
@@ -47,6 +48,7 @@ public class MD5Utils {
 
     /**
      * 对文件进行MD5加密
+     *
      * @param file 待加密文件
      * @return md5 value
      */

@@ -7,10 +7,7 @@ import com.tqhy.client.jna.JnaCaller;
 import com.tqhy.client.model.AiResult;
 import com.tqhy.client.network.Network;
 import com.tqhy.client.network.responsebody.ErrorResponseBody;
-import com.tqhy.client.utils.FileUtils;
-import com.tqhy.client.utils.ImgUtils;
-import com.tqhy.client.utils.MD5Utils;
-import com.tqhy.client.utils.PropertiesUtil;
+import com.tqhy.client.utils.*;
 import com.tqhy.client.view.ViewsUtils;
 import io.reactivex.Observable;
 import io.reactivex.schedulers.Schedulers;
@@ -51,6 +48,7 @@ public class Main extends Application {
     private int cut_y;
     private int cut_width;
     private int cut_height;
+    private String dateSplit;
 
     private BooleanProperty webViewShowingFlag = new SimpleBooleanProperty(false);
     private BooleanProperty warningDialogShouldShowingFlag = new SimpleBooleanProperty(false);
@@ -65,15 +63,14 @@ public class Main extends Application {
         javax.swing.SwingUtilities.invokeLater(() -> initSystemTray(primaryStage));
         //initSystemTray(primaryStage);
         initProperties();
-        doRxJava(primaryStage);
+        //doRxJava(primaryStage);
     }
 
     /**
      * 初始化网络地址
      */
     private void initProperties() {
-        logger.info("root path is:" + FileUtils.getRootPath());
-        logger.info("deploy path is:" + System.getProperty("exe.path"));
+        logger.info("file root path is: " + FileUtils.getRootPath());
         String ip = PropertiesUtil.getPropertiesKeyValue("ip");
         logger.info("ip is:" + ip);
         Network.IP = ip;
@@ -89,6 +86,11 @@ public class Main extends Application {
         this.cut_y = Integer.parseInt(y);
         this.cut_width = Integer.parseInt(width);
         this.cut_height = Integer.parseInt(height);
+        logger.info("cut_x: " + cut_x);
+
+        //日期分割参数
+        this.dateSplit = PropertiesUtil.getPropertiesKeyValue("dateSplit");
+        logger.info("dateSplit: " + dateSplit);
     }
 
     /**
@@ -217,14 +219,11 @@ public class Main extends Application {
      * 根据key值请求后台获取ai提示内容,请求成功则弹出窗口,失败,则打印错误日志;
      */
     private void requestAiHelper(Stage primaryStage, String key) {
-
-        String substring = key.substring(key.length() - 5);
-        //logger.info(" into requestAiHelper...key is: " + key);
-        //logger.info(" into requestAiHelper...substring is: " + substring);
-        String md5 = MD5Utils.getMD5(substring);
-        // logger.info(" into requestAiHelper...substring MD5 is: " + md5);
-        logger.info(Network.BASE_URL);
-        String cutImgPath = ImgUtils.cutImg(screenImgPath, cuttedImgPath, cut_x, cut_y, cut_width, cut_height);
+        String md5 = createMD5Str(key);
+        logger.info(" into requestAiHelper...substring MD5 is: " + md5);
+        //logger.info(Network.BASE_URL);
+        String cutImgPath = ImgUtils.cutImg("D:/capture.jpg", cuttedImgPath, cut_x, cut_y, cut_width, cut_height);
+        //String cutImgPath = ImgUtils.cutImg("E:/Users/tqhy/Desktop/capture/jyPacs.jpg", cuttedImgPath, cut_x, cut_y, cut_width, cut_height);
         if (null != cutImgPath) {
             RequestBody content = Network.createRequestBody(md5);
             MultipartBody.Part part = Network.createMultipart(cutImgPath);
@@ -259,6 +258,26 @@ public class Main extends Application {
             logger.info("截取图片失败...");
         }
 
+    }
+
+    /**
+     * 将获取的key值进行MD5加密并返回加密后的MD5值
+     *
+     * @param key 动态库获取的key值
+     * @return 加密后的MD5值
+     */
+    private String createMD5Str(String key) {
+        //logger.info(" into requestAiHelper...key is: " + key);
+        //logger.info(" into requestAiHelper...substring is: " + substring);
+        int secondIndex = key.lastIndexOf("$");
+        int firstIndex = key.indexOf("$");
+        String subStr1 = key.substring(0, firstIndex);
+        String subStr2 = key.substring(secondIndex + 1);
+
+        subStr2 = StringUtils.formatDateString(subStr2, dateSplit);
+        logger.info("subStr1: " + subStr1 + " subStr2: " + subStr2);
+
+        return MD5Utils.getMD5(subStr1 + subStr2);
     }
 
     /**

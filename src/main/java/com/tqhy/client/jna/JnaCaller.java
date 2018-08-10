@@ -3,6 +3,7 @@ package com.tqhy.client.jna;
 import com.sun.jna.Native;
 import com.sun.jna.Pointer;
 import com.sun.jna.win32.StdCallLibrary;
+import com.tqhy.client.utils.PropertiesUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,6 +32,28 @@ public class JnaCaller {
 
     public static String jniRootPath;
 
+    public static int idX;
+    public static int idY;
+    public static int idWidth;
+    public static int idHeight;
+
+    public static int dateX;
+    public static int dateY;
+    public static int dateWidth;
+    public static int dateHeight;
+
+    static {
+        idX = Integer.parseInt(PropertiesUtil.getPropertiesKeyValue("idX"));
+        idY = Integer.parseInt(PropertiesUtil.getPropertiesKeyValue("idY"));
+        idWidth = Integer.parseInt(PropertiesUtil.getPropertiesKeyValue("idWidth"));
+        idHeight = Integer.parseInt(PropertiesUtil.getPropertiesKeyValue("idHeight"));
+
+        dateX = Integer.parseInt(PropertiesUtil.getPropertiesKeyValue("dateX"));
+        dateY = Integer.parseInt(PropertiesUtil.getPropertiesKeyValue("dateY"));
+        dateWidth = Integer.parseInt(PropertiesUtil.getPropertiesKeyValue("dateWidth"));
+        dateHeight = Integer.parseInt(PropertiesUtil.getPropertiesKeyValue("dateHeight"));
+    }
+
     /**
      * 调用dll中jyFetchData方法
      *
@@ -38,13 +61,20 @@ public class JnaCaller {
      */
     public static String fetchData(String imgPath) {
         try {
-            //logger.info("into fetchData....");
+            logger.info("into fetchData....");
             // NativeLibrary.addSearchPath("jyTQAITools", jniRootPath);
             // Native.register(TqaiDll.class, "jyTQAITools");
-            Pointer p = TqaiDll.caller.jyFetchData(imgPath);
-            String result = p.getString(0L);
-            //logger.info("fetch data success: " + result);
-            return result;
+            logger.info("idx: " + idX + " idy: " + idY + " idwidth: " + idWidth + " idheight: " + idHeight);
+
+            Pointer p1 = TqaiDll.caller.jyFetchDataEx(imgPath, idX, idY, idWidth, idHeight);
+            String result1 = p1.getString(0L);
+            logger.info("fetch data success: " + result1);
+
+            logger.info("dateX: " + dateX + " dateY: " + dateY + " dateWidth: " + dateWidth + " dateHeight: " + dateHeight);
+            Pointer p2 = TqaiDll.caller.jyFetchDataEx(imgPath, dateX, dateY, dateWidth, dateHeight);
+            String result2 = p2.getString(0L);
+            logger.info("fetch data success: " + result2);
+            return result2;
         } catch (Throwable e) {
             logger.error("load dll fail..", e);
         }
@@ -71,7 +101,7 @@ public class JnaCaller {
     interface TqaiDll extends StdCallLibrary {
         TqaiDll caller = Native.loadLibrary(NATIVE_LIB_NAME, TqaiDll.class);
 
-        Pointer jyFetchData(String imgPath);
+        Pointer jyFetchDataEx(String imgPath, int x, int y, int width, int height);
 
         void jyGetUserInfo();
     }

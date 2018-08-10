@@ -3,7 +3,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
-<fx:root headerText="未授权提示"  prefHeight="400" prefWidth="600"
+<fx:root headerText="未授权提示" prefHeight="400" prefWidth="600"
          stylesheets="/dialog/ai_warning/ai_warning.css" type="javafx.scene.control.DialogPane"
          xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1">
     <graphic>

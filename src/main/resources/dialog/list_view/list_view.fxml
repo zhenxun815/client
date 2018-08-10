@@ -5,9 +5,8 @@
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
-
 <fx:root type="javafx.scene.control.DialogPane" headerText="AI检测异常提示" prefHeight="250" prefWidth="350"
-            xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1">
+         xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1">
     <graphic>
         <ImageView fitHeight="32.0" fitWidth="32.0" layoutX="150.0" layoutY="50.0" pickOnBounds="true"
                    preserveRatio="true">

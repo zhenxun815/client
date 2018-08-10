@@ -8,15 +8,15 @@
         $(document).ready(function () {
             //var url = window.location.href;
             //var id = url.slice(url.lastIndexOf("/") + 1);
-           // console.log("id is: " + id);
-            var data ={key:"",bean:{id:"0026086fd6654dbfb3d2a3e78cf67140",patientId:"123"}}
+            // console.log("id is: " + id);
+            var data = {key: "", bean: {id: "0026086fd6654dbfb3d2a3e78cf67140", patientId: "123"}}
             $("#btn").click(function () {
                 $("#log").text("click..");
                 $.ajax({
                     url: "http://localhost:8080/ai/helper/tips",
                     data: JSON.stringify(data),
-                    dataType:"json",
-                    contentType:"application/json;charset=utf-8",
+                    dataType: "json",
+                    contentType: "application/json;charset=utf-8",
                     type: "POST"
                 }).done(function (data) {
                     $("#log1").text(JSON.stringify(data));
