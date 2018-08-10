@@ -47,7 +47,11 @@ public class WebViewController extends AnchorPane {
         stage.setOnCloseRequest(event -> {
             logger.info("webview window on close request...");
             setWebViewShowing(false);
-            stage.close();
+        });
+
+        stage.setOnHiding(event -> {
+            logger.info("webview window on hiding request...");
+            setWebViewShowing(false);
         });
 
 
@@ -86,7 +90,7 @@ public class WebViewController extends AnchorPane {
     }
 
     public void showTqWeb(String id, String pageName) {
-        String url = Network.BASE_URL + "index.html?id=" + id + "&pageName=" + pageName;
+        String url = Network.BASE_URL + "html/index.html?id=" + id + "&pageName=" + pageName;
         showWeb(url);
     }
 
