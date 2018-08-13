@@ -5,12 +5,14 @@ import com.tqhy.client.network.Network;
 import com.tqhy.client.view.FxmlUtils;
 import com.tqhy.client.view.ViewsUtils;
 import com.tqhy.client.view.animation.StageMovingAnim.StageMovingAnimMode;
+import com.tqhy.client.view.handler.WebViewMouseDragHandler;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.concurrent.Worker;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
@@ -41,18 +43,28 @@ public class WebViewController extends AnchorPane {
         stage = new Stage();
         stage.getIcons().addAll(new Image(getClass().getResourceAsStream("/deploy/package/windows/logo_title.png")));
         stage.setScene(scene);
+        stage.setAlwaysOnTop(true);
 
         stage.setOnCloseRequest(event -> {
             logger.info("webview window on close request...");
             setWebViewShowing(false);
-            stage.close();
         });
+
+        stage.setOnHiding(event -> {
+            logger.info("webview window on hiding request...");
+            setWebViewShowing(false);
+        });
+
+
     }
 
     public void showWeb(String url) {
         WebEngine engine = webView.getEngine();
-        webView.setContextMenuEnabled(false);
+
         logger.info("webview width: " + webView.getWidth() + " ,height: " + webView.getHeight());
+        WebViewMouseDragHandler webViewMouseDragHandler = new WebViewMouseDragHandler(stage, webView);
+        webView.addEventHandler(MouseEvent.ANY, webViewMouseDragHandler);
+
         JavaApp javaApp = new JavaApp(stage);
         engine.getLoadWorker()
               .stateProperty()
@@ -79,7 +91,7 @@ public class WebViewController extends AnchorPane {
     }
 
     public void showTqWeb(String id, String pageName) {
-        String url = Network.BASE_URL + "index.html?id=" + id + "&pageName=" + pageName;
+        String url = Network.BASE_URL + "html/index.html?id=" + id + "&pageName=" + pageName;
         showWeb(url);
     }
 

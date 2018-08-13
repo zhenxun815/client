@@ -37,9 +37,9 @@ public class Network {
     public static String IP;
     public static String BASE_URL;
 
-    public static final String HISTORY_PAGE = "history";
-    public static final String REPORT_PAGE = "report";
-    public static final String AI_PROMPT_PAGE = "ai_prompt";
+    public static final String HISTORY_PAGE = "index-history";
+    public static final String REPORT_PAGE = "index-form";
+    public static final String AI_PROMPT_PAGE = "index-main";
 
     private static Logger logger = LoggerFactory.getLogger(Network.class);
 

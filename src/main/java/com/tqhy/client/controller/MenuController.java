@@ -42,11 +42,11 @@ public class MenuController extends ContextMenu {
     }
 
     @FXML
-    public void history(MouseEvent event) {
+    public void detail(MouseEvent event) {
         logger.info("detail click...");
         WebViewController web = new WebViewController();
         //web.showWeb(Network.BASE_URL+"index?id="+Network.currentId+"&pageName=history");
-        web.showTqWeb(Network.currentId, Network.HISTORY_PAGE);
+        web.showTqWeb(Network.currentId, Network.AI_PROMPT_PAGE);
     }
 
     /*  @FXML
@@ -70,12 +70,12 @@ public class MenuController extends ContextMenu {
         Platform.runLater(stage::hide);
     }
 
-    @FXML
+   /* @FXML
     public void info(MouseEvent event) {
         logger.info("info click...");
         testWeb();
         //testland();
-    }
+    }*/
 
     private void testland() {
         LandDialogController landDialogController = new LandDialogController();
@@ -85,7 +85,7 @@ public class MenuController extends ContextMenu {
     private void testWeb() {
         WebViewController web = new WebViewController();
         //web.showLocalWeb("/html/test.html");
-        web.showWeb("http://192.168.1.213:8080/html/index.html?id=02cfb244f6194ff3aebb7632ac029369&pageName=index-main");
+        //web.showWeb("http://192.168.1.189:8080/html/index.html?id=02cfb244f6194ff3aebb7632ac029369&pageName=index-main");
     }
 
     public void initItems() {

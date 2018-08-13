@@ -60,6 +60,8 @@ public class JnaCaller {
      * @return "JYLICENSE":表示系统尚未被授权;"JYNODATA":表示未获得有效数据;其它:获得的有效 HIS 数据
      */
     public static String fetchData(String imgPath) {
+        String result1 = "";
+        String result2 = "";
         try {
             logger.info("into fetchData....");
             // NativeLibrary.addSearchPath("jyTQAITools", jniRootPath);
@@ -67,14 +69,14 @@ public class JnaCaller {
             logger.info("idx: " + idX + " idy: " + idY + " idwidth: " + idWidth + " idheight: " + idHeight);
 
             Pointer p1 = TqaiDll.caller.jyFetchDataEx(imgPath, idX, idY, idWidth, idHeight);
-            String result1 = p1.getString(0L);
+            result1 = p1.getString(0L);
             logger.info("fetch data success: " + result1);
 
             logger.info("dateX: " + dateX + " dateY: " + dateY + " dateWidth: " + dateWidth + " dateHeight: " + dateHeight);
             Pointer p2 = TqaiDll.caller.jyFetchDataEx(imgPath, dateX, dateY, dateWidth, dateHeight);
-            String result2 = p2.getString(0L);
+            result2 = p2.getString(0L);
             logger.info("fetch data success: " + result2);
-            return result2;
+            return result1 + "$tqhy$" + result2;
         } catch (Throwable e) {
             logger.error("load dll fail..", e);
         }
