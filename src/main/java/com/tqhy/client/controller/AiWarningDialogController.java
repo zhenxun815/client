@@ -30,7 +30,6 @@ public class AiWarningDialogController extends BaseDialogController {
     @FXML
     Label lb_ai_warning;
 
-
     public AiWarningDialogController() {
 
         FxmlUtils.load("/dialog/ai_warning/ai_warning.fxml", this);
