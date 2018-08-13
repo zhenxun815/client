@@ -63,7 +63,7 @@ public class Main extends Application {
         javax.swing.SwingUtilities.invokeLater(() -> initSystemTray(primaryStage));
         //initSystemTray(primaryStage);
         initProperties();
-        //doRxJava(primaryStage);
+        doRxJava(primaryStage);
     }
 
     /**
@@ -99,55 +99,55 @@ public class Main extends Application {
      * @param primaryStage
      */
     private void doRxJava(Stage primaryStage) {
-        JnaCaller.getUserInfo();
+        //  JnaCaller.getUserInfo();
         Observable.interval(1000, TimeUnit.MILLISECONDS)
-                .map(aLong -> {
-                            //logger.info("webViewShowingFlag is: " + webViewShowingFlag);
-                            if (!isWebViewShowingFlag()) {
-                                screenImgPath = ImgUtils.captureScreen(screenImgPath);
-                                String str = JnaCaller.fetchData(screenImgPath);
-                                //logger.info("capture screen img path: " + screenImgPath);
-                                //logger.info(".dll caller get: " + str);
-                                return str;
-                            } else {
-                                return key;
-                            }
+                  .map(aLong -> {
+                           //logger.info("webViewShowingFlag is: " + webViewShowingFlag);
+                           if (!isWebViewShowingFlag()) {
+                               screenImgPath = ImgUtils.captureScreen(screenImgPath);
+                               String str = JnaCaller.fetchData(screenImgPath);
+                               //logger.info("capture screen img path: " + screenImgPath);
+                               logger.info(".dll caller get: " + str);
+                               return str;
+                           } else {
+                               return key;
+                           }
 
-                        }
-                )
-                .filter(key -> {
-                    boolean b = key.equals(this.key);
-                    setWarningDialogShouldShowingFlag(b);
-                    //logger.info("setWarningDialogShouldShowingFlag: " + getWarningDialogShouldShowingFlag());
-                    //logger.info("key: " + key + " this.key: " + this.key + " b: " + b);
-                    this.key = key;
-                    return key.length() >= 5 && !b;
-                })
-                .observeOn(Schedulers.trampoline())
-                .subscribeOn(Schedulers.trampoline())
-                .subscribe(key -> {
+                       }
+                      )
+                  .filter(key -> {
+                      boolean b = key.equals(this.key);
+                      setWarningDialogShouldShowingFlag(b);
+                      //logger.info("setWarningDialogShouldShowingFlag: " + getWarningDialogShouldShowingFlag());
+                      //logger.info("key: " + key + " this.key: " + this.key + " b: " + b);
+                      this.key = key;
+                      return key.length() >= 10 && !b;
+                  })
+                  .observeOn(Schedulers.trampoline())
+                  .subscribeOn(Schedulers.trampoline())
+                  .subscribe(key -> {
 
-                    switch (key) {
-                        //未授权
-                        case JnaCaller.FETCH_DATA_LICENSE:
-                            showfloat(primaryStage);
-                            getAuthWarning(primaryStage);
-                            break;
-                        //非RIS界面,未获取到数据
-                        case JnaCaller.FETCH_DATA_NODATA:
-                            hidefloat(primaryStage);
-                            break;
-                        //连接动态库失败
-                        case JnaCaller.FETCH_DATA_FAILED:
-                            break;
-                        //根据key值请求后台AiHelper
-                        default:
-                            showfloat(primaryStage);
-                            requestAiHelper(primaryStage, key);
-                            break;
-                    }
-                    //logger.info("subscribe: " + key);
-                });
+                      switch (key) {
+                          //未授权
+                          case JnaCaller.FETCH_DATA_LICENSE:
+                              showfloat(primaryStage);
+                              getAuthWarning(primaryStage);
+                              break;
+                          //非RIS界面,未获取到数据
+                          case JnaCaller.FETCH_DATA_NODATA:
+                              hidefloat(primaryStage);
+                              break;
+                          //连接动态库失败
+                          case JnaCaller.FETCH_DATA_FAILED:
+                              break;
+                          //根据key值请求后台AiHelper
+                          default:
+                              showfloat(primaryStage);
+                              requestAiHelper(primaryStage, key);
+                              break;
+                      }
+                      //logger.info("subscribe: " + key);
+                  });
     }
 
     /**
@@ -222,38 +222,38 @@ public class Main extends Application {
         String md5 = createMD5Str(key);
         logger.info(" into requestAiHelper...substring MD5 is: " + md5);
         //logger.info(Network.BASE_URL);
-        String cutImgPath = ImgUtils.cutImg("D:/capture.jpg", cuttedImgPath, cut_x, cut_y, cut_width, cut_height);
+        String cutImgPath = ImgUtils.cutImg(screenImgPath, cuttedImgPath, cut_x, cut_y, cut_width, cut_height);
         //String cutImgPath = ImgUtils.cutImg("E:/Users/tqhy/Desktop/capture/jyPacs.jpg", cuttedImgPath, cut_x, cut_y, cut_width, cut_height);
         if (null != cutImgPath) {
             RequestBody content = Network.createRequestBody(md5);
             MultipartBody.Part part = Network.createMultipart(cutImgPath);
             //logger.info("content type is: "+content.contentType());
             Network.getAiHelperApi()
-                    .getAiWarning(content, part)
-                    .observeOn(Schedulers.io())
-                    .subscribeOn(Schedulers.trampoline())
-                    /* .onErrorReturn((error) -> {
-                          logger.error("getAiDrId(key)请求异常", error);
-                          return new ErrorResponseBody(error);
-                      })
-                     .filter(body -> body instanceof ErrorResponseBody)*/
-                    .subscribe(warningBody -> {
-                        String json = warningBody.string();
-                        logger.info("json is: " + json);
-                        AiResult aiResult = new Gson().fromJson(json, AiResult.class);
-                        if (AiResult.GET_RESULT_SUCCESS == aiResult.getStatus()) {
-                            Network.currentId = aiResult.getAiDrId();
-                            //logger.info("set current id: " + Network.currentId);
-                            if (null == aiResult.getAiImgResult()) {
-                                logger.info("ai未发现异常");
-                            } else {
-                                this.aiResult.setValue(aiResult);
-                                showWarningDialog(primaryStage);
-                            }
-                        } else {
-                            logger.info("ai未获取到对应数据");
-                        }
-                    });
+                   .getAiWarning(content, part)
+                   .observeOn(Schedulers.io())
+                   .subscribeOn(Schedulers.trampoline())
+                   /* .onErrorReturn((error) -> {
+                         logger.error("getAiDrId(key)请求异常", error);
+                         return new ErrorResponseBody(error);
+                     })
+                    .filter(body -> body instanceof ErrorResponseBody)*/
+                   .subscribe(warningBody -> {
+                       String json = warningBody.string();
+                       logger.info("json is: " + json);
+                       AiResult aiResult = new Gson().fromJson(json, AiResult.class);
+                       if (AiResult.GET_RESULT_SUCCESS == aiResult.getStatus()) {
+                           Network.currentId = aiResult.getAiDrId();
+                           //logger.info("set current id: " + Network.currentId);
+                           if (null == aiResult.getAiImgResult()) {
+                               logger.info("ai未发现异常");
+                           } else {
+                               this.aiResult.setValue(aiResult);
+                               showWarningDialog(primaryStage);
+                           }
+                       } else {
+                           logger.info("ai未获取到对应数据");
+                       }
+                   });
         } else {
             logger.info("截取图片失败...");
         }
@@ -278,6 +278,7 @@ public class Main extends Application {
         logger.info("subStr1: " + subStr1 + " subStr2: " + subStr2);
 
         return MD5Utils.getMD5(subStr1 + subStr2);
+        //return MD5Utils.getMD5(key);
     }
 
     /**
@@ -319,23 +320,23 @@ public class Main extends Application {
      */
     private void getAiDrId(Stage primaryStage, String key) {
         Network.getAiHelperApi()
-                .getAiDrId(key)
-                .observeOn(Schedulers.io())
-                .subscribeOn(Schedulers.trampoline())
-                .onErrorReturn((error) -> {
-                    logger.error("getAiDrId(primaryStage,aidrId)请求异常", error);
-                    return new ErrorResponseBody(error);
-                })
-                .filter(body -> body instanceof ErrorResponseBody)
-                .subscribe(warningBody -> {
-                    String json = warningBody.string();
-                    AiResult aiResult = new Gson().fromJson(json, AiResult.class);
-                    if (AiResult.GET_RESULT_SUCCESS == aiResult.getStatus()) {
-                        Network.currentId = aiResult.getAiDrId();
-                    } else {
-                        logger.info("未能成功获取当前对应aiDrId");
-                    }
-                });
+               .getAiDrId(key)
+               .observeOn(Schedulers.io())
+               .subscribeOn(Schedulers.trampoline())
+               .onErrorReturn((error) -> {
+                   logger.error("getAiDrId(primaryStage,aidrId)请求异常", error);
+                   return new ErrorResponseBody(error);
+               })
+               .filter(body -> body instanceof ErrorResponseBody)
+               .subscribe(warningBody -> {
+                   String json = warningBody.string();
+                   AiResult aiResult = new Gson().fromJson(json, AiResult.class);
+                   if (AiResult.GET_RESULT_SUCCESS == aiResult.getStatus()) {
+                       Network.currentId = aiResult.getAiDrId();
+                   } else {
+                       logger.info("未能成功获取当前对应aiDrId");
+                   }
+               });
     }
 
     /**

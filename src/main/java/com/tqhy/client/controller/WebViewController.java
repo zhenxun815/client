@@ -43,6 +43,7 @@ public class WebViewController extends AnchorPane {
         stage = new Stage();
         stage.getIcons().addAll(new Image(getClass().getResourceAsStream("/deploy/package/windows/logo_title.png")));
         stage.setScene(scene);
+        stage.setAlwaysOnTop(true);
 
         stage.setOnCloseRequest(event -> {
             logger.info("webview window on close request...");
