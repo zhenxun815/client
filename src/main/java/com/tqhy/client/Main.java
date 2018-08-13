@@ -271,13 +271,18 @@ public class Main extends Application {
         //logger.info(" into requestAiHelper...substring is: " + substring);
         int secondIndex = key.lastIndexOf("$");
         int firstIndex = key.indexOf("$");
+
+
         String subStr1 = key.substring(0, firstIndex);
-        String subStr2 = key.substring(secondIndex + 1);
+        String subStr2 = "";
+        if (!Constant.DEV_VERSION) {
+            subStr2 = key.substring(secondIndex + 1);
+            subStr2 = StringUtils.formatDateString(subStr2, dateSplit);
+            subStr1 += subStr2;
+        }
 
-        subStr2 = StringUtils.formatDateString(subStr2, dateSplit);
         logger.info("subStr1: " + subStr1 + " subStr2: " + subStr2);
-
-        return MD5Utils.getMD5(subStr1 + subStr2);
+        return MD5Utils.getMD5(subStr1);
         //return MD5Utils.getMD5(key);
     }
 

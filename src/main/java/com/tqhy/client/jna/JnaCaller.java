@@ -3,6 +3,7 @@ package com.tqhy.client.jna;
 import com.sun.jna.Native;
 import com.sun.jna.Pointer;
 import com.sun.jna.win32.StdCallLibrary;
+import com.tqhy.client.Constant;
 import com.tqhy.client.utils.PropertiesUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,10 +49,12 @@ public class JnaCaller {
         idWidth = Integer.parseInt(PropertiesUtil.getPropertiesKeyValue("idWidth"));
         idHeight = Integer.parseInt(PropertiesUtil.getPropertiesKeyValue("idHeight"));
 
-        dateX = Integer.parseInt(PropertiesUtil.getPropertiesKeyValue("dateX"));
-        dateY = Integer.parseInt(PropertiesUtil.getPropertiesKeyValue("dateY"));
-        dateWidth = Integer.parseInt(PropertiesUtil.getPropertiesKeyValue("dateWidth"));
-        dateHeight = Integer.parseInt(PropertiesUtil.getPropertiesKeyValue("dateHeight"));
+        if (!Constant.DEV_VERSION) {
+            dateX = Integer.parseInt(PropertiesUtil.getPropertiesKeyValue("dateX"));
+            dateY = Integer.parseInt(PropertiesUtil.getPropertiesKeyValue("dateY"));
+            dateWidth = Integer.parseInt(PropertiesUtil.getPropertiesKeyValue("dateWidth"));
+            dateHeight = Integer.parseInt(PropertiesUtil.getPropertiesKeyValue("dateHeight"));
+        }
     }
 
     /**
@@ -72,10 +75,12 @@ public class JnaCaller {
             result1 = p1.getString(0L);
             logger.info("fetch data success: " + result1);
 
-            logger.info("dateX: " + dateX + " dateY: " + dateY + " dateWidth: " + dateWidth + " dateHeight: " + dateHeight);
-            Pointer p2 = TqaiDll.caller.jyFetchDataEx(imgPath, dateX, dateY, dateWidth, dateHeight);
-            result2 = p2.getString(0L);
-            logger.info("fetch data success: " + result2);
+            if (!Constant.DEV_VERSION) {
+                logger.info("dateX: " + dateX + " dateY: " + dateY + " dateWidth: " + dateWidth + " dateHeight: " + dateHeight);
+                Pointer p2 = TqaiDll.caller.jyFetchDataEx(imgPath, dateX, dateY, dateWidth, dateHeight);
+                result2 = p2.getString(0L);
+                logger.info("fetch data success: " + result2);
+            }
             return result1 + "$tqhy$" + result2;
         } catch (Throwable e) {
             logger.error("load dll fail..", e);

@@ -1,5 +1,6 @@
 package com.tqhy.client.utils;
 
+import com.tqhy.client.Constant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,7 +48,8 @@ public class ImgUtils {
 
         GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
         GraphicsDevice[] screenDevices = ge.getScreenDevices();
-        GraphicsDevice secondDevice = screenDevices[1];
+        int screenIndex = Constant.DEV_VERSION ? 0 : 1;
+        GraphicsDevice secondDevice = screenDevices[screenIndex];
         Rectangle secondBounds = secondDevice.getDefaultConfiguration().getBounds();
         Robot robot = null;
         try {
@@ -84,7 +86,7 @@ public class ImgUtils {
      * 绝对路径.
      *
      * @param originImgFile 原图绝对路径
-     * @param newWidth     压缩后图片宽度
+     * @param newWidth      压缩后图片宽度
      * @return 压缩后图片文件绝对路径, 如果未压缩, 则为原图路径
      * @throws Exception
      */
