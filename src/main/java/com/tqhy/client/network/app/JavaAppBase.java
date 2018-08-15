@@ -1,5 +1,6 @@
 package com.tqhy.client.network.app;
 
+import javafx.application.Platform;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,5 +25,23 @@ public class JavaAppBase {
      */
     public void showLog(String log) {
         logger.info("http log: " + log);
+    }
+
+    /**
+     * 关闭当前web页面窗口
+     */
+    public void closeWindow() {
+        logger.info("close window...");
+        Platform.runLater(() -> {
+            stage.close();
+        });
+    }
+
+    public Stage getStage() {
+        return stage;
+    }
+
+    public void setStage(Stage stage) {
+        this.stage = stage;
     }
 }

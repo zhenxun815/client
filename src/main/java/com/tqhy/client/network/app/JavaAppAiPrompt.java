@@ -9,14 +9,6 @@ import javafx.stage.Stage;
  */
 public class JavaAppAiPrompt extends JavaAppBase {
 
-    /**
-     * 关闭当前web页面窗口
-     */
-    public void closeWindow() {
-        logger.info("close window...");
-        stage.close();
-    }
-
     public JavaAppAiPrompt(Stage stage) {
         this.stage = stage;
     }
