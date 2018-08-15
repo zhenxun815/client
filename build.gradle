@@ -40,11 +40,6 @@ jfx {
     checkForAbsolutePaths = true
 }
 
-
-// enable debug output for plugin
-objectbox {
-    debug true
-}
 // enable debug output for annotation processor
 tasks.withType(JavaCompile) {
     options.compilerArgs += [ "-Aobjectbox.modelPath=$projectDir/src/main/java/com/tqhy/client/db/objectbox.json" ]
