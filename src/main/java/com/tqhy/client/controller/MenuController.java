@@ -42,11 +42,11 @@ public class MenuController extends ContextMenu {
     }
 
     @FXML
-    public void detail(MouseEvent event) {
+    public void history(MouseEvent event) {
         logger.info("detail click...");
         WebViewController web = new WebViewController();
         //web.showWeb(Network.BASE_URL+"index?id="+Network.currentId+"&pageName=history");
-        web.showTqWeb(Network.currentId, Network.AI_PROMPT_PAGE);
+        web.showTqWeb(Network.currentId, Network.HISTORY_PAGE);
     }
 
     /*  @FXML
