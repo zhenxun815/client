@@ -66,14 +66,13 @@ public class JnaCaller {
         String result1 = "";
         String result2 = "";
         try {
-            logger.info("into fetchData....");
+            //logger.info("into fetchData....");
             // NativeLibrary.addSearchPath("jyTQAITools", jniRootPath);
             // Native.register(TqaiDll.class, "jyTQAITools");
-            logger.info("idx: " + idX + " idy: " + idY + " idwidth: " + idWidth + " idheight: " + idHeight);
-
+            //logger.info("idx: " + idX + " idy: " + idY + " idwidth: " + idWidth + " idheight: " + idHeight);
             Pointer p1 = TqaiDll.caller.jyFetchDataEx(imgPath, idX, idY, idWidth, idHeight);
             result1 = p1.getString(0L);
-            logger.info("fetch data success: " + result1);
+            //logger.info("fetch data success: " + result1);
 
             if (!Constant.DEV_VERSION) {
                 logger.info("dateX: " + dateX + " dateY: " + dateY + " dateWidth: " + dateWidth + " dateHeight: " + dateHeight);
