@@ -70,7 +70,7 @@ public class Main extends Application {
      * 初始化网络地址
      */
     private void initProperties() {
-        logger.info("file root path is: " + FileUtils.getRootPath());
+        logger.info("file root path is: " + FileUtils.getJarPath());
         String ip = PropertiesUtil.getPropertiesKeyValue("ip");
         logger.info("ip is:" + ip);
         Network.IP = ip;
@@ -89,8 +89,10 @@ public class Main extends Application {
         logger.info("cut_x: " + cut_x);
 
         //日期分割参数
-        this.dateSplit = PropertiesUtil.getPropertiesKeyValue("dateSplit");
-        logger.info("dateSplit: " + dateSplit);
+        if (Constant.BTJ_VERSION) {
+            this.dateSplit = PropertiesUtil.getPropertiesKeyValue("dateSplit");
+            logger.info("dateSplit: " + dateSplit);
+        }
     }
 
     /**
@@ -107,7 +109,7 @@ public class Main extends Application {
                                screenImgPath = ImgUtils.captureScreen(screenImgPath);
                                String str = JnaCaller.fetchData(screenImgPath);
                                //logger.info("capture screen img path: " + screenImgPath);
-                               logger.info(".dll caller get: " + str);
+                               //logger.info(".dll caller get: " + str);
                                return str;
                            } else {
                                return key;
@@ -118,9 +120,11 @@ public class Main extends Application {
                   .filter(key -> {
                       boolean b = key.equals(this.key);
                       setWarningDialogShouldShowingFlag(b);
-                      //logger.info("setWarningDialogShouldShowingFlag: " + getWarningDialogShouldShowingFlag());
-                      //logger.info("key: " + key + " this.key: " + this.key + " b: " + b);
-                      this.key = key;
+                      logger.info("setWarningDialogShouldShowingFlag: " + getWarningDialogShouldShowingFlag());
+                      logger.info("key: " + key + " this.key: " + this.key + " b: " + b);
+                      if (key.length() > 10) {
+                          this.key = key;
+                      }
                       return key.length() >= 10 && !b;
                   })
                   .observeOn(Schedulers.trampoline())
@@ -292,6 +296,7 @@ public class Main extends Application {
      * @param primaryStage
      */
     private void showWarningDialog(Stage primaryStage) {
+        setWarningDialogShouldShowingFlag(true);
         Platform.runLater(() -> {
             logger.info("subscribe aiResult: " + aiResult);
             if (null == aiWarningDialogController) {
