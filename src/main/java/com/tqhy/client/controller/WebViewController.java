@@ -36,7 +36,7 @@ public class WebViewController extends AnchorPane {
     private Stage stage;
     private BooleanProperty webViewShowing = new SimpleBooleanProperty();
     private Logger logger = LoggerFactory.getLogger(WebViewController.class);
-
+    private JavaAppBase javaApp;
     public static final int WEB_TYPE_AI_PROMPT = 0;
     public static final int WEB_TYPE_AI_WARNING = 1;
     public static final int WEB_TYPE_AI_INFO = 2;
@@ -47,7 +47,6 @@ public class WebViewController extends AnchorPane {
         stage = new Stage();
         stage.getIcons().addAll(new Image(getClass().getResourceAsStream("/deploy/package/windows/logo_title.png")));
         stage.setScene(scene);
-        stage.setAlwaysOnTop(true);
 
         stage.setOnCloseRequest(event -> {
             logger.info("webview window on close request...");
@@ -70,8 +69,9 @@ public class WebViewController extends AnchorPane {
                 WebViewMouseDragHandler webViewMouseDragHandler = new WebViewMouseDragHandler(stage, webView);
                 webView.addEventHandler(MouseEvent.ANY, webViewMouseDragHandler);
 
-                JavaAppAiPrompt javaAppAiPrompt = new JavaAppAiPrompt(stage);
-                engineBindApp(engine, javaAppAiPrompt);
+                javaApp = new JavaAppAiPrompt(stage);
+                engineBindApp(engine, javaApp);
+                stage.setAlwaysOnTop(true);
                 stage.initStyle(StageStyle.TRANSPARENT);
                 stage.setWidth(400);
                 stage.setHeight(668);
@@ -81,7 +81,14 @@ public class WebViewController extends AnchorPane {
             case WEB_TYPE_AI_INFO:
                 stage.setResizable(false);
                 break;
-
+            case WEB_TYPE_AI_WARNING:
+                javaApp.setStage(stage);
+                engineBindApp(engine, javaApp);
+                stage.setAlwaysOnTop(true);
+                stage.initStyle(StageStyle.TRANSPARENT);
+                stage.setWidth(300);
+                stage.setHeight(150);
+                break;
             default:
                 break;
         }
@@ -107,13 +114,13 @@ public class WebViewController extends AnchorPane {
     }
 
     public void showTqWeb(String id, String pageName) {
-        String url = Network.BASE_URL + "index.html?id=" + id + "&pageName=" + pageName;
+        String url = Network.BASE_URL + "/html/index.html?id=" + id + "&pageName=" + pageName;
         showWeb(url, WEB_TYPE_AI_PROMPT);
     }
 
     public void showLocalWeb(String url) {
         String path = WebViewController.class.getResource(url).toExternalForm();
-        showWeb(path, WEB_TYPE_AI_INFO);
+        showWeb(path, WEB_TYPE_AI_WARNING);
     }
 
     public boolean isWebViewShowing() {
@@ -126,5 +133,13 @@ public class WebViewController extends AnchorPane {
 
     public void setWebViewShowing(boolean webViewShowing) {
         this.webViewShowing.set(webViewShowing);
+    }
+
+    public JavaAppBase getJavaApp() {
+        return javaApp;
+    }
+
+    public void setJavaApp(JavaAppBase javaApp) {
+        this.javaApp = javaApp;
     }
 }

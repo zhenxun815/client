@@ -2,8 +2,6 @@ package com.tqhy.client.controller;
 
 import com.tqhy.client.view.ViewsUtils;
 import javafx.application.Platform;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -28,7 +26,7 @@ public class BaseDialogController extends DialogPane {
     protected Dialog<ButtonType> dialog;
     protected Stage owner;
     protected Logger logger = LoggerFactory.getLogger(this.getClass());
-    protected BooleanProperty dialogShouldShowingFlag = new SimpleBooleanProperty();
+
 
     /**
      * 初始化Dialog,子类构造方法中加载完fxml文件后调用.
@@ -44,15 +42,12 @@ public class BaseDialogController extends DialogPane {
 
         dialog.initOwner(owner);
 
-
     }
 
     /**
      * 右下角显示弹窗
      */
     public Optional<ButtonType> showAtRightBottom() {
-        setDialogShouldShowingFlag(true);
-
         dialog.setX(ViewsUtils.getMaxX(this.getWidth()));
         dialog.setY(ViewsUtils.getMaxY(this.getHeight()));
         // logger.info("dialog x: " + dialog.getX() + " y: " + dialog.getY());
@@ -65,7 +60,6 @@ public class BaseDialogController extends DialogPane {
      * 屏幕中心显示弹窗
      */
     public Optional<ButtonType> showAtCenter() {
-        setDialogShouldShowingFlag(true);
         Rectangle2D visualBounds = Screen.getPrimary().getVisualBounds();
         double x = visualBounds.getMaxX() / 2 - this.getWidth() / 2;
         double y = visualBounds.getMaxY() / 2 - this.getHeight() / 2;
@@ -92,15 +86,4 @@ public class BaseDialogController extends DialogPane {
         }
     }
 
-    public boolean getDialogShouldShowingFlag() {
-        return dialogShouldShowingFlag.get();
-    }
-
-    public BooleanProperty dialogShouldShowingFlagProperty() {
-        return dialogShouldShowingFlag;
-    }
-
-    public void setDialogShouldShowingFlag(boolean dialogShouldShowingFlag) {
-        this.dialogShouldShowingFlag.set(dialogShouldShowingFlag);
-    }
 }

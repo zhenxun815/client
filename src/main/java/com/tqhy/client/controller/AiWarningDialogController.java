@@ -5,18 +5,16 @@ import com.tqhy.client.model.AiResult;
 import com.tqhy.client.model.ClientMsg;
 import com.tqhy.client.network.Network;
 import com.tqhy.client.network.api.ApiBean;
+import com.tqhy.client.network.app.JavaAppAiWarning;
 import com.tqhy.client.view.FxmlUtils;
 import io.reactivex.schedulers.Schedulers;
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.fxml.FXML;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Label;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.Optional;
 
 /**
  * @author Yiheng
@@ -27,66 +25,21 @@ public class AiWarningDialogController extends BaseDialogController {
 
     private Logger logger = LoggerFactory.getLogger(AiWarningDialogController.class);
     private ObjectProperty<AiResult> aiResult = new SimpleObjectProperty<>();
-    @FXML
-    Label lb_ai_warning;
+    private BooleanProperty dialogShouldShowingFlag = new SimpleBooleanProperty();
+    private JavaAppAiWarning javaAppAiWarning;
 
     public AiWarningDialogController() {
-
         FxmlUtils.load("/dialog/ai_warning/ai_warning.fxml", this);
         initDialog();
     }
 
-    /**
-     * 显示弹窗
-     *
-     * @param primaryStage 悬浮窗口
-     */
     public void show(Stage primaryStage, OnWebViewShowingListener webViewShowingListener) {
-        lb_ai_warning.setText(null == this.aiResult.get() ? "null" : this.aiResult.get().getAiImgResult());
-
-        primaryStage.setAlwaysOnTop(false);
-
-
-        //切忌通过调用primaryStage.hide();来实现弹窗置顶!!
-        Optional<ButtonType> cmd = showAtRightBottom();
-
-        primaryStage.getScene().getRoot().setStyle("-fx-background-color: dimgray;");
-        primaryStage.setAlwaysOnTop(true);
-        primaryStage.show();
-
-        //1已警告,0未警告
-        Integer warning_flag = 1;
-        //0警告未解除,1继续警告
-        Integer ai_warning = null;
-        //0非误报,1误报
-        Integer error_flag = null;
-        //医生是否确认
-        Integer operation = null;
-
-        switch (cmd.get().getButtonData()) {
-            case YES: //进入webView详情页
-
-                logger.info("dialog detail clicked....");
-                WebViewController web = new WebViewController();
-                webViewShowingListener.bindShowingProperty(web);
-                web.showTqWeb(this.aiResult.get().getAiDrId(), Network.AI_PROMPT_PAGE);
-                ai_warning = 1;
-                postAiWarningBack(ai_warning, error_flag, warning_flag);
-
-                break;
-            case NO:
-                logger.info("dialog exclude clicked....");
-                error_flag = 1;
-                ai_warning = 0;
-                postAiWarningBack(ai_warning, error_flag, warning_flag);
-
-                break;
-            case CANCEL_CLOSE:
-                logger.info("dialog close invoked..");
-                ai_warning = 1;
-                postAiWarningBack(ai_warning, error_flag, warning_flag);
-                break;
-        }
+        //primaryStage.setAlwaysOnTop(false);
+        WebViewController webViewController = new WebViewController();
+        javaAppAiWarning = new JavaAppAiWarning(getAiResult(), webViewShowingListener);
+        setDialogShouldShowingFlag(true);
+        webViewController.setJavaApp(javaAppAiWarning);
+        webViewController.showWeb(Network.BASE_URL + "html/ai-warning.html", WebViewController.WEB_TYPE_AI_WARNING);
     }
 
     /**
@@ -147,6 +100,11 @@ public class AiWarningDialogController extends BaseDialogController {
                });
     }
 
+    @Override
+    public void closeDialog() {
+        super.closeDialog();
+        javaAppAiWarning.closeWindow();
+    }
 
     public AiResult getAiResult() {
         return aiResult.get();
@@ -158,5 +116,18 @@ public class AiWarningDialogController extends BaseDialogController {
 
     public void setAiResult(AiResult aiResult) {
         this.aiResult.set(aiResult);
+    }
+
+
+    public boolean getDialogShouldShowingFlag() {
+        return dialogShouldShowingFlag.get();
+    }
+
+    public BooleanProperty dialogShouldShowingFlagProperty() {
+        return dialogShouldShowingFlag;
+    }
+
+    public void setDialogShouldShowingFlag(boolean dialogShouldShowingFlag) {
+        this.dialogShouldShowingFlag.set(dialogShouldShowingFlag);
     }
 }
