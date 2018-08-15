@@ -8,4 +8,5 @@ package com.tqhy.client;
 public class Constant {
 
     public static final boolean DEV_VERSION = true;
+    public static final boolean BTJ_VERSION = true;
 }
