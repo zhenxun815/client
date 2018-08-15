@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Title</title>
+	<script src="../js/jquery-3.3.1.js"></script>
+	<script type="application/javascript">
+		$(function () {
+			$('#detail').click(function () {
+				console.log('detail click...');
+				tqClient.pressDetail();
+			});
+
+			$('#exclude').click(function () {
+				console.log('exclude click...');
+				tqClient.pressExclude();
+			});
+
+			$('#close').click(function () {
+				console.log('close click....');
+				tqClient.closeWindow();
+			});
+
+		});
+	</script>
+</head>
+<body>
+
+<button id="detail">详情</button>
+<button id="exclude">排除</button>
+<button id="close">关闭</button>
+</body>
+</html>
