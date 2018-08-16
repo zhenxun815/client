@@ -1,19 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.HBox?>
 <HBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
-      stylesheets="/menu/menu.css" styleClass="item">
+      stylesheets="@menu.css">
     <children>
-        <ImageView disable="true" pickOnBounds="true"
-                   preserveRatio="true" fitHeight="13" fitWidth="13">
-            <image>
-                <Image url="@/menu/icons/min.png"/>
-            </image>
-        </ImageView>
-        <Label text="  隐藏 "/>
+        <HBox styleClass="image-container-min">
+
+        </HBox>
+        <Label text=" 隐藏 "/>
     </children>
 </HBox>
 

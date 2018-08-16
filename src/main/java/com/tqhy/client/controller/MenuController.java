@@ -29,9 +29,6 @@ public class MenuController extends ContextMenu {
     @FXML
     HBox menuItemInfo;
 
-    /* @FXML
-    HBox menuItemUpload;*/
-
     Node anchor;
     private Stage stage;
     private Logger logger = LoggerFactory.getLogger(MenuController.class);
@@ -49,15 +46,6 @@ public class MenuController extends ContextMenu {
         web.showTqWeb(Network.currentId, Network.HISTORY_PAGE);
     }
 
-    /*  @FXML
-      public void upload(MouseEvent event) {
-          logger.info("upload click...");
-          WebViewController web = new WebViewController();
-          //web.showWeb(Network.BASE_URL+"index?id="+Network.currentId+"&pageName=report");
-          logger.info("current id is: "+Network.currentId);
-          web.showTqWeb(Network.currentId, Network.REPORT_PAGE);
-      }
-  */
     @FXML
     public void exit(MouseEvent event) {
         logger.info("exit click...");
@@ -91,10 +79,9 @@ public class MenuController extends ContextMenu {
     public void initItems() {
         // logger.info("menu controller init items...");
         getItems().add(0, new CustomMenuItem(menuItemHistory));
-        /* getItems().add(1, new CustomMenuItem(menuItemUpload));*/
         getItems().add(1, new CustomMenuItem(menuItemMin));
         getItems().add(2, new CustomMenuItem(menuItemExit));
-        getItems().add(3, new CustomMenuItem(menuItemInfo));
+        getScene().setUserAgentStylesheet("/menu/menu.css");
     }
 
     public void showMenu(Node anchor, double screenX, double screenY) {
