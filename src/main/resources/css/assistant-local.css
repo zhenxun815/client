@@ -1,4 +1,16 @@
 /*--------------------ai-warning----------------------------*/
+* {
+    -webkit-user-select: none;
+}
+
+body {
+    margin: 0px;
+}
+
+p {
+    margin-top: 3px;
+}
+
 #ai-warning {
     width: 300px;
     height: 150px;
@@ -13,7 +25,7 @@
     background: url(../img/titlebar.png) no-repeat 0 0;
     background-size: 300px 38px;
     vertical-align: middle;
-    line-height: 36px;
+    line-height: 15px;
     padding: 0 16px;
 }
 
@@ -55,7 +67,7 @@
     margin: 0;
     padding: 0;
     margin-left: 23px;
-    margin-top: 40px;
+    margin-top: 30px;
     outline: none;
 }
 
@@ -63,7 +75,7 @@
     margin-left: 11px;
 }
 
-.button-group button:focus {
+.button-group button:hover {
     border: 1px solid rgba(223, 223, 224, 10);
     color: rgba(223, 223, 224, 10);
 }
@@ -124,12 +136,12 @@
 }
 
 #right-hand ul #hide span {
-    background: url(../img/hide.png) no-repeat center;
+    background: url(../img/min.png) no-repeat center;
     background-size: 12px 12px;
 }
 
 #right-hand ul #quit span {
-    background: url(../img/quit.png) no-repeat center;
+    background: url(../img/exit.png) no-repeat center;
     background-size: 12px 12px;
 }
 

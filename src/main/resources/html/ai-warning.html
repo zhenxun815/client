@@ -2,10 +2,12 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
-	<link rel="stylesheet" href="../css/assistant.css">
-	<script src="../js/jquery-3.3.1.js"></script>
+	<link rel="stylesheet" href="../css/assistant-local.css">
+	<script src="../js/jquery-3.3.1.min.js"></script>
 	<script type="application/javascript">
 		$(function () {
+			$('#ai_prompt').html(tqClient.getAiPrompt());
+
 			$('#detail').click(function () {
 				console.log('detail click...');
 				tqClient.pressDetail();
@@ -31,7 +33,7 @@
 		<img src="../img/danger.png"/>
 	</header>
 	<section class="ai-warning-content">
-		<p>null这里是提示内容</p>
+		<p id="ai_prompt"></p>
 		<div class="button-group">
 			<button id="detail">详情</button>
 			<button id="exclude">排除</button>

@@ -41,6 +41,11 @@ public class WebViewController extends AnchorPane {
     public static final int WEB_TYPE_AI_WARNING = 1;
     public static final int WEB_TYPE_AI_INFO = 2;
 
+    public WebViewController(JavaAppBase javaApp) {
+        this();
+        this.javaApp = javaApp;
+    }
+
     public WebViewController() {
         FxmlUtils.load("/dialog/web/web.fxml", this);
         Scene scene = new Scene(this);
@@ -57,8 +62,6 @@ public class WebViewController extends AnchorPane {
             logger.info("webview window on hiding request...");
             setWebViewShowing(false);
         });
-
-
     }
 
     public void showWeb(String url, int webType) {
@@ -68,13 +71,13 @@ public class WebViewController extends AnchorPane {
             case WEB_TYPE_AI_PROMPT:
                 WebViewMouseDragHandler webViewMouseDragHandler = new WebViewMouseDragHandler(stage, webView);
                 webView.addEventHandler(MouseEvent.ANY, webViewMouseDragHandler);
-
-                javaApp = new JavaAppAiPrompt(stage);
-                engineBindApp(engine, javaApp);
                 stage.setAlwaysOnTop(true);
                 stage.initStyle(StageStyle.TRANSPARENT);
                 stage.setWidth(400);
                 stage.setHeight(668);
+
+                javaApp = new JavaAppAiPrompt(stage);
+                engineBindApp(engine, javaApp);
                 ViewsUtils.setStageAnimation(stage, StageMovingAnimMode.SLIDE_IN_FROM_TOP_RIGHT);
                 logger.info("stage animation set finish..");
                 break;
@@ -82,12 +85,14 @@ public class WebViewController extends AnchorPane {
                 stage.setResizable(false);
                 break;
             case WEB_TYPE_AI_WARNING:
-                javaApp.setStage(stage);
-                engineBindApp(engine, javaApp);
                 stage.setAlwaysOnTop(true);
                 stage.initStyle(StageStyle.TRANSPARENT);
                 stage.setWidth(300);
                 stage.setHeight(150);
+
+                javaApp.setStage(stage);
+                engineBindApp(engine, javaApp);
+                ViewsUtils.setStageAnimation(stage, StageMovingAnimMode.SLIDE_IN_FROM_BOTTOM_RIGHT);
                 break;
             default:
                 break;
@@ -105,10 +110,10 @@ public class WebViewController extends AnchorPane {
         engine.getLoadWorker()
               .stateProperty()
               .addListener((ov, oldState, newState) -> {
-                  if (Worker.State.SUCCEEDED == newState) {
+                  logger.info("old state: " + oldState + " ,new state: " + newState);
+                  if (Worker.State.READY == oldState) {
                       JSObject window = (JSObject) engine.executeScript("window");
                       window.setMember("tqClient", javaApp);
-                      logger.info("set tqClient...");
                   }
               });
     }
@@ -135,11 +140,4 @@ public class WebViewController extends AnchorPane {
         this.webViewShowing.set(webViewShowing);
     }
 
-    public JavaAppBase getJavaApp() {
-        return javaApp;
-    }
-
-    public void setJavaApp(JavaAppBase javaApp) {
-        this.javaApp = javaApp;
-    }
 }

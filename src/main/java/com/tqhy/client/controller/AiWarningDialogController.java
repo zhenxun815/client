@@ -35,11 +35,11 @@ public class AiWarningDialogController extends BaseDialogController {
 
     public void show(Stage primaryStage, OnWebViewShowingListener webViewShowingListener) {
         //primaryStage.setAlwaysOnTop(false);
-        WebViewController webViewController = new WebViewController();
         javaAppAiWarning = new JavaAppAiWarning(getAiResult(), webViewShowingListener);
+        WebViewController webViewController = new WebViewController(javaAppAiWarning);
         setDialogShouldShowingFlag(true);
-        webViewController.setJavaApp(javaAppAiWarning);
-        webViewController.showWeb(Network.BASE_URL + "html/ai-warning.html", WebViewController.WEB_TYPE_AI_WARNING);
+        //webViewController.showWeb(Network.BASE_URL + "html/ai-warning.html", WebViewController.WEB_TYPE_AI_WARNING);
+        webViewController.showLocalWeb("/html/ai-warning.html");
     }
 
     /**
@@ -61,36 +61,6 @@ public class AiWarningDialogController extends BaseDialogController {
                .map(body -> {
                    String json = body.string();
                    logger.info("AiWarningDialogController postDocConfirm recieve json:" + json);
-                   return json;
-               })
-               .observeOn(Schedulers.io())
-               .subscribeOn(Schedulers.trampoline())
-               .subscribe(json -> {
-                   logger.info(json);
-               });
-    }
-
-    /**
-     * 向后台反馈是否接收到弹窗信息及弹框相关操作
-     *
-     * @param aiWarning
-     * @param errorFlag
-     * @param warningFlag
-     */
-    private void postAiWarningBack(Integer aiWarning, Integer errorFlag, Integer warningFlag) {
-        ApiBean<ClientMsg> apiBean = new ApiBean<>();
-        ClientMsg warningBack = new ClientMsg();
-        warningBack.setOperationIp(Network.getLocalIp());
-        warningBack.setAiDrId(Network.currentId);
-        warningBack.setWarningBack(aiWarning, errorFlag, warningFlag);
-        logger.info("post warning back: " + warningBack);
-        apiBean.setBean(warningBack);
-
-        Network.getAiHelperApi()
-               .postAiWarningBack(apiBean)
-               .map(body -> {
-                   String json = body.string();
-                   logger.info("AiWarningDialogController postAiWarningBack recieve json:" + json);
                    return json;
                })
                .observeOn(Schedulers.io())

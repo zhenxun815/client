@@ -22,9 +22,10 @@ public class JavaAppAiWarning extends JavaAppBase {
     //0非误报,1误报
     Integer error_flag = null;
 
-    OnWebViewShowingListener webViewShowingListener;
+    private OnWebViewShowingListener webViewShowingListener;
 
-    AiResult aiResult;
+    private AiResult aiResult;
+
     /**
      * 用户点击详情按钮
      */
@@ -47,6 +48,15 @@ public class JavaAppAiWarning extends JavaAppBase {
         error_flag = 1;
         ai_warning = 0;
         postAiWarningBack(ai_warning, error_flag, warning_flag);
+    }
+
+    /**
+     * 获取ai提示内容
+     *
+     * @return
+     */
+    public String getAiPrompt() {
+        return aiResult.getAiImgResult();
     }
 
     @Override
