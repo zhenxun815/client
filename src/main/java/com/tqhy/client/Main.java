@@ -7,6 +7,8 @@ import com.tqhy.client.jna.JnaCaller;
 import com.tqhy.client.model.AiResult;
 import com.tqhy.client.network.Network;
 import com.tqhy.client.network.responsebody.ErrorResponseBody;
+import com.tqhy.client.unique.AlreadyLockedException;
+import com.tqhy.client.unique.JUnique;
 import com.tqhy.client.utils.*;
 import com.tqhy.client.view.ViewsUtils;
 import io.reactivex.Observable;
@@ -120,12 +122,12 @@ public class Main extends Application {
                   .filter(key -> {
                       boolean b = key.equals(this.key);
                       setWarningDialogShouldShowingFlag(b);
-                      logger.info("setWarningDialogShouldShowingFlag: " + getWarningDialogShouldShowingFlag());
-                      logger.info("key: " + key + " this.key: " + this.key + " b: " + b);
-                      if (key.length() > 10) {
+                      if (key.length() > 11) {
                           this.key = key;
+                          //logger.info("setWarningDialogShouldShowingFlag: " + getWarningDialogShouldShowingFlag());
+                          //logger.info("key: " + key + " this.key: " + this.key + " b: " + b);
                       }
-                      return key.length() >= 10 && !b;
+                      return key.length() > 11 && !b;
                   })
                   .observeOn(Schedulers.trampoline())
                   .subscribeOn(Schedulers.trampoline())
@@ -285,7 +287,7 @@ public class Main extends Application {
             subStr1 += subStr2;
         }
 
-        //subStr1 = subStr1.substring(subStr1.length()-5);
+        subStr1 = subStr1.substring(subStr1.length() - 5);
         logger.info("subStr1: " + subStr1 + " subStr2: " + subStr2);
         return MD5Utils.getMD5(subStr1);
         //return MD5Utils.getMD5(key);
@@ -414,7 +416,25 @@ public class Main extends Application {
     }
 
     public static void main(String[] args) {
-        launch(args);
+        String appId = "TQHY-CLIENT";
+        boolean alreadyRunning;
+        try {
+            JUnique.acquireLock(appId, message -> {
+                System.out.println("get message: " + message);
+                return null;
+            });
+            alreadyRunning = false;
+        } catch (AlreadyLockedException e) {
+            alreadyRunning = true;
+        }
+
+        if (alreadyRunning) {
+            for (int i = 0; i < args.length; i++) {
+                JUnique.sendMessage(appId, "call_window");
+            }
+        } else {
+            launch(args);
+        }
     }
 
 
