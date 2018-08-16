@@ -285,6 +285,7 @@ public class Main extends Application {
             subStr1 += subStr2;
         }
 
+        //subStr1 = subStr1.substring(subStr1.length()-5);
         logger.info("subStr1: " + subStr1 + " subStr2: " + subStr2);
         return MD5Utils.getMD5(subStr1);
         //return MD5Utils.getMD5(key);
