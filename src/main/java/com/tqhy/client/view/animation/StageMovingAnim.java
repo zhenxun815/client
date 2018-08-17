@@ -2,6 +2,7 @@ package com.tqhy.client.view.animation;
 
 import com.tqhy.client.view.ViewsUtils;
 import javafx.animation.TranslateTransition;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -21,25 +22,27 @@ public class StageMovingAnim {
     private double toY = 0;
     private double screenWidth = ViewsUtils.getScreenWidth();
     private double screenHeight = ViewsUtils.getScreenHeight();
-    private Stage stage;
+    private SimpleDoubleProperty primaryStageX = new SimpleDoubleProperty();
+    private SimpleDoubleProperty primaryStageY = new SimpleDoubleProperty();
+    private Stage movingStage;
     private StageMovingAnimMode stageMovingAnimMode;
     private Logger logger = LoggerFactory.getLogger(StageMovingAnim.class);
 
 
     public void bindStageWithAnim() {
 
-        double stageWidth = stage.getWidth();
-        double stageHeight = stage.getHeight();
+        double stageWidth = movingStage.getWidth();
+        double stageHeight = movingStage.getHeight();
 
         switch (stageMovingAnimMode) {
             case SLIDE_OUT_TO_BOTTOM:
-                fromX = stage.getX();
-                fromY = stage.getY();
+                fromX = movingStage.getX();
+                fromY = movingStage.getY();
                 // logger.info("fromX is: " + fromX);
                 // logger.info("fromY is: " + fromY);
                 toX = fromX;
                 toY = screenHeight;
-                stage.setOnHiding(event -> {
+                movingStage.setOnHiding(event -> {
                     // logger.info("event is: " + event.getEventType());
                     setAnimation();
                 });
@@ -50,7 +53,7 @@ public class StageMovingAnim {
                 toX = fromX;
                 toY = 0;
 
-                stage.setOnShowing(event -> {
+                movingStage.setOnShowing(event -> {
                     //logger.info("event is: "+event.getEventType());
                     setAnimation();
                 });
@@ -60,7 +63,15 @@ public class StageMovingAnim {
                 fromY = screenHeight;
                 toX = fromX;
                 toY = screenHeight - stageHeight;
-                stage.setOnShowing(event -> setAnimation());
+                movingStage.setOnShowing(event -> setAnimation());
+                break;
+            case ACCORDING_TO_PRIMARY_STAGE:
+                fromX = getPrimaryStageX();
+                fromY = getPrimaryStageY();
+                toX = fromX - movingStage.getWidth();
+                toY = fromY;
+                //todo 动画事件未完成,但需求更改,暂保留逻辑
+                movingStage.setOnShowing(event -> setAnimation());
                 break;
             case NO_ANIMATION:
                 break;
@@ -71,42 +82,66 @@ public class StageMovingAnim {
     /**
      * 设定动画事件
      */
-    public void setAnimation() {
+    private void setAnimation() {
         logger.info("into setOnHidingAnim...");
         Pane pane = new Pane();
         TranslateTransition transTrans = new TranslateTransition(Duration.millis(500), pane);
-        stage.setX(fromX);
-        stage.setY(fromY);
+        movingStage.setX(fromX);
+        movingStage.setY(fromY);
         transTrans.setFromX(fromX);
         transTrans.setFromY(fromY);
         transTrans.setToX(toX);
         transTrans.setToY(toY);
         pane.translateXProperty()
             .addListener((observable, oldValue, newValue) -> {
-                stage.setX(newValue.doubleValue());
-                // logger.info("stage x is: " + stage.getX());
+                movingStage.setX(newValue.doubleValue());
+                // logger.info("movingStage x is: " + movingStage.getX());
             });
         pane.translateYProperty()
             .addListener((observable, oldValue, newValue) -> {
-                stage.setY(newValue.doubleValue());
-                // logger.info("stage y is: " + stage.getY());
+                movingStage.setY(newValue.doubleValue());
+                // logger.info("movingStage y is: " + movingStage.getY());
             });
         transTrans.play();
-        //stage.setResizable(false);
+        //movingStage.setResizable(false);
         // logger.info("animation finished...");
 
     }
 
-    public StageMovingAnim(Stage stage, StageMovingAnimMode stageMovingAnimMode) {
-        this.stage = stage;
+    public StageMovingAnim(Stage movingStage, StageMovingAnimMode stageMovingAnimMode) {
+        this.movingStage = movingStage;
         this.stageMovingAnimMode = stageMovingAnimMode;
     }
 
+    public double getPrimaryStageX() {
+        return primaryStageX.get();
+    }
+
+    public SimpleDoubleProperty primaryStageXProperty() {
+        return primaryStageX;
+    }
+
+    public void setPrimaryStageX(double primaryStageX) {
+        this.primaryStageX.set(primaryStageX);
+    }
+
+    public double getPrimaryStageY() {
+        return primaryStageY.get();
+    }
+
+    public SimpleDoubleProperty primaryStageYProperty() {
+        return primaryStageY;
+    }
+
+    public void setPrimaryStageY(double primaryStageY) {
+        this.primaryStageY.set(primaryStageY);
+    }
 
     public enum StageMovingAnimMode {
         NO_ANIMATION,
         SLIDE_IN_FROM_TOP_RIGHT,
         SLIDE_IN_FROM_BOTTOM_RIGHT,
-        SLIDE_OUT_TO_BOTTOM
+        SLIDE_OUT_TO_BOTTOM,
+        ACCORDING_TO_PRIMARY_STAGE
     }
 }

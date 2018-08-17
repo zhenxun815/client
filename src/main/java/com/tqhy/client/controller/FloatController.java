@@ -59,7 +59,7 @@ public class FloatController {
                 double maxX = ViewsUtils.getMaxX(width);
                 double maxY = ViewsUtils.getMaxY(height);
                 stage.setX(x < maxX * 2 / 3 ? maxX * 2 / 3 : (x > maxX ? maxX : x));
-                stage.setY(y < maxY * 2 / 3 ? maxY * 2 / 3 : (y > maxY ? maxY : y));
+                stage.setY(y < maxY * 1 / 3 ? maxY * 1 / 3 : (y > maxY ? maxY : y));
             }
         }
     }

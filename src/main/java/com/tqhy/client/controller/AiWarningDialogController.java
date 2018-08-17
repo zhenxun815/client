@@ -39,7 +39,7 @@ public class AiWarningDialogController extends BaseDialogController {
         WebViewController webViewController = new WebViewController(javaAppAiWarning);
         setDialogShouldShowingFlag(true);
         //webViewController.showWeb(Network.BASE_URL + "html/ai-warning.html", WebViewController.WEB_TYPE_AI_WARNING);
-        webViewController.showLocalWeb("/html/ai-warning.html");
+        webViewController.showLocalWeb(primaryStage, "/html/ai-warning.html");
     }
 
     /**

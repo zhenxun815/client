@@ -22,6 +22,7 @@ public class ViewsUtils {
     public static final String CLOSE_VIEW_TAG = "close_view_tag";
     private static Logger logger = LoggerFactory.getLogger(ViewsUtils.class);
 
+
     /**
      * 获取屏幕最大可用宽度
      *
@@ -65,13 +66,28 @@ public class ViewsUtils {
     }
 
     /**
-     * 设定窗口移动动画
+     * 设定窗口移动动画,与主窗口位置无关时调用该方法
      *
-     * @param stage
-     * @param stageMovingAnimMode
+     * @param movingStage  需要完成动画的窗口Stage对象
+     * @param stageMovingAnimMode  窗口移动动画类型
      */
-    public static void setStageAnimation(Stage stage, StageMovingAnimMode stageMovingAnimMode) {
-        StageMovingAnim stageMovingAnim = new StageMovingAnim(stage, stageMovingAnimMode);
+    public static void setStageAnimation(Stage movingStage, StageMovingAnimMode stageMovingAnimMode) {
+        setStageAnimation(movingStage, null, stageMovingAnimMode);
+    }
+
+    /**
+     * 设定窗口移动动画,与主窗口位置有关时调用该方法
+     *
+     * @param movingStage         需要完成动画的窗口Stage对象
+     * @param primaryStage        主窗口Stage对象
+     * @param stageMovingAnimMode 窗口移动动画类型
+     */
+    public static void setStageAnimation(Stage movingStage, Stage primaryStage, StageMovingAnimMode stageMovingAnimMode) {
+        StageMovingAnim stageMovingAnim = new StageMovingAnim(movingStage, stageMovingAnimMode);
+        if (null != primaryStage) {
+            stageMovingAnim.primaryStageXProperty().bind(primaryStage.xProperty());
+            stageMovingAnim.primaryStageYProperty().bind(primaryStage.yProperty());
+        }
         stageMovingAnim.bindStageWithAnim();
     }
 
@@ -90,4 +106,5 @@ public class ViewsUtils {
         stage.setWidth(stageWidth);
         stage.setHeight(stageHeight);
     }
+
 }
