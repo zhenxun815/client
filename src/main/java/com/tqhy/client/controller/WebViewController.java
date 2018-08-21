@@ -7,12 +7,12 @@ import com.tqhy.client.view.FxmlUtils;
 import com.tqhy.client.view.ViewsUtils;
 import com.tqhy.client.view.animation.StageMovingAnim.StageMovingAnimMode;
 import com.tqhy.client.view.handler.WebViewMouseDragHandler;
-import javafx.animation.TranslateTransition;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.concurrent.Worker;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
@@ -20,7 +20,6 @@ import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import javafx.util.Duration;
 import netscape.javascript.JSObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,7 +32,9 @@ import org.slf4j.LoggerFactory;
 public class WebViewController extends AnchorPane {
 
     @FXML
-    WebView webView;
+    WebView web_view;
+    @FXML
+    Label lb_web_tips;
 
     private Stage stage;
     private Stage primaryStage;
@@ -43,8 +44,8 @@ public class WebViewController extends AnchorPane {
     public static final int WEB_TYPE_AI_PROMPT = 0;
     public static final int WEB_TYPE_AI_WARNING = 1;
     public static final int WEB_TYPE_AI_INFO = 2;
-
-
+    private boolean bindAppSuccess;
+    private int recallTimes;
     public WebViewController(JavaAppBase javaApp) {
         this();
         this.javaApp = javaApp;
@@ -73,12 +74,11 @@ public class WebViewController extends AnchorPane {
     }
 
     public void showWeb(String url, int webType) {
-        WebEngine engine = webView.getEngine();
-
+        WebEngine engine = web_view.getEngine();
         switch (webType) {
             case WEB_TYPE_AI_PROMPT:
-                WebViewMouseDragHandler webViewMouseDragHandler = new WebViewMouseDragHandler(stage, webView);
-                webView.addEventHandler(MouseEvent.ANY, webViewMouseDragHandler);
+                WebViewMouseDragHandler webViewMouseDragHandler = new WebViewMouseDragHandler(stage, web_view);
+                web_view.addEventHandler(MouseEvent.ANY, webViewMouseDragHandler);
                 stage.setAlwaysOnTop(true);
                 stage.initStyle(StageStyle.TRANSPARENT);
                 stage.setWidth(400);
@@ -92,44 +92,19 @@ public class WebViewController extends AnchorPane {
             case WEB_TYPE_AI_INFO:
                 stage.setResizable(false);
                 break;
-            case WEB_TYPE_AI_WARNING:
-                stage.setAlwaysOnTop(true);
-                stage.initStyle(StageStyle.TRANSPARENT);
-                stage.setWidth(300);
-                stage.setHeight(150);
-
-                javaApp.setStage(stage);
-                engineBindApp(engine, javaApp);
-                //ViewsUtils.setStageAnimation(stage, primaryStage, StageMovingAnimMode.ACCORDING_TO_PRIMARY_STAGE);
-                stage.setX(primaryStage.getX() - 300);
-                stage.setY(primaryStage.getY());
-                // stage.getScene().setUserAgentStylesheet();
-                stage.setOnShowing(event -> {
-                    TranslateTransition transTrans = new TranslateTransition(Duration.millis(500), this);
-                    transTrans.setFromX(300);
-                    transTrans.setFromY(0);
-                    transTrans.setToX(0);
-                    transTrans.setToY(0);
-                    transTrans.play();
-                });
-
-                primaryStage.xProperty().addListener((observable, oldValue, newValue) -> {
-                    stage.setX(newValue.doubleValue() - 300);
-                });
-                primaryStage.yProperty().addListener((observable, oldValue, newValue) -> {
-                    stage.setY(newValue.doubleValue());
-                });
-                break;
             default:
                 break;
         }
+
         engine.load(url);
         setWebViewShowing(true);
         logger.info("showWeb(): " + webViewShowing.get());
         //stage.setMaximized(true);
 
+        logger.info("bindAppSuccess: " + bindAppSuccess);
         stage.show();
         logger.info("after stage show..");
+
     }
 
     private void engineBindApp(WebEngine engine, JavaAppBase javaApp) {
@@ -137,9 +112,17 @@ public class WebViewController extends AnchorPane {
               .stateProperty()
               .addListener((ov, oldState, newState) -> {
                   logger.info("old state: " + oldState + " ,new state: " + newState);
-                  if (Worker.State.READY == oldState) {
-                      JSObject window = (JSObject) engine.executeScript("window");
-                      window.setMember("tqClient", javaApp);
+                  if (!bindAppSuccess) {
+                      if (Worker.State.FAILED == newState) {
+                          JSObject window = (JSObject) engine.executeScript("window");
+                          window.setMember("tqClient", javaApp);
+                          engine.reload();
+                      } else if (Worker.State.SUCCEEDED == newState) {
+                          JSObject window = (JSObject) engine.executeScript("window");
+                          window.setMember("tqClient", javaApp);
+                          bindAppSuccess = true;
+                      }
+
                   }
               });
     }

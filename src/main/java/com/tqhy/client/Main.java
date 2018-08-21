@@ -217,8 +217,12 @@ public class Main extends Application {
         scene.setFill(Color.TRANSPARENT);
         primaryStage.setScene(scene);
         primaryStage.setX(ViewsUtils.getMaxX(50 * 2));
-        primaryStage.setY(ViewsUtils.getMaxY(50 * 2));
+        primaryStage.setY(ViewsUtils.getScreenHeight() / 2);
         primaryStage.show();
+
+        primaryStage.setOnCloseRequest(event -> {
+            logger.info("onclose requesr...");
+        });
     }
 
     /**
@@ -287,7 +291,7 @@ public class Main extends Application {
             subStr1 += subStr2;
         }
 
-        subStr1 = subStr1.substring(subStr1.length() - 5);
+        //subStr1 = subStr1.substring(subStr1.length() - 5);
         logger.info("subStr1: " + subStr1 + " subStr2: " + subStr2);
         return MD5Utils.getMD5(subStr1);
         //return MD5Utils.getMD5(key);
@@ -316,12 +320,13 @@ public class Main extends Application {
                                              logger.info("dialogShouldShowingFlag changed,oldValue is: " + oldValue + ", newValue is: " + newValue);
                                              aiWarningDialogController.closeDialog();
                                          });
+                aiWarningDialogController.setWebViewShowingListener((webViewDialogController) -> {
+                    webViewShowingFlag.bindBidirectional(webViewDialogController.webViewShowingProperty());
+                    logger.info("webViewShowingFlag bined...");
+                });
             }
 
-            aiWarningDialogController.show(primaryStage, (webViewDialogController) -> {
-                webViewShowingFlag.bindBidirectional(webViewDialogController.webViewShowingProperty());
-                logger.info("webViewShowingFlag bined...");
-            });
+            aiWarningDialogController.show(primaryStage);
         });
     }
 

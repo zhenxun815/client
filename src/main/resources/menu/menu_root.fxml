@@ -7,6 +7,8 @@
     <fx:define>
         <fx:include fx:id="menuItemHistory" source="menu_item_history.fxml" onMousePressed="#history"
                     styleClass="menu-item"></fx:include>
+        <fx:include fx:id="menuItemReport" source="menu_item_report.fxml" onMousePressed="#report"
+                    styleClass="menu-item"></fx:include>
         <fx:include fx:id="menuItemMin" source="menu_item_min.fxml" onMousePressed="#min"
                     styleClass="menu-item"></fx:include>
         <fx:include fx:id="menuItemExit" source="menu_item_exit.fxml" onMousePressed="#exit"

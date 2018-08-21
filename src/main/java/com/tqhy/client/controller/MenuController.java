@@ -23,6 +23,8 @@ public class MenuController extends ContextMenu {
     @FXML
     HBox menuItemHistory;
     @FXML
+    HBox menuItemReport;
+    @FXML
     HBox menuItemMin;
     @FXML
     HBox menuItemExit;
@@ -47,15 +49,22 @@ public class MenuController extends ContextMenu {
     }
 
     @FXML
-    public void exit(MouseEvent event) {
-        logger.info("exit click...");
-        stage.close();
-        System.exit(0);
+    public void report(MouseEvent event) {
+        logger.info("report click...");
+        WebViewController web = new WebViewController();
+        web.showTqWeb("", Network.REPORT_PAGE);
     }
 
     @FXML
     public void min(MouseEvent event) {
         Platform.runLater(stage::hide);
+    }
+
+    @FXML
+    public void exit(MouseEvent event) {
+        logger.info("exit click...");
+        stage.close();
+        System.exit(0);
     }
 
    /* @FXML
@@ -79,8 +88,9 @@ public class MenuController extends ContextMenu {
     public void initItems() {
         // logger.info("menu controller init items...");
         getItems().add(0, new CustomMenuItem(menuItemHistory));
-        getItems().add(1, new CustomMenuItem(menuItemMin));
-        getItems().add(2, new CustomMenuItem(menuItemExit));
+        getItems().add(1, new CustomMenuItem(menuItemReport));
+        getItems().add(2, new CustomMenuItem(menuItemMin));
+        getItems().add(3, new CustomMenuItem(menuItemExit));
         getScene().setUserAgentStylesheet("/menu/menu.css");
     }
 

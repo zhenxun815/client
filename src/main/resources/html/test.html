@@ -10,7 +10,7 @@
 
     </style>
     <!--<script type="text/javascript" src="/js/jquery-3.3.1.js"/>-->
-    <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+	<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
     <script type="text/javascript">
         $(document).ready(function () {
 
@@ -24,7 +24,7 @@
 
         function questHistory() {
             var today = new Date();
-            var submitTime = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
+	        var submitTime = today.getFullYear() + '-' + z(today.getMonth() + 1) + '-' + today.getDate();
             $("#log").text(submitTime);
             $.ajax({
                 type: "POST",

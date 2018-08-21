@@ -1,24 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.*?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
-<fx:root headerText="AI异常提示" maxHeight="150.0" maxWidth="300.0" prefHeight="150" prefWidth="300"
-         stylesheets="/dialog/ai_warning/ai_warning.css" type="javafx.scene.control.DialogPane"
+<?import javafx.scene.layout.*?>
+<fx:root maxHeight="150.0" maxWidth="300.0" prefHeight="150" prefWidth="300"
+         stylesheets="/dialog/ai_warning/ai_warning.css" type="AnchorPane"
          xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1">
-    <graphic>
-        <ImageView fitHeight="32.0" fitWidth="32.0" nodeOrientation="INHERIT" pickOnBounds="true" preserveRatio="true">
-            <image>
-                <Image url="@../icons/warning.png"/>
-            </image>
-        </ImageView>
-    </graphic>
-    <content>
-        <Label fx:id="lb_ai_warning" prefWidth="200.0" text="Label"/>
-    </content>
-    <buttonTypes>
-        <ButtonType fx:id="bt_detail" buttonData="YES" text="详情"/>
-        <ButtonType fx:id="bt_exclude" buttonData="NO" text="排除"/>
-        <ButtonType fx:id="bt_close" buttonData="CANCEL_CLOSE" text="关闭"/>
-    </buttonTypes>
+    <VBox styleClass="warning_container">
+        <HBox styleClass="warning_title_bar">
+            <Label styleClass="title_content">AI异常提示</Label>
+            <HBox styleClass="title_img"></HBox>
+        </HBox>
+        <VBox styleClass="warning_content_container">
+            <Label fx:id="lb_warning_content">提示内容提示内容</Label>
+            <HBox styleClass="warning_btn_container">
+                <Button fx:id="bt_confirm" styleClass="warning_btn">详情</Button>
+                <HBox styleClass="btn_span"></HBox>
+                <Button fx:id="bt_exclude" styleClass="warning_btn">排除</Button>
+                <HBox styleClass="btn_span"></HBox>
+                <Button fx:id="bt_close" styleClass="warning_btn">关闭</Button>
+            </HBox>
+        </VBox>
+    </VBox>
+
 </fx:root>

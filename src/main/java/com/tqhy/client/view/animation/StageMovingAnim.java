@@ -83,7 +83,7 @@ public class StageMovingAnim {
      * 设定动画事件
      */
     private void setAnimation() {
-        logger.info("into setOnHidingAnim...");
+        logger.info("into setAnimation...");
         Pane pane = new Pane();
         TranslateTransition transTrans = new TranslateTransition(Duration.millis(500), pane);
         movingStage.setX(fromX);
